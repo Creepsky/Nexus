@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Volt"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="msvc8"/>
+		<Option virtualFolders="CMake Files\;CMake Files\conan\;CMake Files\conan\debug\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="E:/dev/Volt/compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 all"/>
+					<CompileFile command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Volt">
+				<Option output="E:/dev/Volt/compiler/cmake-build-debug/bin/Volt-d.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/dev/Volt/compiler/cmake-build-debug/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DVERSION_MAJOR=0"/>
+					<Add option="-DVERSION_MINOR=0"/>
+					<Add option="-DVERSION_BUILD=1"/>
+					<Add option="-DVERSION_REVISION=0"/>
+					<Add directory="C:/.conan/ugh93x0c/1/include"/>
+					<Add directory="C:/Users/Creepsky/.conan/data/bzip2/1.0.6/conan/stable/package/d2eed54dd60974c85a4e38a37976c95179d53fa0/include"/>
+					<Add directory="C:/Users/Creepsky/.conan/data/zlib/1.2.11/conan/stable/package/8cf01e2f50fcd6b63525e70584df0326550364e1/include"/>
+					<Add directory="E:/dev/Volt/compiler/src"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.15.26726\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.15.26726\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 Volt"/>
+					<CompileFile command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Volt/fast">
+				<Option output="E:/dev/Volt/compiler/cmake-build-debug/bin/Volt-d.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/dev/Volt/compiler/cmake-build-debug/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DVERSION_MAJOR=0"/>
+					<Add option="-DVERSION_MINOR=0"/>
+					<Add option="-DVERSION_BUILD=1"/>
+					<Add option="-DVERSION_REVISION=0"/>
+					<Add directory="C:/.conan/ugh93x0c/1/include"/>
+					<Add directory="C:/Users/Creepsky/.conan/data/bzip2/1.0.6/conan/stable/package/d2eed54dd60974c85a4e38a37976c95179d53fa0/include"/>
+					<Add directory="C:/Users/Creepsky/.conan/data/zlib/1.2.11/conan/stable/package/8cf01e2f50fcd6b63525e70584df0326550364e1/include"/>
+					<Add directory="E:/dev/Volt/compiler/src"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.15.26726\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.15.26726\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 Volt/fast"/>
+					<CompileFile command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="E:/dev/Volt/compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 edit_cache"/>
+					<CompileFile command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="E:/dev/Volt/compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\dev\Volt\compiler\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="E:/dev/Volt/compiler/src/class.cpp">
+			<Option target="Volt"/>
+		</Unit>
+		<Unit filename="E:/dev/Volt/compiler/src/class.hpp">
+			<Option target="Volt"/>
+		</Unit>
+		<Unit filename="E:/dev/Volt/compiler/src/main.cpp">
+			<Option target="Volt"/>
+		</Unit>
+		<Unit filename="E:/dev/Volt/compiler/src/parser.hpp">
+			<Option target="Volt"/>
+		</Unit>
+		<Unit filename="E:/dev/Volt/compiler/src/types.cpp">
+			<Option target="Volt"/>
+		</Unit>
+		<Unit filename="E:/dev/Volt/compiler/src/types.hpp">
+			<Option target="Volt"/>
+		</Unit>
+		<Unit filename="E:/dev/Volt/compiler/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="E:/dev/Volt/compiler/conan/debug/conanbuildinfo.cmake">
+			<Option virtualFolder="CMake Files\conan\debug\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
