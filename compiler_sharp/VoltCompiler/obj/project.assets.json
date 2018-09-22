@@ -865,7 +865,7 @@
       ]
     },
     "System.Collections/4.3.0": {
-      "sha512": "3Dcj85/TBdVpL5Zr+gEEBUuFe2icOnLalmEh9hfck1PTYbbyWuZgh4fmm2ysCLTrqLQw6t3TgTyJ+VLp+Qb+Lw==",
+      "sha512": "CGMrlfpjTmXHqTPLJHsBb5pszYOA+bE6YPEypt5Mk7KRaTHeY1OZwp7/zzA4kN0dn9O09U7hcOPD4Qr2e2E7vA==",
       "type": "package",
       "path": "system.collections/4.3.0",
       "files": [
@@ -931,7 +931,7 @@
       ]
     },
     "System.Diagnostics.Debug/4.3.0": {
-      "sha512": "ZUhUOdqmaG5Jk3Xdb8xi5kIyQYAA4PnTNlHx1mu9ZY3qv4ELIdKbnL/akbGaKi2RnNUWaZsAs31rvzFdewTj2g==",
+      "sha512": "NUIx5ldwljuMXkXJfouNuiFmweX035ceBqNLTpFT6G3DIpS2AlOvHlQpALVzcchOLyUV3ckK5px0a/Kik3CDGw==",
       "type": "package",
       "path": "system.diagnostics.debug/4.3.0",
       "files": [
@@ -997,7 +997,7 @@
       ]
     },
     "System.Globalization/4.3.0": {
-      "sha512": "kYdVd2f2PAdFGblzFswE4hkNANJBKRmsfa2X5LG2AcWE1c7/4t0pYae1L8vfZ5xvE2nK/R9JprtToA61OSHWIg==",
+      "sha512": "dp4LlqBU4dqg1IfIBKsTpKBk7c+VoxctVrHXbfZvOQFbVJ+jfAqkS2gTsxGUDy0vEHmd0yMTx5IS623qGXy4lQ==",
       "type": "package",
       "path": "system.globalization/4.3.0",
       "files": [
@@ -1063,7 +1063,7 @@
       ]
     },
     "System.IO/4.3.0": {
-      "sha512": "3qjaHvxQPDpSOYICjUoTsmoq5u6QJAFRUITgeT/4gqkF1bajbSmb1kwSxEA8AHlofqgcKJcM8udgieRNhaJ5Cg==",
+      "sha512": "xaNP+8Q1KPyyBIUC/RlmUrp0Rdxhkw0MNbIiIHYY4h+VZjysBJJq8oAalfv8xxQrUjxO2PiCTa7jWDWwG3v+9g==",
       "type": "package",
       "path": "system.io/4.3.0",
       "files": [
@@ -1142,7 +1142,7 @@
       ]
     },
     "System.Linq/4.3.0": {
-      "sha512": "5DbqIUpsDp0dFftytzuMmc0oeMdQwjcP/EWxsksIz/w1TcFRkZ3yKKz0PqiYFMmEwPSWw+qNVqD7PJ889JzHbw==",
+      "sha512": "v9a+4wv33HPFE2PwUUDI6drUYc1s/SdUbXsY423cT148K428ikxv+nBB7gyEZSLruAi/CZX9A28L2wZCUS24Tg==",
       "type": "package",
       "path": "system.linq/4.3.0",
       "files": [
@@ -1212,7 +1212,7 @@
       ]
     },
     "System.Reflection/4.3.0": {
-      "sha512": "KMiAFoW7MfJGa9nDFNcfu+FpEdiHpWgTcS2HdMpDvt9saK3y/G4GwprPyzqjFH9NTaGPQeWNHU+iDlDILj96aQ==",
+      "sha512": "c0Ptp7ogHSRlvl/iQ2gTSnriLrq6QZCD3+FscIsejt/4Ftb/trOI0wNAX6QBMMZvmU0YvZaH1pbbldGN5xZERA==",
       "type": "package",
       "path": "system.reflection/4.3.0",
       "files": [
@@ -1291,7 +1291,7 @@
       ]
     },
     "System.Reflection.Primitives/4.3.0": {
-      "sha512": "5RXItQz5As4xN2/YUDxdpsEkMhvw3e6aNveFXUn4Hl/udNTCNhnKp8lT9fnc3MhvGKh1baak5CovpuQUXHAlIA==",
+      "sha512": "lWYI6tcCj+7wA42/CXkcZyPt0Cl2NTcy+OcWoXlQOvjQTdJCH/qPYMX6sFc0fFb+foi+7vHR1c20m4mpuDwNCw==",
       "type": "package",
       "path": "system.reflection.primitives/4.3.0",
       "files": [
@@ -1346,7 +1346,7 @@
       ]
     },
     "System.Resources.ResourceManager/4.3.0": {
-      "sha512": "/zrcPkkWdZmI4F92gL/TPumP98AVDu/Wxr3CSJGQQ+XN6wbRZcyfSKVoPo17ilb3iOr0cCRqJInGwNMolqhS8A==",
+      "sha512": "MeYxhrmjankXtVzmkMwCdi8qEp3s/jjnAPYkmkBSlGGMRw5V3EpvV5HMHQ27iHelTNjUGaGB15jnrbQr8UNWyw==",
       "type": "package",
       "path": "system.resources.resourcemanager/4.3.0",
       "files": [
@@ -1401,7 +1401,7 @@
       ]
     },
     "System.Runtime/4.3.0": {
-      "sha512": "JufQi0vPQ0xGnAczR13AUFglDyVYt4Kqnz1AZaiKZ5+GICq0/1MH/mO/eAJHt/mHW1zjKBJd7kV26SrxddAhiw==",
+      "sha512": "BAHqqzUNyaZWbizpq4a2oH0VGFlO3iT10Ck9VkJCOwxrr3l2BikF+TohHxgDdFV1o/j+swT8pm9/OOrWbXZWhw==",
       "type": "package",
       "path": "system.runtime/4.3.0",
       "files": [
@@ -1491,7 +1491,7 @@
       ]
     },
     "System.Runtime.Extensions/4.3.0": {
-      "sha512": "guW0uK0fn5fcJJ1tJVXYd7/1h5F+pea1r7FLSOz/f8vPEqbR2ZAknuRDvTQ8PzAilDveOxNjSfr0CHfIQfFk8g==",
+      "sha512": "bfKo5sm3cVmWbFmHFgNB/uBBC6x6VshEZwsAlSmFRCv5AaB1CnheDwcC7IXCLi7TLz8zRcwTUXnjwXREUB8Qcg==",
       "type": "package",
       "path": "system.runtime.extensions/4.3.0",
       "files": [
@@ -1570,7 +1570,7 @@
       ]
     },
     "System.Text.Encoding/4.3.0": {
-      "sha512": "BiIg+KWaSDOITze6jGQynxg64naAPtqGHBwDrLaCtixsa5bKiR8dpPOHA7ge3C0JJQizJE+sfkz1wV+BAKAYZw==",
+      "sha512": "ETHF+i46Yny9hc4PGJiGaNBa6mdWPkxIcHEDm9TGCT1yQprfqbQ+YWSxJyAiNxZhURMJyBUS56xHIMywa230+A==",
       "type": "package",
       "path": "system.text.encoding/4.3.0",
       "files": [
@@ -1636,7 +1636,7 @@
       ]
     },
     "System.Text.RegularExpressions/4.3.0": {
-      "sha512": "RpT2DA+L660cBt1FssIE9CAGpLFdFPuheB7pLpKpn6ZXNby7jDERe8Ua/Ne2xGiwLVG2JOqziiaVCGDon5sKFA==",
+      "sha512": "4DQU7dW6fnrchSX7Hvwd/WeT5Ratf4y4Vaq9A9CGM5zHduCyVCSlmDYQy17xusp8EXIn+DPdnNKcNUAbX5RciQ==",
       "type": "package",
       "path": "system.text.regularexpressions/4.3.0",
       "files": [
@@ -1718,7 +1718,7 @@
       ]
     },
     "System.Threading.Tasks/4.3.0": {
-      "sha512": "LbSxKEdOUhVe8BezB/9uOGGppt+nZf6e1VFyw6v3DN6lqitm0OSn2uXMOdtP0M3W4iMcqcivm2J6UgqiwwnXiA==",
+      "sha512": "tX9NEYORrA0PA10bN09kfcjmMN7k75+1MtVzjsguAnoqwyWLDO5fL9pVXMvhjmZHPv3Hu7r355r78BGapP+PsA==",
       "type": "package",
       "path": "system.threading.tasks/4.3.0",
       "files": [
@@ -1798,7 +1798,7 @@
     "version": "1.0.0",
     "restore": {
       "projectUniqueName": "E:\\dev\\Volt\\compiler_sharp\\VoltCompiler\\VoltCompiler.csproj",
-      "projectName": "VoltCompiler",
+      "projectName": "VoltParser",
       "projectPath": "E:\\dev\\Volt\\compiler_sharp\\VoltCompiler\\VoltCompiler.csproj",
       "packagesPath": "C:\\Users\\Creepsky\\.nuget\\packages\\",
       "outputPath": "E:\\dev\\Volt\\compiler_sharp\\VoltCompiler\\obj\\",

@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("VoltCompiler")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("VoltParser")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("VoltCompiler")]
-[assembly: System.Reflection.AssemblyTitleAttribute("VoltCompiler")]
+[assembly: System.Reflection.AssemblyProductAttribute("VoltParser")]
+[assembly: System.Reflection.AssemblyTitleAttribute("VoltParser")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Von der MSBuild WriteCodeFragment-Klasse generiert.

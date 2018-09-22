@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoltCompiler", "VoltCompiler\VoltCompiler.csproj", "{36BB3A81-19D2-4879-A5D3-C83314CD6BF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoltCompiler", "VoltCompiler\VoltCompiler.csproj", "{36BB3A81-19D2-4879-A5D3-C83314CD6BF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoltCompilerTest", "VoltCompilerTest\VoltCompilerTest.csproj", "{B046C9B0-0F41-43CE-9D43-55DDE0555DC1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{36BB3A81-19D2-4879-A5D3-C83314CD6BF3} = {36BB3A81-19D2-4879-A5D3-C83314CD6BF3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{36BB3A81-19D2-4879-A5D3-C83314CD6BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36BB3A81-19D2-4879-A5D3-C83314CD6BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36BB3A81-19D2-4879-A5D3-C83314CD6BF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B046C9B0-0F41-43CE-9D43-55DDE0555DC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B046C9B0-0F41-43CE-9D43-55DDE0555DC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B046C9B0-0F41-43CE-9D43-55DDE0555DC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B046C9B0-0F41-43CE-9D43-55DDE0555DC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
