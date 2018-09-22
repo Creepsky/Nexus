@@ -1,50 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.IO;
 using System.Linq;
-using System.Runtime.ExceptionServices;
 using Sprache;
 
 namespace Volt
 {
-    public abstract class ClassMember
-    { }
-
-    public class Variable : ClassMember
-    {
-        public string Type;
-        public string Name;
-        public IOption<dynamic> Initialization;
-
-        public override string ToString()
-        {
-            return $"{Type} {Name}";
-        }
-    }
-
-    public class Function : ClassMember
-    {
-        public string ReturnType;
-        public string Name;
-        public IList<Variable> Parameters;
-
-        public override string ToString()
-        {
-            return $"{ReturnType} {Name}({string.Join(", ", Parameters)})";
-        }
-    }
-
-    public class Class
-    {
-        public string Name;
-        public List<ClassMember> Members;
-
-        public override string ToString()
-        {
-            return Name;
-        }
-    }
 
     public static class VoltParser
     {
@@ -72,31 +33,40 @@ namespace Volt
             from factor in Factor.Shift()
             select factor;
 
-        public static readonly Parser<ClassMember> Variable =
+        public static readonly Parser<IClassMember> Variable =
             from type in Identifier.Named("variable type")
             from name in Identifier.Shift().Named("variable name")
+            from setter in Parse.String("set").Shift().Text().Optional()
+            from getter in Parse.String("get").Shift().Text().Optional()
             from assignment in Assignment.Shift().Optional().Named("variable initialization")
-            select new Variable {Type = type, Name = name, Initialization = assignment };
+            select new Variable
+            {
+                Type = type,
+                Name = name,
+                Setter = setter.GetOrDefault() != null,
+                Getter = getter.GetOrDefault() != null,
+                Initialization = assignment
+            };
 
         //public static readonly Parser<dynamic> FunctionBody =
         //    Variable.
 
-        public static readonly Parser<ClassMember> Function =
+        public static readonly Parser<IClassMember> Function =
             from returnType in Identifier.Named("function return value")
             from name in Identifier.Shift().Named("function name")
             from parametersBegin in Parse.Char('(').Shift().Named("function parameters begin")
             from parameters in Variable.Shift().DelimitedBy(Parse.Char(',')).Optional().Named("function parameters")
-            from parametersEnd in Parse.Char(')').Named("function parameters end")
+            from parametersEnd in Parse.Char(')').Shift().Named("function parameters end")
             from bodyBegin in Parse.Char('{').Shift().Named("function body begin")
             //from body in FunctionBody.Named("function body")
             from bodyEnd in Parse.Char('}').Shift().Named("function body end")
             select new Function
             {
                 Name = name, ReturnType = returnType,
-                Parameters = parameters.GetOrElse(new List<ClassMember>()).Select(i => (Variable) i).ToList()
+                Parameters = parameters.GetOrElse(new List<IClassMember>()).Select(i => (Variable) i).ToList()
             };
 
-        public static Parser<ClassMember> ClassMembers =>
+        public static Parser<IClassMember> ClassMembers =>
             Function.Named("class function").Shift()
                 .Or(Variable
                     .Then(member => Parse.Char(';')
@@ -106,7 +76,7 @@ namespace Volt
                     .Named("class variable"))
                 .Shift();
 
-        public static Parser<IEnumerable<ClassMember>> ClassDefinition =>
+        public static Parser<IEnumerable<IClassMember>> ClassDefinition =>
             ClassMembers.Named("class member").Many();
 
         public static Parser<Class> Class =>
@@ -133,6 +103,11 @@ namespace Volt
 
             var content = File.ReadAllText(args[0]);
             var parsedContent = VoltParser.Class.Parse(content);
+            
+            var printer = new Printer(Console.Out);
+            
+            parsedContent.ToHeader(printer);
+            parsedContent.ToSource(printer);
 
             return 0;
         }

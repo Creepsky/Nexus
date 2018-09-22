@@ -92,11 +92,11 @@ namespace VoltTest
         }
 
         [Theory]
-        [InlineData("i32 member", typeof(Variable))]
-        [InlineData("i32    member       ", typeof(Variable))]
+        [InlineData("i32 member;", typeof(Variable))]
+        [InlineData("i32    member   ;    ", typeof(Variable))]
         [InlineData("i32 member() {}", typeof(Function))]
         [InlineData("i32    member (  )     {     }  ", typeof(Function))]
-        public void ClassMember(string input, Type type)
+        public void ClassMember(string input, System.Type type)
         {
             var result = VoltParser.ClassMembers.Parse(input);
             Assert.IsType(type, result);
@@ -107,7 +107,7 @@ namespace VoltTest
         {
             const string input = "class Test       { " +
                                  " i32    " +
-                                 " testInt    " +
+                                 " testInt;    " +
                                  "}";
 
             var result = VoltParser.Class.Parse(input);
