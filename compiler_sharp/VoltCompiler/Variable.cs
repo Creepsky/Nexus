@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Sprache;
 
 namespace Volt
@@ -7,6 +9,7 @@ namespace Volt
     public class Variable : IClassMember
     {
         public string Type;
+        public int Array;
         public string Name;
         public bool Setter;
         public bool Getter;
@@ -36,7 +39,13 @@ namespace Volt
             try
             {
                 // primitive
+                if (Array > 0)
+                    return string.Concat(Enumerable.Repeat("std::vector<", Array)) +
+                           TypesExtension.ToType(Type).ToCpp() +
+                           new string('>', Array);
+
                 return TypesExtension.ToType(Type).ToCpp();
+
             }
             catch (Exception)
             {

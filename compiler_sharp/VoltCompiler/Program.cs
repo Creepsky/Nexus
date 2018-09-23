@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,6 +35,7 @@ namespace Volt
 
         public static readonly Parser<IClassMember> Variable =
             from type in Identifier.Named("variable type")
+            from array in Parse.String("[]").Shift().Many().Optional()
             from name in Identifier.Shift().Named("variable name")
             from setter in Parse.String("set").Shift().Text().Optional()
             from getter in Parse.String("get").Shift().Text().Optional()
@@ -42,6 +43,7 @@ namespace Volt
             select new Variable
             {
                 Type = type,
+                Array = array.GetOrElse(new List<List<char>>()).Count(),
                 Name = name,
                 Setter = setter.GetOrDefault() != null,
                 Getter = getter.GetOrDefault() != null,
