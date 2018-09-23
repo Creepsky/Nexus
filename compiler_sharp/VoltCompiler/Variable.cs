@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -69,6 +69,14 @@ namespace Volt
                 // class
                 return false;
             }
+        }
+
+        public IEnumerable<string> UsedTypes()
+        {
+            if (Array > 0)
+                yield return Type + string.Concat(Enumerable.Repeat("[]", Array));
+            else
+                yield return Type;
         }
     }
 }

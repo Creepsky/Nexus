@@ -28,5 +28,13 @@ namespace Volt
         {
             throw new System.NotImplementedException();
         }
+
+        public IEnumerable<string> UsedTypes()
+        {
+            yield return ReturnType;
+            foreach (var parameter in Parameters)
+            foreach (var usedType in parameter.UsedTypes())
+                yield return usedType;
+        }
     }
 }

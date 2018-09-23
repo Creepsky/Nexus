@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -108,8 +108,7 @@ namespace Volt
             
             var printer = new Printer(Console.Out);
             
-            parsedContent.ToHeader(printer);
-            parsedContent.ToSource(printer);
+            parsedContent.Compile(printer, printer);
 
             return 0;
         }
