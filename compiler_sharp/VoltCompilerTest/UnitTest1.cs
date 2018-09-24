@@ -15,7 +15,7 @@ namespace Nexus.Test
         [InlineData("A", "A")]
         [InlineData("A-", "A-")]
         [InlineData("A_", "A_")]
-        public void IdentifierOk(string id, string expected) => Assert.Equal(expected, VoltParser.Identifier.Parse(id));
+        public void IdentifierOk(string id, string expected) => Assert.Equal(expected, NexusParser.Identifier.Parse(id));
 
         [Theory]
         [InlineData("1ABC")]
@@ -25,7 +25,7 @@ namespace Nexus.Test
         [InlineData("1")]
         [InlineData(" ABC")]
         [InlineData(" ABC  ")]
-        public void IdentifierFail(string id) => Assert.Throws<ParseException>(() => VoltParser.Identifier.Parse(id));
+        public void IdentifierFail(string id) => Assert.Throws<ParseException>(() => NexusParser.Identifier.Parse(id));
 
         [Theory]
         [InlineData("\"\"")]
@@ -36,7 +36,7 @@ namespace Nexus.Test
         [InlineData("\" a b c \"")]
         public void QuotedTextOk(string text)
         {
-            var quotedText = VoltParser.QuotedText.Parse(text);
+            var quotedText = NexusParser.QuotedText.Parse(text);
             Assert.IsType<Text>(quotedText);
             Assert.Equal(text.Substring(1, text.Length - 2), ((Text) quotedText).Value);
         }
@@ -49,16 +49,16 @@ namespace Nexus.Test
         [InlineData("   abc   ")]
         [InlineData("   abc")]
         [InlineData("abc   ")]
-        public void QuotedTextFail(string text) => Assert.Throws<ParseException>(() => VoltParser.QuotedText.Parse(text));
+        public void QuotedTextFail(string text) => Assert.Throws<ParseException>(() => NexusParser.QuotedText.Parse(text));
 
         [Theory]
         [InlineData("100", 100)]
         [InlineData("2147483647", 2147483647)]
-        public void I32(string input, long expected)
+        public void Integers<T>(string input, T expected)
         {
-            var result = VoltParser.Number.Parse(input);
-            Assert.IsType<I32>(result);
-            var number = (I32) result;
+            var result = NexusParser.Number.Parse(input);
+            Assert.IsType<T>(result);
+            var number = (NumberLiteral<T>) result;
             Assert.Equal(expected, number.Value);
         }
 
@@ -66,7 +66,7 @@ namespace Nexus.Test
         [InlineData("2147483648_i32")]
         public void I32Fail(string input)
         {
-            var result = VoltParser.Number.Parse(input);
+            var result = NexusParser.Number.Parse(input);
             Assert.Throws<OverflowException>(() => result);
         }
 
@@ -76,7 +76,7 @@ namespace Nexus.Test
         [InlineData("MyClass myObject", "MyClass", "myObject")]
         public void Variables(string input, string type, string name)
         {
-            var output = (Variable)VoltParser.Variable.Parse(input);
+            var output = (Variable)NexusParser.Variable.Parse(input);
             Assert.Equal(type, output.Type.Type);
             Assert.Equal(name, output.Name);
         }
@@ -88,7 +88,7 @@ namespace Nexus.Test
         [InlineData("123 test")]
         [InlineData("string 1 2 3")]
         [InlineData(" test test")]
-        public void VariablesFail(string input) => Assert.Throws<ParseException>(() => VoltParser.Variable.Parse(input));
+        public void VariablesFail(string input) => Assert.Throws<ParseException>(() => NexusParser.Variable.Parse(input));
 
         [Theory]
         [InlineData("i32 function1() { }", "i32", "function1")]
@@ -97,7 +97,7 @@ namespace Nexus.Test
         [InlineData("i32            function1(i32 param1, usize param2)   {    }    ", "i32", "function1")]
         public void Functions(string input, string returnType, string name)
         {
-            var function = (Function)VoltParser.Function.Parse(input);
+            var function = (Function)NexusParser.Function.Parse(input);
             Assert.Equal(returnType, function.ReturnType.Type);
             Assert.Equal(name, function.Name);
         }
@@ -119,7 +119,7 @@ namespace Nexus.Test
         [InlineData("i32    member (  )     {     }  ", typeof(Function))]
         public void ClassMember(string input, Type type)
         {
-            var result = VoltParser.ClassMembers.Parse(input);
+            var result = NexusParser.ClassMembers.Parse(input);
             Assert.IsType(type, result);
         }
 
@@ -131,7 +131,7 @@ namespace Nexus.Test
                                  " testInt;    " +
                                  "}";
 
-            VoltParser.Class.Parse(input);
+            NexusParser.Class.Parse(input);
         }
     }
 }

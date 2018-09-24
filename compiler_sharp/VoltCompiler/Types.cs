@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Nexus
@@ -76,19 +77,6 @@ namespace Nexus
         {
             return $"{Type}{string.Concat(Enumerable.Repeat("[]", Array))}";
         }
-
-        public static readonly TypeDefinition I8 = new TypeDefinition("i8");
-        public static readonly TypeDefinition I16 = new TypeDefinition("i16");
-        public static readonly TypeDefinition I32 = new TypeDefinition("i32");
-        public static readonly TypeDefinition I64 = new TypeDefinition("i64");
-        public static readonly TypeDefinition U8 = new TypeDefinition("u8");
-        public static readonly TypeDefinition U16 = new TypeDefinition("u16");
-        public static readonly TypeDefinition U32 = new TypeDefinition("u32");
-        public static readonly TypeDefinition U64 = new TypeDefinition("u64");
-        public static readonly TypeDefinition USize = new TypeDefinition("usize");
-        public static readonly TypeDefinition String = new TypeDefinition("string");
-        public static readonly TypeDefinition F32 = new TypeDefinition("f32");
-        public static readonly TypeDefinition F64 = new TypeDefinition("f64");
     }
 
     public static class TypesExtension
@@ -132,5 +120,26 @@ namespace Nexus
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
+
+        public static readonly IList<Types> Integer = new List<Types>
+        {
+            Types.I8, Types.I16, Types.I32, Types.I64,
+            Types.U8, Types.U16, Types.U32, Types.U64
+        };
+
+        public static readonly IList<Types> Signed = new List<Types>
+        {
+            Types.I8, Types.I16, Types.I32, Types.I64
+        };
+
+        public static readonly IList<Types> Unsigned = new List<Types>
+        {
+            Types.U8, Types.U16, Types.U32, Types.U64, Types.USize
+        };
+
+        public static readonly IList<Types> Real = new List<Types>
+        {
+            Types.F32, Types.F64
+        };
     }
 }

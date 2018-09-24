@@ -1,4 +1,8 @@
-﻿using System;
+using System;
+using System.ComponentModel;
+using System.Data;
+using System.Globalization;
+using System.Reflection.Metadata.Ecma335;
 using Sprache;
 
 namespace Nexus
@@ -95,7 +99,170 @@ namespace Nexus
     {
         public static NumberLiteral Parse(char sign, string integerPart, string decimalPart, string suffix)
         {
+            Types? type = null;
+
+            if (string.IsNullOrEmpty(integerPart))
+                throw new ArgumentNullException(nameof(integerPart), "not a number");
+
+            if (!string.IsNullOrEmpty(suffix))
+            {
+                switch (suffix.ToLower())
+                {
+                    case "_i8":
+                        type = Types.I8;
+                        break;
+                    case "_i16":
+                        type = Types.I16;
+                        break;
+                    case "_i32":
+                        type = Types.I32;
+                        break;
+                    case "_i64":
+                        type = Types.I64;
+                        break;
+                    case "_u8":
+                        type = Types.U8;
+                        break;
+                    case "_u16":
+                        type = Types.U16;
+                        break;
+                    case "_u32":
+                        type = Types.U32;
+                        break;
+                    case "_u64":
+                        type = Types.U64;
+                        break;
+                    case "_usize":
+                        type = Types.USize;
+                        break;
+                    case "_f32":
+                    case "f":
+                        type = Types.F32;
+                        break;
+                    case "_f64":
+                    case "d":
+                        type = Types.F64;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(suffix), suffix, "unknown suffix");
+                }
+            }
+
+            // check sign
+            if (type.HasValue && sign == '-')
+                if (!TypesExtension.Signed.Contains(type.Value))
+                    throw new ArgumentOutOfRangeException(nameof(sign), sign, "");
+
+            // f32/f64 with decimal part
+            if (!string.IsNullOrEmpty(decimalPart))
+            {
+                if (type.HasValue && !TypesExtension.Real.Contains(type.Value))
+                    throw new ArgumentOutOfRangeException(nameof(suffix), suffix, "number has decimal part, but is not a real");
+
+                var real = $"{sign}{integerPart}.{decimalPart}";
+
+                if (type.HasValue)
+                {
+                    switch (type)
+                    {
+                        case Types.F32:
+                            return new F32 {Value = ParseFloat(real)};
+                        case Types.F64:
+                            return new F64 {Value = ParseDouble(real)};
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(type), type, "invalid type");
+                    }
+                }
+
+                if (UIntPtr.Size == 4)
+                {
+                    if (Try(ParseFloat, real, out var f32))
+                        return new F32 {Value = f32};
+
+                    if (Try(ParseDouble, real, out var f64))
+                        return new F64 {Value = f64};
+                }
+                else if (UIntPtr.Size == 8)
+                {
+                    if (Try(ParseDouble, real, out var f64))
+                        return new F64 {Value = f64};
+
+                    if (Try(ParseFloat, real, out var f32))
+                        return new F32 {Value = f32};
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(nameof(UIntPtr.Size), "unknown platform");
+                }
+            }
+            // i/u 8-64
+            else
+            {
+                if (type.HasValue)
+                {
+                    switch (type)
+                    {
+                        case Types.I8: return new I8 { Value = char.Parse(integerPart) };
+                        case Types.I16: return new I16 { Value = short.Parse(integerPart) };
+                        case Types.I32: return new I32 { Value = int.Parse(integerPart) };
+                        case Types.I64: return new I64 { Value = long.Parse(integerPart) };
+                        case Types.U8: return new U8 { Value = byte.Parse(integerPart) };
+                        case Types.U16: return new U16 { Value = ushort.Parse(integerPart) };
+                        case Types.U32: return new U32 { Value = uint.Parse(integerPart) };
+                        case Types.U64: return new U64 { Value = ulong.Parse(integerPart) };
+                        // TODO: ulong to bit size
+                        case Types.USize: return new USize { Value = ulong.Parse(integerPart) };
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(type), type, "invalid type");
+                    }
+                }
+
+                if (long.TryParse(integerPart, out var i64))
+                    return new I64 {Value = i64};
+
+                if (ulong.TryParse(integerPart, out var u64))
+                    return new U64 {Value = u64};
+
+                if (char.TryParse(integerPart, out var i8))
+                    return new I8 {Value = i8};
+
+                if (short.TryParse(integerPart, out var i16))
+                    return new I16 {Value = i16};
+
+                if (int.TryParse(integerPart, out var i32))
+                    return new I32 {Value = i32};
+
+                if (byte.TryParse(integerPart, out var u8))
+                    return new U8 {Value = u8};
+
+                if (ushort.TryParse(integerPart, out var u16))
+                    return new U16 {Value = u16};
+
+                if (uint.TryParse(integerPart, out var u32))
+                    return new U32 {Value = u32};
+            }
+
             return null;
+        }
+
+        private static float ParseFloat(string number) =>
+            float.Parse(number, NumberStyles.Float, CultureInfo.InvariantCulture);
+
+        private static double ParseDouble(string number) =>
+            double.Parse(number, NumberStyles.Float, CultureInfo.InvariantCulture);
+
+        public static bool Try<T>(Func<string, T> lambda, string number, out T result)
+        {
+            try
+            {
+                result = lambda(number);
+                return true;
+            }
+            catch (Exception)
+            {
+                result = default(T);
+                return false;
+            }
         }
     }
 

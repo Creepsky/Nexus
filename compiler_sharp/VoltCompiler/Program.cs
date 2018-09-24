@@ -6,7 +6,7 @@ using Sprache;
 
 namespace Nexus
 {
-    public static class VoltParser
+    public static class NexusParser
     {
         public static readonly Parser<IEnumerable<string>> Whitespaces =
             Parse.LineTerminator.Or(Parse.String(" ").Text()).Many();
@@ -22,41 +22,38 @@ namespace Nexus
             from end in Parse.Char('"').Once()
             select new Text {Value = text};
 
-        public static readonly Parser<string> SignedInteger =
-            from sign in Parse.Chars("-+").Named("sign").Optional()
-            from integer in Parse.Number.Named("integer")
-            select $"{sign.GetOrElse('+')}{integer}";
+        public static readonly Parser<string> IntegerSuffix =
+            from start in Parse.Char('_').Once()
+            from sign in Parse.Chars("iu").Once()
+            from length in Parse.String("8")
+                .Or(Parse.String("16"))
+                .Or(Parse.String("32"))
+                .Or(Parse.String("64"))
+                .Text()
+            select start.ToString() + sign + length;
 
-        public static readonly Parser<string> UnsignedInteger =
-            Parse.Number.Named("unsigned integer");
+        public static readonly Parser<string> RealSuffix =
+            from length in Parse.String("f")
+                .Or(Parse.String("d"))
+                .Or(Parse.Char('_').Then(i => Parse.Char('f').Then(j => Parse.Number)))
+                .Text()
+            select length;
 
-        public static readonly Parser<string> Real =
-            from integerPart in SignedInteger
-            from dot in Parse.Char('.')
-            from decimalPart in Parse.Number.Named("decimal part").Optional()
-            select $"{integerPart}.{decimalPart.GetOrDefault()}";
-
-        public static readonly Parser<F32> F32 =
-            from real in Real
-            from suffix in Parse.String("f")
-            select new F32{ Value = float.Parse(real) };
-
-        public static readonly Parser<F64> F64 =
-            from real in Real
-            from suffix in Parse.String("d")
-            select new F64{ Value = double.Parse(real) };
-
-        public static readonly Parser<IExpression> Number =
+        public static readonly Parser<NumberLiteral> Integer =
             from sign in Parse.Chars("-+").Named("sign").Optional()
             from integerPart in Parse.Number.Named("integer part")
-            from dot in Parse.Char('.').Named("dot").Optional()
+            from suffix in IntegerSuffix.Optional().Named("suffix")
+            select NumberLiteral.Parse(sign.GetOrElse('+'), integerPart, null, suffix.GetOrDefault());
+
+        public static readonly Parser<NumberLiteral> Real =
+            from sign in Parse.Chars("-+").Named("sign").Optional()
+            from integerPart in Parse.Number.Named("integer part")
+            from dot in Parse.Char('.').Named("decimal ")
             from decimalPart in Parse.Number.Named("decimal part").Optional()
-            from suffix in Parse.Chars("iuf13468").Named("suffix").Many().Text().Optional()
-            select NumberLiteral.Parse(
-                sign.GetOrElse('+'),
-                integerPart,
-                decimalPart.GetOrDefault(),
-                suffix.GetOrDefault());
+            from suffix in RealSuffix.Named("suffix").Optional()
+            select NumberLiteral.Parse(sign.GetOrElse('+'), integerPart, decimalPart.GetOrElse("0"), suffix.GetOrDefault());
+
+        public static Parser<NumberLiteral> Number => Real.Or(Integer);
 
         public static Parser<IExpression> Factor => QuotedText.Or(Number);
 
@@ -169,7 +166,7 @@ namespace Nexus
             }
 
             var content = File.ReadAllText(args[0]);
-            var parsedContent = VoltParser.Class.Parse(content);
+            var parsedContent = NexusParser.Class.Parse(content);
             
             var printer = new Printer(Console.Out);
             
