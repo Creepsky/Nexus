@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sprache;
 
-namespace Volt
+namespace Nexus
 {
     public class Variable : IClassMember
     {

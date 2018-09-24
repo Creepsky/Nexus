@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Nexus;
 
-namespace Volt
+namespace Nexus
 {
     public class Semantics
     {

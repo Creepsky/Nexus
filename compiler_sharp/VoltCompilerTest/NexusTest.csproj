@@ -5,9 +5,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>VoltParserTest</AssemblyName>
+    <AssemblyName>NexusTest</AssemblyName>
 
-    <RootNamespace>VoltTest</RootNamespace>
+    <RootNamespace>Nexus.Test</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VoltCompiler\VoltCompiler.csproj" />
+    <ProjectReference Include="..\VoltCompiler\Nexus.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System;
 using Sprache;
 
-namespace Volt
+namespace Nexus
 {
     public enum ExpressionType
     {

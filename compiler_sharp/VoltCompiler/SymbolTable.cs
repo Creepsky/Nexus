@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Volt
+namespace Nexus
 {
     public class Symbol
     {

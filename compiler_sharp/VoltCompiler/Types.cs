@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Volt
+namespace Nexus
 {
     public enum Types
     {

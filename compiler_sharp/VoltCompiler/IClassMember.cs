@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Volt
+namespace Nexus
 {
     public interface IClassMember : IPrintable
     {

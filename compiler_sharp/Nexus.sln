@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoltCompiler", "VoltCompiler\VoltCompiler.csproj", "{36BB3A81-19D2-4879-A5D3-C83314CD6BF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus", "VoltCompiler\Nexus.csproj", "{36BB3A81-19D2-4879-A5D3-C83314CD6BF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoltCompilerTest", "VoltCompilerTest\VoltCompilerTest.csproj", "{B046C9B0-0F41-43CE-9D43-55DDE0555DC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NexusTest", "VoltCompilerTest\NexusTest.csproj", "{B046C9B0-0F41-43CE-9D43-55DDE0555DC1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{36BB3A81-19D2-4879-A5D3-C83314CD6BF3} = {36BB3A81-19D2-4879-A5D3-C83314CD6BF3}
 	EndProjectSection

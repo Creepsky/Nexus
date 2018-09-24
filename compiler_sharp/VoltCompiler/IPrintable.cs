@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Volt
+namespace Nexus
 {
     public interface IPrintable
     {

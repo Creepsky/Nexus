@@ -4,10 +4,9 @@ using System.IO;
 using System.Linq;
 using Sprache;
 
-namespace Volt
+namespace Nexus
 {
-
-    public static partial class VoltParser
+    public static class VoltParser
     {
         public static readonly Parser<IEnumerable<string>> Whitespaces =
             Parse.LineTerminator.Or(Parse.String(" ").Text()).Many();

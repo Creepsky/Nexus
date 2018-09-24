@@ -2,7 +2,7 @@
   "profiles": {
     "VoltCompiler": {
       "commandName": "Project",
-      "commandLineArgs": "../../../../../test.volt"
+      "commandLineArgs": "../../../../../test.nx"
     }
   }
 }

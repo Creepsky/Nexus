@@ -1,9 +1,8 @@
 using System;
 using Sprache;
-using Volt;
 using Xunit;
 
-namespace VoltTest
+namespace Nexus.Test
 {
     public class UnitTest1
     {
