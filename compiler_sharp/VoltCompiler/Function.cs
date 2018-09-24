@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 
 namespace Volt
 {
     public class Function : IClassMember
     {
-        public string ReturnType;
+        public TypeDefinition ReturnType;
         public string Name;
         public IList<Variable> Parameters;
 
@@ -29,7 +28,7 @@ namespace Volt
             throw new System.NotImplementedException();
         }
 
-        public IEnumerable<string> UsedTypes()
+        public IEnumerable<TypeDefinition> UsedTypes()
         {
             yield return ReturnType;
             foreach (var parameter in Parameters)

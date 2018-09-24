@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Sprache;
 using Volt;
 using Xunit;
@@ -36,8 +35,12 @@ namespace VoltTest
         [InlineData("\"123test\"")]
         [InlineData("\" abc \"")]
         [InlineData("\" a b c \"")]
-        public void QuotedTextOk(string text) => Assert.Equal(text.Substring(1, text.Length - 2),
-            VoltParser.QuotedText.Parse(text));
+        public void QuotedTextOk(string text)
+        {
+            var quotedText = VoltParser.QuotedText.Parse(text);
+            Assert.IsType<Text>(quotedText);
+            Assert.Equal(text.Substring(1, text.Length - 2), ((Text) quotedText).Value);
+        }
 
         [Theory]
         [InlineData("abc \"")]
@@ -50,13 +53,32 @@ namespace VoltTest
         public void QuotedTextFail(string text) => Assert.Throws<ParseException>(() => VoltParser.QuotedText.Parse(text));
 
         [Theory]
+        [InlineData("100", 100)]
+        [InlineData("2147483647", 2147483647)]
+        public void I32(string input, long expected)
+        {
+            var result = VoltParser.Number.Parse(input);
+            Assert.IsType<I32>(result);
+            var number = (I32) result;
+            Assert.Equal(expected, number.Value);
+        }
+
+        [Theory]
+        [InlineData("2147483648_i32")]
+        public void I32Fail(string input)
+        {
+            var result = VoltParser.Number.Parse(input);
+            Assert.Throws<OverflowException>(() => result);
+        }
+
+        [Theory]
         [InlineData("string abc", "string", "abc")]
         [InlineData("u32 num", "u32", "num")]
         [InlineData("MyClass myObject", "MyClass", "myObject")]
         public void Variables(string input, string type, string name)
         {
             var output = (Variable)VoltParser.Variable.Parse(input);
-            Assert.Equal(type, output.Type);
+            Assert.Equal(type, output.Type.Type);
             Assert.Equal(name, output.Name);
         }
 
@@ -77,7 +99,7 @@ namespace VoltTest
         public void Functions(string input, string returnType, string name)
         {
             var function = (Function)VoltParser.Function.Parse(input);
-            Assert.Equal(returnType, function.ReturnType);
+            Assert.Equal(returnType, function.ReturnType.Type);
             Assert.Equal(name, function.Name);
         }
 
@@ -96,7 +118,7 @@ namespace VoltTest
         [InlineData("i32    member   ;    ", typeof(Variable))]
         [InlineData("i32 member() {}", typeof(Function))]
         [InlineData("i32    member (  )     {     }  ", typeof(Function))]
-        public void ClassMember(string input, System.Type type)
+        public void ClassMember(string input, Type type)
         {
             var result = VoltParser.ClassMembers.Parse(input);
             Assert.IsType(type, result);
@@ -110,7 +132,7 @@ namespace VoltTest
                                  " testInt;    " +
                                  "}";
 
-            var result = VoltParser.Class.Parse(input);
+            VoltParser.Class.Parse(input);
         }
     }
 }

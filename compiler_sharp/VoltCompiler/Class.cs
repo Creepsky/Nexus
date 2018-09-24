@@ -12,9 +12,8 @@ namespace Volt
 
         public void Compile(Printer header, Printer source)
         {
-            var usedTypes = GatherTypes().ToList();
-            ToHeader(header, usedTypes);
-            ToSource(source, usedTypes);
+            var compilationUnit = new Semantics();
+            compilationUnit.Compile(this);
         }
 
         private void ToHeader(Printer printer, List<string> usedTypes)
@@ -33,12 +32,9 @@ namespace Volt
             foreach (var i in Members.Where(i => i.GetType() == typeof(Variable)))
             {
                 var variable = (Variable)i;
-                
-                if (variable.Getter)
-                {
-                    var returnValue = variable.IsPrimitive() ? variable.TypeToCpp() : $"const {variable.TypeToCpp()}&";
-                    printer.WriteLine($"{returnValue} get_{variable.Name}() const;");
-                }
+                // TODO: ??
+                //variable.MakeGetterHeader(printer);
+                //variable.MakeSetterHeader(printer);
             }
             printer.Pop();
             printer.WriteLine();
@@ -53,7 +49,7 @@ namespace Volt
 
         private void ToSource(Printer printer, List<string> usedTypes)
         {
-
+            printer.WriteLine("#include \"\"");
         }
 
         public override string ToString()
@@ -61,7 +57,7 @@ namespace Volt
             return Name;
         }
 
-        public IEnumerable<string> GatherTypes()
+        private IEnumerable<TypeDefinition> GatherTypes()
         {
             foreach (var member in Members)
             foreach (var usedType in member.UsedTypes())

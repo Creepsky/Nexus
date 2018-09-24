@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Volt
 {
@@ -9,6 +10,85 @@ namespace Volt
         USize,
         F32, F64,
         String
+    }
+
+    public class TypeDefinition
+    {
+        public string OriginalType { get; private set; }
+        public string Type { get; private set; }
+        public int Array { get; private set; }
+
+        public TypeDefinition(string type, int array = 0)
+        {
+            OriginalType = type;
+            Type = type;
+            Array = array;
+        }
+
+        public bool IsArray() => Array > 0;
+
+        public bool IsInferred() => OriginalType != Type;
+
+        public void Infer()
+        {
+            // TODO: infer auto type
+            Type = null;
+        }
+
+        public string TypeToCpp()
+        {
+            try
+            {
+                // primitive
+                if (Array > 0)
+                    return string.Concat(Enumerable.Repeat("std::vector<", Array)) +
+                           TypesExtension.ToType(Type).ToCpp() +
+                           new string('>', Array);
+
+                return TypesExtension.ToType(Type).ToCpp();
+
+            }
+            catch (Exception)
+            {
+                // class
+                return Type;
+            }
+        }
+
+        public bool IsPrimitive()
+        {
+            if (Type.ToLower() == "string")
+                return false;
+
+            try
+            {
+                TypesExtension.ToType(Type);
+                return true;
+            }
+            catch (Exception)
+            {
+                // class
+                return false;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"{Type}{string.Concat(Enumerable.Repeat("[]", Array))}";
+        }
+
+        public static readonly TypeDefinition I8 = new TypeDefinition("i8");
+        public static readonly TypeDefinition I16 = new TypeDefinition("i16");
+        public static readonly TypeDefinition I32 = new TypeDefinition("i32");
+        public static readonly TypeDefinition I64 = new TypeDefinition("i64");
+        public static readonly TypeDefinition U8 = new TypeDefinition("u8");
+        public static readonly TypeDefinition U16 = new TypeDefinition("u16");
+        public static readonly TypeDefinition U32 = new TypeDefinition("u32");
+        public static readonly TypeDefinition U64 = new TypeDefinition("u64");
+        public static readonly TypeDefinition USize = new TypeDefinition("usize");
+        public static readonly TypeDefinition String = new TypeDefinition("string");
+        public static readonly TypeDefinition F32 = new TypeDefinition("f32");
+        public static readonly TypeDefinition F64 = new TypeDefinition("f64");
     }
 
     public static class TypesExtension

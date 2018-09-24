@@ -1,8 +1,18 @@
 class MyClass
 {
-    i8 test_i8 = -99;
-    u32 test_unsigned = 184;
-    usize test_size_t = 123;
-    string test_string_empty = "";
-    string test_string = "abcdef";
+    i8 i8_ = 100;
+    u32 u32_ get = 200;
+    usize usize_ set = 300;
+    string stringEmpty_;
+    string string_ set get = "abcdef";
+    i32 [] [] array;
+
+    string function0()
+    {}
+
+    i32 function1(usize param1)
+    {}
+
+    i64 function2(string param1 = "", usize param2 = 0)
+    {}
 }

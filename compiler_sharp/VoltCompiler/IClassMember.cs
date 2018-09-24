@@ -8,6 +8,6 @@ namespace Volt
     {
         void Validate();
 
-        IEnumerable<string> UsedTypes();
+        IEnumerable<TypeDefinition> UsedTypes();
     }
 }

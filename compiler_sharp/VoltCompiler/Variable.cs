@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Sprache;
 
 namespace Volt
 {
     public class Variable : IClassMember
     {
-        public string Type;
-        public int Array;
+        public TypeDefinition Type;
         public string Name;
         public bool Setter;
         public bool Getter;
-        public IOption<dynamic> Initialization;
+        public IOption<IExpression> Initialization;
 
-        public virtual void Validate()
+        public void Validate()
         {
             
         }
@@ -27,56 +23,35 @@ namespace Volt
 
         public void ToHeader(Printer printer)
         {
-            printer.WriteLine($"{TypeToCpp()} {Name};");
         }
 
         public void ToSource(Printer printer)
         {
         }
 
-        public string TypeToCpp()
+        public bool IsPrimitive() => Type.IsPrimitive();
+
+        public IEnumerable<TypeDefinition> UsedTypes()
         {
-            try
-            {
-                // primitive
-                if (Array > 0)
-                    return string.Concat(Enumerable.Repeat("std::vector<", Array)) +
-                           TypesExtension.ToType(Type).ToCpp() +
-                           new string('>', Array);
-
-                return TypesExtension.ToType(Type).ToCpp();
-
-            }
-            catch (Exception)
-            {
-                // class
-                return Type;
-            }
+            yield return Type;
         }
 
-        public bool IsPrimitive()
-        {
-            if (Type.ToLower() == "string")
-                return false;
+        // TODO: ??
+        //public void MakeGetterHeader(Printer printer)
+        //{
+        //    if (Getter)
+        //    {
+        //        var returnValue = IsPrimitive() ? TypeToCpp() : $"const {TypeToCpp()}&";
+        //        printer.WriteLine($"{returnValue} get_{Name}() const;");
+        //    }
+        //}
 
-            try
-            {
-                TypesExtension.ToType(Type);
-                return true;
-            }
-            catch (Exception)
-            {
-                // class
-                return false;
-            }
-        }
-
-        public IEnumerable<string> UsedTypes()
-        {
-            if (Array > 0)
-                yield return Type + string.Concat(Enumerable.Repeat("[]", Array));
-            else
-                yield return Type;
-        }
+        //public void MakeSetterHeader(Printer printer)
+        //{
+        //    if (Setter)
+        //    {
+        //        printer.WriteLine($"void set_{Name}({TypeToCpp()} value);");
+        //    }
+        //}
     }
 }

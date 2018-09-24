@@ -7,7 +7,7 @@ using Sprache;
 namespace Volt
 {
 
-    public static class VoltParser
+    public static partial class VoltParser
     {
         public static readonly Parser<IEnumerable<string>> Whitespaces =
             Parse.LineTerminator.Or(Parse.String(" ").Text()).Many();
@@ -17,25 +17,62 @@ namespace Volt
             from rest in Parse.LetterOrDigit.Or(Parse.Chars("_-")).Many().Text()
             select start + rest;
         
-        public static readonly Parser<string> QuotedText =
+        public static readonly Parser<IExpression> QuotedText =
             from start in Parse.Char('"').Once()
             from text in Parse.AnyChar.Except(Parse.Char('"')).Many().Text()
             from end in Parse.Char('"').Once()
-            select text;
+            select new Text {Value = text};
 
-        public static readonly Parser<dynamic> Factor =
-            QuotedText
-                .Or(Parse.Decimal)
-                .Or(Parse.Number);
+        public static readonly Parser<string> SignedInteger =
+            from sign in Parse.Chars("-+").Named("sign").Optional()
+            from integer in Parse.Number.Named("integer")
+            select $"{sign.GetOrElse('+')}{integer}";
 
-        public static readonly Parser<dynamic> Assignment =
-            from equalSign in Parse.Char('=')
-            from factor in Factor.Shift()
-            select factor;
+        public static readonly Parser<string> UnsignedInteger =
+            Parse.Number.Named("unsigned integer");
 
-        public static readonly Parser<IClassMember> Variable =
+        public static readonly Parser<string> Real =
+            from integerPart in SignedInteger
+            from dot in Parse.Char('.')
+            from decimalPart in Parse.Number.Named("decimal part").Optional()
+            select $"{integerPart}.{decimalPart.GetOrDefault()}";
+
+        public static readonly Parser<F32> F32 =
+            from real in Real
+            from suffix in Parse.String("f")
+            select new F32{ Value = float.Parse(real) };
+
+        public static readonly Parser<F64> F64 =
+            from real in Real
+            from suffix in Parse.String("d")
+            select new F64{ Value = double.Parse(real) };
+
+        public static readonly Parser<IExpression> Number =
+            from sign in Parse.Chars("-+").Named("sign").Optional()
+            from integerPart in Parse.Number.Named("integer part")
+            from dot in Parse.Char('.').Named("dot").Optional()
+            from decimalPart in Parse.Number.Named("decimal part").Optional()
+            from suffix in Parse.Chars("iuf13468").Named("suffix").Many().Text().Optional()
+            select NumberLiteral.Parse(
+                sign.GetOrElse('+'),
+                integerPart,
+                decimalPart.GetOrDefault(),
+                suffix.GetOrDefault());
+
+        public static Parser<IExpression> Factor => QuotedText.Or(Number);
+
+        public static readonly Parser<TypeDefinition> Type =
             from type in Identifier.Named("variable type")
             from array in Parse.String("[]").Shift().Many().Optional()
+            select new TypeDefinition(type, array.GetOrElse(new List<List<char>>()).Count());
+
+        public static readonly Parser<IExpression> Assignment =
+            from equalSign in Parse.Char('=')
+            from expression in Expression.Shift()
+            select expression;
+
+        public static readonly Parser<IClassMember> Variable =
+            from type in Type
             from name in Identifier.Shift().Named("variable name")
             from setter in Parse.String("set").Shift().Text().Optional()
             from getter in Parse.String("get").Shift().Text().Optional()
@@ -43,7 +80,6 @@ namespace Volt
             select new Variable
             {
                 Type = type,
-                Array = array.GetOrElse(new List<List<char>>()).Count(),
                 Name = name,
                 Setter = setter.GetOrDefault() != null,
                 Getter = getter.GetOrDefault() != null,
@@ -54,7 +90,7 @@ namespace Volt
         //    Variable.
 
         public static readonly Parser<IClassMember> Function =
-            from returnType in Identifier.Named("function return value")
+            from returnType in Type.Named("function return value")
             from name in Identifier.Shift().Named("function name")
             from parametersBegin in Parse.Char('(').Shift().Named("function parameters begin")
             from parameters in Variable.Shift().DelimitedBy(Parse.Char(',')).Optional().Named("function parameters")
@@ -64,7 +100,8 @@ namespace Volt
             from bodyEnd in Parse.Char('}').Shift().Named("function body end")
             select new Function
             {
-                Name = name, ReturnType = returnType,
+                Name = name,
+                ReturnType = returnType,
                 Parameters = parameters.GetOrElse(new List<IClassMember>()).Select(i => (Variable) i).ToList()
             };
 
@@ -88,6 +125,35 @@ namespace Volt
             from definition in ClassDefinition.Named("class member")
             from end in Parse.Char('}').Named("class definition end '}'").Shift()
             select new Class {Name = name, Members = definition.ToList()};
+
+        public static Parser<IExpression> VariableLiteral =>
+            from identifier in Identifier
+            select new VariableLiteral
+            {
+                Name = identifier
+            };
+
+        public static Parser<IExpression> ArrayLiteral =>
+            from identifier in Identifier
+            from lparen in Parse.Char('[').Shift().Named("left parentheses")
+            from index in Expression.Shift().Named("index")
+            from rparen in Parse.Char(']').Shift()
+            select new ArrayLiteral
+            {
+                Name = identifier,
+                Index = index
+            };
+
+        public static Parser<IExpression> Expression =>
+            Factor
+                .Or(VariableLiteral)
+                .Or(ArrayLiteral);
+
+        public static Parser<IExpression> Comparison =>
+            from lhs in Expression.Named("comparison left side")
+            from op in Parse.Chars("=<>!").Many().Text().Shift()
+            from rhs in Expression.Named("comparison right side").Shift()
+            select new Comparison(lhs, op, rhs);
 
         public static Parser<T> Shift<T>(this Parser<T> parser) =>
             Whitespaces.Then(_ => parser).Or(parser);
