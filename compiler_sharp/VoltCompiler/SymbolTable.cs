@@ -11,7 +11,7 @@ namespace Nexus
 
     public class SymbolTable
     {
-        private readonly IDictionary<string, IClassMember> _symbols = new Dictionary<string, IClassMember>();
+        private readonly IDictionary<string, IStatement> _symbols = new Dictionary<string, IStatement>();
         private readonly SymbolTable _outerSymbolTable = null;
 
         public SymbolTable()
@@ -22,11 +22,11 @@ namespace Nexus
             _outerSymbolTable = outerSymbolTable;
         }
 
-        public IClassMember GetSymbol(string symbol) => !_symbols.ContainsKey(symbol) ? null : _symbols[symbol];
+        public IStatement GetSymbol(string symbol) => !_symbols.ContainsKey(symbol) ? null : _symbols[symbol];
 
-        public IClassMember FindSymbol(string symbol) => GetSymbol(symbol) ?? _outerSymbolTable?.FindSymbol(symbol);
+        public IStatement FindSymbol(string symbol) => GetSymbol(symbol) ?? _outerSymbolTable?.FindSymbol(symbol);
 
-        public void AddSymbol(string symbol, IClassMember value)
+        public void AddSymbol(string symbol, IStatement value)
         {
             var overwriting = GetSymbol(symbol);
 

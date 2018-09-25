@@ -3,7 +3,7 @@ using Sprache;
 
 namespace Nexus
 {
-    public class Variable : IClassMember
+    public class Variable : IStatement
     {
         public TypeDefinition Type;
         public string Name;

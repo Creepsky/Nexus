@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Nexus
 {
-    public class Function : IClassMember
+    public class Function : IStatement
     {
         public TypeDefinition ReturnType;
         public string Name;

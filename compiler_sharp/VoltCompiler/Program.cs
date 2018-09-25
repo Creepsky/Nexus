@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -75,8 +75,8 @@ namespace Nexus
             from expression in Expression.Shift()
             select expression;
 
-        public static readonly Parser<IClassMember> Variable =
-            from type in Type
+        public static readonly Parser<IStatement> Variable =
+            from type in Type.Shift()
             from name in Identifier.Shift().Named("variable name")
             from setter in Parse.String("set").Shift().Text().Optional()
             from getter in Parse.String("get").Shift().Text().Optional()
@@ -93,7 +93,7 @@ namespace Nexus
         //public static readonly Parser<dynamic> FunctionBody =
         //    Variable.
 
-        public static readonly Parser<IClassMember> Function =
+        public static readonly Parser<IStatement> Function =
             from returnType in Type.Named("function return value")
             from name in Identifier.Shift().Named("function name")
             from parametersBegin in Parse.Char('(').Shift().Named("function parameters begin")
@@ -106,10 +106,10 @@ namespace Nexus
             {
                 Name = name,
                 ReturnType = returnType,
-                Parameters = parameters.GetOrElse(new List<IClassMember>()).Select(i => (Variable) i).ToList()
+                Parameters = parameters.GetOrElse(new List<IStatement>()).Select(i => (Variable) i).ToList(),
             };
 
-        public static Parser<IClassMember> ClassMembers =>
+        public static Parser<IStatement> ClassMembers =>
             Function.Named("class function").Shift()
                 .Or(Variable
                     .Then(member => Parse.Char(';')
@@ -119,7 +119,7 @@ namespace Nexus
                     .Named("class variable"))
                 .Shift();
 
-        public static Parser<IEnumerable<IClassMember>> ClassDefinition =>
+        public static Parser<IEnumerable<IStatement>> ClassDefinition =>
             ClassMembers.Named("class member").Many();
 
         public static Parser<Class> Class =>

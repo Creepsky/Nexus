@@ -6,7 +6,7 @@ namespace Nexus
     public class Class
     {
         public string Name;
-        public List<IClassMember> Members;
+        public List<IStatement> Members;
 
         public void Compile(Printer header, Printer source)
         {
@@ -38,8 +38,8 @@ namespace Nexus
             printer.WriteLine();
             printer.WriteLine("private:");
             printer.Push();
-            foreach (var i in Members.Where(i => i.GetType() == typeof(Variable)))
-                i.ToHeader(printer);
+            //foreach (var i in Members.Where(i => i.GetType() == typeof(Variable)))
+            //    i.ToHeader(printer);
             printer.Pop();
             printer.WriteLine("};");
 
@@ -57,9 +57,10 @@ namespace Nexus
 
         private IEnumerable<TypeDefinition> GatherTypes()
         {
-            foreach (var member in Members)
-            foreach (var usedType in member.UsedTypes())
-                yield return usedType;
+            //foreach (var member in Members)
+            //foreach (var usedType in member.UsedTypes())
+            //    yield return usedType;
+            return null;
         }
     }
 }
