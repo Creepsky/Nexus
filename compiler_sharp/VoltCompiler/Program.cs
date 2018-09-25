@@ -55,7 +55,15 @@ namespace Nexus
 
         public static Parser<NumberLiteral> Number => Real.Or(Integer);
 
-        public static Parser<IExpression> Factor => QuotedText.Or(Number);
+        public static Parser<IExpression> Factor =>
+            QuotedText
+                .Or(Number)
+                .Or(ArrayLiteral)
+                .Or(VariableLiteral)
+                .Or(from leftParentheses in Parse.Char('(').Token()
+                    from expr in Expression
+                    from rightParentheses in Parse.Char(')').Token()
+                    select expr);
 
         public static readonly Parser<TypeDefinition> Type =
             from type in Identifier.Named("variable type")
@@ -140,10 +148,29 @@ namespace Nexus
                 Index = index
             };
 
+        public static Parser<IExpression> Term =>
+               (from left in Factor.Shift()
+                from op in Parse.Char('+').Shift()
+                from right in Term.Shift()
+                select new Expression { LeftExpression = left, Type = ExpressionType.Add, RightExpression = right })
+               .Or(from left in Factor.Shift()
+                   from op in Parse.Char('-').Shift()
+                   from right in Term.Shift()
+                   select new Expression { LeftExpression = left, Type = ExpressionType.Subtract, RightExpression = right })
+               .Or(Factor.Shift());
+
         public static Parser<IExpression> Expression =>
-            Factor
-                .Or(VariableLiteral)
-                .Or(ArrayLiteral);
+                (from left in Term.Shift()
+                    from op in Parse.Char('*').Shift()
+                    from right in Expression.Shift()
+                    select new Expression
+                        {LeftExpression = left, Type = ExpressionType.Multiply, RightExpression = right})
+                .Or(from left in Term.Shift()
+                    from op in Parse.Char('/').Shift()
+                    from right in Expression.Shift()
+                    select new Expression
+                        {LeftExpression = left, Type = ExpressionType.Divide, RightExpression = right})
+                .Or(Term.Shift());
 
         public static Parser<IExpression> Comparison =>
             from lhs in Expression.Named("comparison left side")
@@ -151,8 +178,7 @@ namespace Nexus
             from rhs in Expression.Named("comparison right side").Shift()
             select new Comparison(lhs, op, rhs);
 
-        public static Parser<T> Shift<T>(this Parser<T> parser) =>
-            Whitespaces.Then(_ => parser).Or(parser);
+        public static Parser<T> Shift<T>(this Parser<T> parser) => Whitespaces.Then(_ => parser).Or(parser);
     }
 
     internal static class Program
@@ -167,11 +193,9 @@ namespace Nexus
 
             var content = File.ReadAllText(args[0]);
             var parsedContent = NexusParser.Class.Parse(content);
-            
             var printer = new Printer(Console.Out);
             
             parsedContent.Compile(printer, printer);
-
             return 0;
         }
     }
