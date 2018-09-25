@@ -90,8 +90,13 @@ namespace Nexus
                 Initialization = assignment
             };
 
-        //public static readonly Parser<dynamic> FunctionBody =
-        //    Variable.
+        public static readonly Parser<IStatement> FunctionStatement =
+            Variable;
+
+        public static readonly Parser<IStatement> FunctionBody =
+            from stmt in FunctionStatement
+            from colon in Parse.Char(';').Shift()
+            select stmt;
 
         public static readonly Parser<IStatement> Function =
             from returnType in Type.Named("function return value")
@@ -100,13 +105,14 @@ namespace Nexus
             from parameters in Variable.Shift().DelimitedBy(Parse.Char(',')).Optional().Named("function parameters")
             from parametersEnd in Parse.Char(')').Shift().Named("function parameters end")
             from bodyBegin in Parse.Char('{').Shift().Named("function body begin")
-            //from body in FunctionBody.Named("function body")
+            from body in FunctionBody.Named("function body").Many()
             from bodyEnd in Parse.Char('}').Shift().Named("function body end")
             select new Function
             {
                 Name = name,
                 ReturnType = returnType,
                 Parameters = parameters.GetOrElse(new List<IStatement>()).Select(i => (Variable) i).ToList(),
+                Body = body.ToList()
             };
 
         public static Parser<IStatement> ClassMembers =>

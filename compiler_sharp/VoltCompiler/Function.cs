@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Nexus
 {
@@ -7,6 +7,7 @@ namespace Nexus
         public TypeDefinition ReturnType;
         public string Name;
         public IList<Variable> Parameters;
+        public IList<IStatement> Body;
 
         public override string ToString()
         {
