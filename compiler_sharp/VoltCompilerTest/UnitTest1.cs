@@ -87,7 +87,6 @@ namespace Nexus.Test
         [InlineData("string 123")]
         [InlineData("123 test")]
         [InlineData("string 1 2 3")]
-        [InlineData(" test test")]
         public void VariablesFail(string input) => Assert.Throws<ParseException>(() => NexusParser.Variable.Parse(input));
 
         [Theory]
