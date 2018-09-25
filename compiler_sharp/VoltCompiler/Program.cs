@@ -33,11 +33,10 @@ namespace Nexus
             select start.ToString() + sign + length;
 
         public static readonly Parser<string> RealSuffix =
-            from length in Parse.String("f")
-                .Or(Parse.String("d"))
-                .Or(Parse.Char('_').Then(i => Parse.Char('f').Then(j => Parse.Number)))
-                .Text()
-            select length;
+            Parse.IgnoreCase('f')
+                .Or(Parse.IgnoreCase('d'))
+                .Select(i => i.ToString())
+                .Or(Parse.Char('_').Then(i => Parse.IgnoreCase('f').Then(j => Parse.Number)));
 
         public static readonly Parser<NumberLiteral> Integer =
             from sign in Parse.Chars("-+").Named("sign").Optional()
