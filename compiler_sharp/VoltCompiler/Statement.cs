@@ -32,4 +32,12 @@
         public IList<IStatement> Then;
         public IList<IStatement> Else;
     }
+
+    public class ForStatement : IStatement
+    {
+        public IStatement Initialization;
+        public IExpression Condition;
+        public IExpression Step;
+        public IList<IStatement> Body;
+    }
 }

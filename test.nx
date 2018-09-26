@@ -10,6 +10,28 @@ class MyClass
     string function0()
     {}
 
+        if (a < 0)
+        {
+            i32 a = 0;
+        }
+        else
+        {
+            i32 a = 0;
+        }
+
+        for (i32 i = 0; i < 5; i = i + 1)
+        {
+
+        }
+
+        i32 abc = -900000000;
+        abc = 0;
+
+        test(abc, 1);
+
+        return 132;
+    }
+
     i32 function1(usize param1)
     {}
 

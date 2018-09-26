@@ -89,8 +89,25 @@ namespace Nexus
                 Initialization = assignment
             };
 
-        public static readonly Parser<IStatement> FunctionStatement =
-            Variable;
+        public static Parser<IStatement> VariableStatement =>
+            from type in Type.Shift()
+            from name in Identifier.Shift().Named("variable name")
+            from assignment in Assignment.Shift().Optional().Named("variable initialization")
+            from colon in Parse.Char(';').Shift()
+            select new Variable
+            {
+                Type = type,
+                Name = name,
+                Initialization = assignment.GetOrDefault(),
+                Getter = false,
+                Setter = false
+            };
+
+        public static Parser<IStatement> AssigmnentStatement =>
+            from lvalue in VarFactor
+            from rvalue in Assignment.Shift()
+            from colon in Parse.Char(';').Shift()
+            select new AssignmentStatement{LValue = lvalue, RValue = rvalue};
 
         public static readonly Parser<IStatement> FunctionBody =
             from stmt in FunctionStatement
@@ -118,7 +135,7 @@ namespace Nexus
             };
 
         public static Parser<IStatement> IfStatement =>
-            from keywordIf in Parse.String("if").Text().Shift()
+            from keywordIf in Parse.String("if").Shift()
             from lparenIf in Parse.Char('(').Shift()
             from condition in Comparison.Shift()
             from rparenIf in Parse.Char(')').Shift()
@@ -138,16 +155,37 @@ namespace Nexus
                 Else = elseBody.GetOrDefault()
             };
 
+        public static Parser<IStatement> ForInitialization => VariableStatement.Or(AssigmnentStatement);
+
+        public static Parser<IStatement> ForStatement =>
+            from keyword in Parse.String("for")
+            from lparen in Parse.Char('(').Shift()
+            from initalization in ForInitialization.Shift()
+            from colon1 in Parse.Char(';').Shift()
+            from condition in Comparison.Shift()
+            from colon2 in Parse.Char(';').Shift()
+            from step in Expression.Shift()
+            from rparen in Parse.Char(')').Shift()
+            from begin in Parse.Char('{').Shift()
+            from body in FunctionStatement.Many()
+            from end in Parse.Char('}').Shift()
+            select new ForStatement
+            {
+                Initialization = initalization,
+                Condition = condition,
+                Step = step,
+                Body = body.ToList()
+            };
+
         public static Parser<IStatement> FunctionStatement =>
             Function.Shift()
-                .Or(ReturnStatement.Shift())
+                .Or(VariableStatement.Shift())
                 .Or(AssigmnentStatement.Shift())
-                .Or(WhileStatement.Shift())
-                .Or(IfStatement.Shift())
                 .Or(FunctionCallStatement.Shift())
-                .Or(from variable in Variable.Shift()
-                    from colon in Parse.Char(';').Shift()
-                    select variable);
+                .Or(IfStatement.Shift())
+                .Or(ForStatement.Shift())
+                .Or(WhileStatement.Shift())
+                .Or(ReturnStatement.Shift());
 
         public static readonly Parser<IStatement> Function =
             from returnType in Type.Named("function return value")
