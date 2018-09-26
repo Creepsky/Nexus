@@ -97,6 +97,58 @@ namespace Nexus
             from colon in Parse.Char(';').Shift()
             select stmt;
 
+        public static Parser<IStatement> ReturnStatement =>
+            from keyword in Parse.String("return").Text()
+            from value in Expression
+            from colon in Parse.Char(';').Shift()
+            select new ReturnStatement {Value = value};
+
+        public static Parser<IStatement> WhileStatement =>
+            from keyword in Parse.String("while").Text().Shift()
+            from lparen in Parse.Char('(').Shift()
+            from condition in Comparison.Shift()
+            from rparen in Parse.Char(')').Shift()
+            from bodyBegin in Parse.Char('{').Shift()
+            from body in FunctionStatement.Many().Shift()
+            from bodyEnd in Parse.Char('}').Shift()
+            select new WhileStatement
+            {
+                Condition = condition,
+                Body = body.ToList()
+            };
+
+        public static Parser<IStatement> IfStatement =>
+            from keywordIf in Parse.String("if").Text().Shift()
+            from lparenIf in Parse.Char('(').Shift()
+            from condition in Comparison.Shift()
+            from rparenIf in Parse.Char(')').Shift()
+            from thenBegin in Parse.Char('{').Shift()
+            from thenBody in FunctionStatement.Many()
+            from thenEnd in Parse.Char('}').Shift()
+            from elseBody in
+                (from keywordElse in Parse.String("else").Shift()
+                from elseBegin in Parse.Char('{').Shift()
+                from elseBody in FunctionStatement.Many()
+                from elseEnd in Parse.Char('}').Shift()
+                select elseBody.ToList()).Optional()
+            select new IfStatement
+            {
+                Condition = condition,
+                Then = thenBody.ToList(),
+                Else = elseBody.GetOrDefault()
+            };
+
+        public static Parser<IStatement> FunctionStatement =>
+            Function.Shift()
+                .Or(ReturnStatement.Shift())
+                .Or(AssigmnentStatement.Shift())
+                .Or(WhileStatement.Shift())
+                .Or(IfStatement.Shift())
+                .Or(FunctionCallStatement.Shift())
+                .Or(from variable in Variable.Shift()
+                    from colon in Parse.Char(';').Shift()
+                    select variable);
+
         public static readonly Parser<IStatement> Function =
             from returnType in Type.Named("function return value")
             from name in Identifier.Shift().Named("function name")
