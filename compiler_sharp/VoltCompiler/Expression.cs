@@ -106,6 +106,9 @@ namespace Nexus
     {
         public static NumberLiteral Parse(char sign, string integerPart, string decimalPart, string suffix)
         {
+            if (sign == '-')
+                integerPart = '-' + integerPart;
+
             Types? type = null;
 
             if (string.IsNullOrEmpty(integerPart))
