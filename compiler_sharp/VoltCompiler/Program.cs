@@ -64,7 +64,10 @@ namespace Nexus
         public static Parser<NumberLiteral> Binary =>
             from start in Parse.IgnoreCase('b')
             from x in Parse.Char('x')
-            from bits in Parse.Chars("01").AtLeastOnce().Text()
+            from bits in
+                (from ignore in Parse.Char('_').Optional()
+                 from bit in Parse.Chars("01")
+                    select bit).Many().Text()
             select NumberLiteral.ParseBinary(bits);
 
         public static Parser<NumberLiteral> Hex =>
