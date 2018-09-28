@@ -54,18 +54,38 @@ namespace Nexus
 
         public static Parser<NumberLiteral> Number => Real.Or(Integer);
 
-        public static Parser<IExpression> Factor =>
+        public static Parser<IExpression> RangeIndex =>
+            Number
+                .Or(ArrayLiteral)
+                .Or(VariableLiteral);
+
+        public static Parser<RangeLiteral> RangeLiteral =>
+            //from begin in Parse.Char('[').Shift()
+            from start in RangeIndex.Shift()
+            from dots in Parse.String("until").Shift()
+            from end in RangeIndex.Shift()
+            //from stop in Parse.Char(']').Shift()
+            select new RangeLiteral
+            {
+                Start = start,
+                End = end
+            };
+
+        public static Parser<IExpression> VarFactor =>
             QuotedText
+                .Or(RangeLiteral)
                 .Or(Number)
                 .Or(ArrayLiteral)
                 .Or(VariableLiteral);
 
         public static Parser<IExpression> Factor =>
             VarFactor
+                // expression inside parentheses
                 .Or(from leftParentheses in Parse.Char('(').Shift()
                     from expr in Expression
                     from rightParentheses in Parse.Char(')').Token()
                     select expr)
+                // tuple
                 .Or(from begin in Parse.Char('(').Shift()
                     from values in Expression.Shift().DelimitedBy(Parse.Char(','))
                     from end in Parse.Char(')').Shift()

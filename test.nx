@@ -44,6 +44,8 @@ class MyClass
 
     i64 function2(string param1 = "", usize param2 = 0)
     {
+        auto i = 0. until 5.;
+
         for (int i = 0; i < 5; i = i + 1)
         {
 

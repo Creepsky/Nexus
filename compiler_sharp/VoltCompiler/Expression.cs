@@ -83,6 +83,12 @@ namespace Nexus
         public IExpression Index;
     }
 
+    public class RangeLiteral : IExpression
+    {
+        public IExpression Start;
+        public IExpression End;
+    }
+
     public abstract class Constant : IExpression
     { }
 
