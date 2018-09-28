@@ -255,6 +255,33 @@ namespace Nexus
             return null;
         }
 
+        public static NumberLiteral ParseBinary(string bits)
+        {
+            try
+            {
+                return new NumberLiteral<long>
+                {
+                    Value = Convert.ToInt64(bits, 2)
+                };
+
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    return new NumberLiteral<ulong>
+                    {
+                        Value = Convert.ToUInt64(bits, 2)
+                    };
+
+                }
+                catch (Exception)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(bits), bits, "binary number is too big");
+                }
+            }
+        }
+
         private static float ParseFloat(string number) =>
             float.Parse(number, NumberStyles.Float, CultureInfo.InvariantCulture);
 

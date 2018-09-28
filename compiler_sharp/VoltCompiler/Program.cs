@@ -61,7 +61,16 @@ namespace Nexus
             from suffix in RealSuffix.Named("suffix").Optional()
             select NumberLiteral.Parse(sign.GetOrElse('+'), integerPart, decimalPart.GetOrElse("0"), suffix.GetOrDefault());
 
-        public static Parser<NumberLiteral> Number => Real.Or(Integer);
+        public static Parser<NumberLiteral> Binary =>
+            from start in Parse.IgnoreCase('b')
+            from x in Parse.Char('x')
+            from bits in Parse.Chars("01").AtLeastOnce().Text()
+            select NumberLiteral.ParseBinary(bits);
+
+        public static Parser<NumberLiteral> Number =>
+            Real
+                .Or(Integer)
+                .Or(Binary);
 
         public static Parser<IExpression> RangeIndex =>
             Number
