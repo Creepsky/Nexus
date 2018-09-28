@@ -71,6 +71,30 @@ namespace Nexus.Test
         }
 
         [Theory]
+        [InlineData("123_i8", (sbyte)123)]
+        [InlineData("12345_i16", (short)12345)]
+        [InlineData("1234567_i32", 1234567)]
+        [InlineData("123456789_i64", (long)123456789)]
+        [InlineData("+123_i8", (sbyte)123)]
+        [InlineData("+12,345_i16", (short)12345)]
+        [InlineData("+1,234,567_i32", 1234567)]
+        [InlineData("+123,456,789_i64", (long)123456789)]
+        [InlineData("-123_i8", (sbyte)-123)]
+        [InlineData("-12345_i16", (short)-12345)]
+        [InlineData("-1234567_i32", -1234567)]
+        [InlineData("-123456789_i64", (long)-123456789)]
+        [InlineData("123_u8", (byte)123)]
+        [InlineData("12345_u16", (ushort)12345)]
+        [InlineData("1234567_u32", (uint)1234567)]
+        [InlineData("123456789_u64", (ulong)123456789)]
+        public void Tokens<T>(string input, T expectedData)
+        {
+            var tmp = NexusParser.Number.Parse(input);
+            Assert.IsAssignableFrom<NumberLiteral<T>>(tmp);
+            Assert.Equal(((NumberLiteral<T>)tmp).Value, expectedData);
+        }
+
+        [Theory]
         [InlineData("string abc", "string", "abc")]
         [InlineData("u32 num", "u32", "num")]
         [InlineData("MyClass myObject", "MyClass", "myObject")]
