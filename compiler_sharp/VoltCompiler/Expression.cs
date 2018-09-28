@@ -404,4 +404,9 @@ namespace Nexus
     {
         public IList<IExpression> Values;
     }
+
+    public class BooleanLiteral : IExpression
+    {
+        public bool Value;
+    }
 }

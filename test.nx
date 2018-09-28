@@ -5,7 +5,12 @@ class MyClass
     usize usize_ set = 300;
     string stringEmpty_;
     string string_ set get = "abcdef";
-    i32 [] [] array;
+    i32 [] [] array_;
+    (i32, i32, string) tuple_ set get;
+    i64 bits1 = bx0100;
+    i64 bits2 = Bx1100;
+    bool b1 = false;
+    bool b2 = true;
 
     string function0()
     {}
@@ -19,12 +24,7 @@ class MyClass
             i32 a = 0;
         }
 
-        for (i32 i = 0; i < 5; i = i + 1)
-        {
-
-        }
-
-        i32 abc = -900000000;
+        i32 abc = -900,000,000;
         abc = 0;
 
         test(abc, 1);

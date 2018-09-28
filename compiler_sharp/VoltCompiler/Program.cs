@@ -89,9 +89,17 @@ namespace Nexus
                 End = end
             };
 
+        public static Parser<BooleanLiteral> BooleanLiteral =>
+            from value in Parse.String("false").Or(Parse.String("true")).Text()
+            select new BooleanLiteral
+            {
+                Value = value == "false" ? false : true
+            };
+
         public static Parser<IExpression> VarFactor =>
             QuotedText
                 .Or(RangeLiteral)
+                .Or(BooleanLiteral)
                 .Or(Number)
                 .Or(ArrayLiteral)
                 .Or(VariableLiteral);
@@ -375,8 +383,11 @@ namespace Nexus
             var content = File.ReadAllText(args[0]);
             var parsedContent = NexusParser.Class.Parse(content);
             var printer = new Printer(Console.Out);
-            
-            parsedContent.Compile(printer, printer);
+            var compilationUnit = new CompilationUnit(parsedContent);
+
+            compilationUnit.ToHeader(printer);
+            compilationUnit.ToSource(printer);
+
             return 0;
         }
     }
