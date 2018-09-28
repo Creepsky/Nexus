@@ -58,16 +58,28 @@ namespace Nexus
             QuotedText
                 .Or(Number)
                 .Or(ArrayLiteral)
-                .Or(VariableLiteral)
-                .Or(from leftParentheses in Parse.Char('(').Token()
+                .Or(VariableLiteral);
+
+        public static Parser<IExpression> Factor =>
+            VarFactor
+                .Or(from leftParentheses in Parse.Char('(').Shift()
                     from expr in Expression
                     from rightParentheses in Parse.Char(')').Token()
-                    select expr);
+                    select expr)
+                .Or(from begin in Parse.Char('(').Shift()
+                    from values in Expression.Shift().DelimitedBy(Parse.Char(','))
+                    from end in Parse.Char(')').Shift()
+                    select new Tuple{Values = values.ToList()});
 
         public static readonly Parser<TypeDefinition> Type =
-            from type in Identifier.Named("variable type")
-            from array in Parse.String("[]").Shift().Many().Optional()
-            select new TypeDefinition(type, array.GetOrElse(new List<List<char>>()).Count());
+            (from type in Identifier.Named("variable type")
+                from array in Parse.String("[]").Shift().Many().Optional()
+                select new TypeDefinition(type, array.GetOrElse(new List<List<char>>()).Count()))
+            .Or(from start in Parse.Char('(').Shift()
+                from types in Type.Shift().DelimitedBy(Parse.Char(','))
+                from end in Parse.Char(')').Shift()
+                from array in Parse.String("[]").Shift().Many().Optional()
+                select TypesExtension.CreateTupleTypeDefinition(types, array.GetOrElse(new List<List<char>>()).Count()));
 
         public static readonly Parser<IExpression> Assignment =
             from equalSign in Parse.Char('=')
@@ -104,7 +116,7 @@ namespace Nexus
             };
 
         public static Parser<IStatement> AssignmentStatementDefinition =>
-            from lvalue in VarFactor
+            from lvalue in Factor
             from rvalue in Assignment.Shift()
             select new AssignmentStatement{LValue = lvalue, RValue = rvalue};
 
@@ -278,17 +290,17 @@ namespace Nexus
                .Or(Factor.Shift());
 
         public static Parser<IExpression> Expression =>
-                (from left in Term.Shift()
-                    from op in Parse.Char('*').Shift()
-                    from right in Expression.Shift()
-                    select new Expression
-                        {LeftExpression = left, Type = ExpressionType.Multiply, RightExpression = right})
-                .Or(from left in Term.Shift()
-                    from op in Parse.Char('/').Shift()
-                    from right in Expression.Shift()
-                    select new Expression
-                        {LeftExpression = left, Type = ExpressionType.Divide, RightExpression = right})
-                .Or(Term.Shift());
+            (from left in Term.Shift()
+                from op in Parse.Char('*').Shift()
+                from right in Expression.Shift()
+                select new Expression
+                    {LeftExpression = left, Type = ExpressionType.Multiply, RightExpression = right})
+            .Or(from left in Term.Shift()
+                from op in Parse.Char('/').Shift()
+                from right in Expression.Shift()
+                select new Expression
+                    {LeftExpression = left, Type = ExpressionType.Divide, RightExpression = right})
+            .Or(Term.Shift());
 
         public static Parser<IExpression> Comparison =>
             from lhs in Expression.Named("comparison left side")
@@ -301,9 +313,6 @@ namespace Nexus
 
     internal static class Program
     {
-        private static void Test()
-        {}
-
         private static int Main(string[] args)
         {
             if (args.Length < 1)

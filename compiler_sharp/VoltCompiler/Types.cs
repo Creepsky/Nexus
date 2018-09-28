@@ -30,6 +30,8 @@ namespace Nexus
 
         public bool IsInferred() => OriginalType != Type;
 
+        public bool IsTuple() => Type.StartsWith('(') && Type.EndsWith(')');
+
         public void Infer()
         {
             // TODO: infer auto type
@@ -141,5 +143,8 @@ namespace Nexus
         {
             Types.F32, Types.F64
         };
+
+        public static TypeDefinition CreateTupleTypeDefinition(IEnumerable<TypeDefinition> types, int array) =>
+            new TypeDefinition('(' + string.Join(',', types) + ')', array);
     }
 }

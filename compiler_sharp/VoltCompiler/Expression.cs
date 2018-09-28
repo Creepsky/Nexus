@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
@@ -363,4 +364,8 @@ namespace Nexus
     public class F32 : NumberLiteral<float> { }
     public class F64 : NumberLiteral<double> { }
 
+    public class Tuple : IExpression
+    {
+        public IList<IExpression> Values;
+    }
 }

@@ -33,7 +33,14 @@ class MyClass
     }
 
     i32 function1(usize param1)
-    {}
+    {
+        i32 i = 0;
+
+        while (i < 5)
+        {
+            i = i + 1;
+        }
+    }
 
     i64 function2(string param1 = "", usize param2 = 0)
     {
@@ -41,5 +48,15 @@ class MyClass
         {
 
         }
+    }
+
+    i32 function3()
+    {
+        auto i = (1, 2, 3);
+    }
+
+    (i32, (string, i32), i32) [] function4()
+    {
+        
     }
 }
