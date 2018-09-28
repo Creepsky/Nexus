@@ -104,6 +104,16 @@ namespace Nexus.Test
             Assert.Equal(expected, ((I64)NexusParser.Number.Parse(input)).Value);
         }
 
+        [Theory]
+        [InlineData("0x8", 8)]
+        [InlineData("0x80", 128)]
+        [InlineData("0xCC", 204)]
+        [InlineData("0x7FFF_FFFF", 2147483647)]
+        public void Hex(string input, int expected)
+        {
+            Assert.Equal(expected, ((I64)NexusParser.Number.Parse(input)).Value);
+        }
+
         [Fact]
         public void Function()
         {
