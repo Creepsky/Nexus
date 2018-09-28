@@ -409,4 +409,9 @@ namespace Nexus
     {
         public bool Value;
     }
+
+    public class ArrayLiteral : IExpression
+    {
+        public IList<IExpression> Values;
+    }
 }

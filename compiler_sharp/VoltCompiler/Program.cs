@@ -115,6 +115,14 @@ namespace Nexus
                     from values in Expression.Shift().DelimitedBy(Parse.Char(','))
                     from end in Parse.Char(')').Shift()
                     select new Tuple{Values = values.ToList()})
+                // array
+                .Or(from begin in Parse.Char('[')
+                    from values in Expression.Shift().DelimitedBy(Parse.Char(','))
+                    from end in Parse.Char(']').Shift()
+                    select new ArrayLiteral
+                    {
+                        Values = values.ToList()
+                    })
                 .Or(VarFactor);
 
         public static readonly Parser<TypeDefinition> Type =

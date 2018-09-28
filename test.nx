@@ -11,6 +11,7 @@ class MyClass
     i64 bits2 = Bx1100;
     bool b1 = false;
     bool b2 = true;
+    i32 [] a = [1, 2, (3 + 4) * 5];
 
     string function0()
     {}
