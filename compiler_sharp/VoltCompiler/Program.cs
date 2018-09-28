@@ -295,7 +295,7 @@ namespace Nexus
                 Initialization = assignment.GetOrDefault()
             };
 
-        public static readonly Parser<IStatement> Function =
+        public static readonly Parser<Function> Function =
             from returnType in Type.Named("function return value")
             from name in Identifier.Shift().Named("function name")
             from parametersBegin in Parse.Char('(').Shift().Named("function parameters begin")
