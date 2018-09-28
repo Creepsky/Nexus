@@ -259,7 +259,7 @@ namespace Nexus
         {
             try
             {
-                return new NumberLiteral<long>
+                return new I64
                 {
                     Value = Convert.ToInt64(number, fromBase)
                 };
@@ -269,7 +269,7 @@ namespace Nexus
             {
                 try
                 {
-                    return new NumberLiteral<ulong>
+                    return new U64
                     {
                         Value = Convert.ToUInt64(number, fromBase)
                     };
