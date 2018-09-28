@@ -74,7 +74,7 @@ namespace Nexus
 
         public static Parser<IExpression> RangeIndex =>
             Number
-                .Or(ArrayLiteral)
+                .Or(ArrayAccessLiteral)
                 .Or(VariableLiteral);
 
         public static Parser<RangeLiteral> RangeLiteral =>
@@ -101,17 +101,17 @@ namespace Nexus
                 .Or(RangeLiteral)
                 .Or(BooleanLiteral)
                 .Or(Number)
-                .Or(ArrayLiteral)
+                .Or(ArrayAccessLiteral)
                 .Or(VariableLiteral);
 
         public static Parser<IExpression> Factor =>
                 // expression inside parentheses
-                (from leftParentheses in Parse.Char('(').Shift()
+                (from leftParentheses in Parse.Char('(')
                     from expr in Expression
                     from rightParentheses in Parse.Char(')').Token()
                     select expr)
                 // tuple
-                .Or(from begin in Parse.Char('(').Shift()
+                .Or(from begin in Parse.Char('(')
                     from values in Expression.Shift().DelimitedBy(Parse.Char(','))
                     from end in Parse.Char(')').Shift()
                     select new Tuple{Values = values.ToList()})
@@ -326,12 +326,12 @@ namespace Nexus
                 Name = identifier
             };
 
-        public static Parser<IExpression> ArrayLiteral =>
+        public static Parser<IExpression> ArrayAccessLiteral =>
             from identifier in Identifier
             from lparen in Parse.Char('[').Shift().Named("left parentheses")
             from index in Expression.Shift().Named("index")
             from rparen in Parse.Char(']').Shift()
-            select new ArrayLiteral
+            select new ArrayAccessLiteral
             {
                 Name = identifier,
                 Index = index

@@ -77,7 +77,7 @@ namespace Nexus
         public string Name;
     }
 
-    public class ArrayLiteral : IExpression
+    public class ArrayAccessLiteral : IExpression
     {
         public string Name;
         public IExpression Index;
