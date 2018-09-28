@@ -212,7 +212,7 @@ namespace Nexus
                 {
                     switch (type)
                     {
-                        case Types.I8: return new I8 { Value = char.Parse(integerPart) };
+                        case Types.I8: return new I8 { Value = SByte.Parse(integerPart) };
                         case Types.I16: return new I16 { Value = short.Parse(integerPart) };
                         case Types.I32: return new I32 { Value = int.Parse(integerPart) };
                         case Types.I64: return new I64 { Value = long.Parse(integerPart) };
@@ -233,7 +233,7 @@ namespace Nexus
                 if (ulong.TryParse(integerPart, out var u64))
                     return new U64 {Value = u64};
 
-                if (char.TryParse(integerPart, out var i8))
+                if (sbyte.TryParse(integerPart, out var i8))
                     return new I8 {Value = i8};
 
                 if (short.TryParse(integerPart, out var i16))
@@ -391,7 +391,7 @@ namespace Nexus
         //}
     }
 
-    public class I8 : NumberLiteral<char> { }
+    public class I8 : NumberLiteral<sbyte> { }
     public class I16 : NumberLiteral<short> { }
     public class I32 : NumberLiteral<int> { }
     public class I64 : NumberLiteral<long> { }
