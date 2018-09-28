@@ -94,6 +94,16 @@ namespace Nexus.Test
             Assert.Equal(((NumberLiteral<T>)tmp).Value, expectedData);
         }
 
+        [Theory]
+        [InlineData("Bx1000", 8)]
+        [InlineData("bx1000_0000", 128)]
+        [InlineData("Bx1100_1100", 204)]
+        [InlineData("bx0111_1111_1111_1111_1111_1111_1111_1111", 2147483647)]
+        public void Binary(string input, int expected)
+        {
+            Assert.Equal(expected, ((I64)NexusParser.Number.Parse(input)).Value);
+        }
+
         [Fact]
         public void Function()
         {
