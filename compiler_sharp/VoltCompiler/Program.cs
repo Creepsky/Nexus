@@ -38,15 +38,24 @@ namespace Nexus
                 .Select(i => i.ToString())
                 .Or(Parse.Char('_').Then(i => Parse.IgnoreCase('f').Then(j => Parse.Number)));
 
+        public static Parser<string> IntegerPart =>
+            from first in Parse.Numeric
+            from rest in
+                (from comma in Parse.Char(',')
+                    from number in Parse.Numeric
+                    select number)
+                .Or(Parse.Numeric).Many()
+            select first + new string(rest.ToArray());
+
         public static readonly Parser<NumberLiteral> Integer =
             from sign in Parse.Chars("-+").Named("sign").Optional()
-            from integerPart in Parse.Number.Named("integer part")
+            from integerPart in IntegerPart.Named("integer part")
             from suffix in IntegerSuffix.Optional().Named("suffix")
             select NumberLiteral.Parse(sign.GetOrElse('+'), integerPart, null, suffix.GetOrDefault());
 
         public static readonly Parser<NumberLiteral> Real =
             from sign in Parse.Chars("-+").Named("sign").Optional()
-            from integerPart in Parse.Number.Named("integer part")
+            from integerPart in IntegerPart.Named("integer part")
             from dot in Parse.Char('.').Named("decimal ")
             from decimalPart in Parse.Number.Named("decimal part").Optional()
             from suffix in RealSuffix.Named("suffix").Optional()
@@ -79,9 +88,8 @@ namespace Nexus
                 .Or(VariableLiteral);
 
         public static Parser<IExpression> Factor =>
-            VarFactor
                 // expression inside parentheses
-                .Or(from leftParentheses in Parse.Char('(').Shift()
+                (from leftParentheses in Parse.Char('(').Shift()
                     from expr in Expression
                     from rightParentheses in Parse.Char(')').Token()
                     select expr)
@@ -89,7 +97,8 @@ namespace Nexus
                 .Or(from begin in Parse.Char('(').Shift()
                     from values in Expression.Shift().DelimitedBy(Parse.Char(','))
                     from end in Parse.Char(')').Shift()
-                    select new Tuple{Values = values.ToList()});
+                    select new Tuple{Values = values.ToList()})
+                .Or(VarFactor);
 
         public static readonly Parser<TypeDefinition> Type =
             (from type in Identifier.Named("variable type")
