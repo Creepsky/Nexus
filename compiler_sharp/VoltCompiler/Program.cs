@@ -72,7 +72,10 @@ namespace Nexus
 
         public static Parser<NumberLiteral> Hex =>
             from start in Parse.String("0x")
-            from hex in Parse.Chars("0123456789ABCDFabcdef").AtLeastOnce().Text()
+            from hex in 
+                (from ignore in Parse.Char('_').Optional()
+                 from hex in Parse.Chars("0123456789ABCDFabcdef")
+                    select hex).Many().Text()
             select NumberLiteral.ParseHex(hex);
 
         public static Parser<NumberLiteral> Number =>
