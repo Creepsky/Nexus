@@ -94,6 +94,40 @@ namespace Nexus.Test
             Assert.Equal(((NumberLiteral<T>)tmp).Value, expectedData);
         }
 
+        [Fact]
+        public void Function()
+        {
+            var function = NexusParser.Function.Parse("bool test_function(i8 parameter1, u8 parameter2 = 500){ return true; }");
+            
+            Assert.Equal("test_function", function.Name);
+            Assert.Equal("bool", function.ReturnType.Type);
+            
+            Assert.Equal("i8", function.Parameters[0].Type.Type);
+            Assert.Equal("parameter1", function.Parameters[0].Name);
+            Assert.False(function.Parameters[0].Getter);
+            Assert.False(function.Parameters[0].Setter);
+
+            Assert.Equal("u8", function.Parameters[1].Type.Type);
+            Assert.Equal("parameter2", function.Parameters[1].Name);
+            Assert.False(function.Parameters[1].Getter);
+            Assert.False(function.Parameters[1].Setter);
+            Assert.IsType<I64>(function.Parameters[1].Initialization);
+            Assert.Equal(500, ((I64)function.Parameters[1].Initialization).Value);
+
+            Assert.Equal(1, function.Body.Count);
+            Assert.IsType<ReturnStatement>(function.Body[0]);
+            Assert.IsType<BooleanLiteral>(((ReturnStatement)function.Body[0]).Value);
+            Assert.True(((BooleanLiteral)((ReturnStatement)function.Body[0]).Value).Value);
+        }
+
+        [Fact]
+        public void FunctionFail()
+        {
+            Assert.ThrowsAny<Exception>(() =>
+                NexusParser.Function.Parse(
+                    "bool test_function(i8 parameter1 set, u8 parameter2 = 500){ return true; }"));
+        }
+
         [Theory]
         [InlineData("string abc", "string", "abc")]
         [InlineData("u32 num", "u32", "num")]
