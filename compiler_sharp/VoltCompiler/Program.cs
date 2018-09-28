@@ -57,7 +57,7 @@ namespace Nexus
             from sign in Parse.Chars("-+").Named("sign").Optional()
             from integerPart in IntegerPart.Named("integer part")
             from dot in Parse.Char('.').Named("decimal ")
-            from decimalPart in Parse.Number.Named("decimal part").Optional()
+            from decimalPart in IntegerPart.Named("decimal part").Optional()
             from suffix in RealSuffix.Named("suffix").Optional()
             select NumberLiteral.Parse(sign.GetOrElse('+'), integerPart, decimalPart.GetOrElse("0"), suffix.GetOrDefault());
 
