@@ -222,11 +222,24 @@ namespace Nexus
                 .Or(WhileStatement.Shift())
                 .Or(ReturnStatement.Shift());
 
+        public static Parser<IStatement> FunctionParameter =>
+            from type in Type.Shift()
+            from name in Identifier.Shift().Named("variable name")
+            from assignment in Assignment.Shift().Optional().Named("variable initialization")
+            select new Variable
+            {
+                Type = type,
+                Name = name,
+                Setter = false,
+                Getter = false,
+                Initialization = assignment.GetOrDefault()
+            };
+
         public static readonly Parser<IStatement> Function =
             from returnType in Type.Named("function return value")
             from name in Identifier.Shift().Named("function name")
             from parametersBegin in Parse.Char('(').Shift().Named("function parameters begin")
-            from parameters in Variable.Shift().DelimitedBy(Parse.Char(',')).Optional().Named("function parameters")
+            from parameters in FunctionParameter.Shift().DelimitedBy(Parse.Char(',')).Optional().Named("function parameters")
             from parametersEnd in Parse.Char(')').Shift().Named("function parameters end")
             from bodyBegin in Parse.Char('{').Shift().Named("function body begin")
             from body in FunctionBody.Named("function body").Many()
