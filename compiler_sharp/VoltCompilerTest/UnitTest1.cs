@@ -121,6 +121,16 @@ namespace Nexus.Test
             Assert.False(NexusParser.BooleanLiteral.Parse("false").Value);
         }
 
+        [Theory]
+        [InlineData("[1, 2, 3]", 3)]
+        [InlineData("[1, [\"abc\", 0], (a, b, 1)]", 3)]
+        public void ArrayInitialization(string input, int size)
+        {
+            var tmp = NexusParser.Factor.Parse(input);
+            Assert.IsType<ArrayLiteral>(tmp);
+            Assert.Equal(size, ((ArrayLiteral)tmp).Values.Count);
+        }
+
         [Fact]
         public void Function()
         {
