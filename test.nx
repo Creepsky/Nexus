@@ -12,6 +12,8 @@ class MyClass
     bool b1 = false;
     bool b2 = true;
     i32 [] a = [1, 2, (3 + 4) * 5];
+    i64 hex1 = 0xFF;
+    i64 hex2 = 0xFF;
 
     string function0()
     {}

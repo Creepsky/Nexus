@@ -255,13 +255,13 @@ namespace Nexus
             return null;
         }
 
-        public static NumberLiteral ParseBinary(string bits)
+        private static NumberLiteral ParseNumberBase(string number, int fromBase)
         {
             try
             {
                 return new NumberLiteral<long>
                 {
-                    Value = Convert.ToInt64(bits, 2)
+                    Value = Convert.ToInt64(number, fromBase)
                 };
 
             }
@@ -271,16 +271,20 @@ namespace Nexus
                 {
                     return new NumberLiteral<ulong>
                     {
-                        Value = Convert.ToUInt64(bits, 2)
+                        Value = Convert.ToUInt64(number, fromBase)
                     };
 
                 }
                 catch (Exception)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(bits), bits, "binary number is too big");
+                    throw new ArgumentOutOfRangeException(nameof(number), number, "number is too big");
                 }
             }
         }
+
+        public static NumberLiteral ParseBinary(string bits) => ParseNumberBase(bits, 2);
+
+        public static NumberLiteral ParseHex(string hex) => ParseNumberBase(hex, 16);
 
         private static float ParseFloat(string number) =>
             float.Parse(number, NumberStyles.Float, CultureInfo.InvariantCulture);

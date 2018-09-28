@@ -67,10 +67,16 @@ namespace Nexus
             from bits in Parse.Chars("01").AtLeastOnce().Text()
             select NumberLiteral.ParseBinary(bits);
 
+        public static Parser<NumberLiteral> Hex =>
+            from start in Parse.String("0x")
+            from hex in Parse.Chars("0123456789ABCDFabcdef").AtLeastOnce().Text()
+            select NumberLiteral.ParseHex(hex);
+
         public static Parser<NumberLiteral> Number =>
-            Real
-                .Or(Integer)
-                .Or(Binary);
+            Binary
+                .Or(Hex)
+                .Or(Real)
+                .Or(Integer);
 
         public static Parser<IExpression> RangeIndex =>
             Number
