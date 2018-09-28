@@ -41,10 +41,10 @@ namespace Nexus
         public static Parser<string> IntegerPart =>
             from first in Parse.Numeric
             from rest in
-                (from comma in Parse.Char(',')
+                (from comma in Parse.Char(',').Optional()
                     from number in Parse.Numeric
-                    select number)
-                .Or(Parse.Numeric).Many()
+                    select number).Many().Text()
+                .Or(Parse.Numeric.Many().Text())
             select first + new string(rest.ToArray());
 
         public static readonly Parser<NumberLiteral> Integer =

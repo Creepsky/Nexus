@@ -157,6 +157,21 @@ namespace Nexus.Test
             Assert.True(((BooleanLiteral)((ReturnStatement)function.Body[0]).Value).Value);
         }
 
+        [Theory]
+        [InlineData("1,2,3,4", 1234)]
+        [InlineData("1,000", 1000)]
+        [InlineData("10,000", 10000)]
+        [InlineData("100,000", 100000)]
+        [InlineData("1,000,000", 1000000)]
+        [InlineData("10,000,000", 10000000)]
+        public void DigitGrouping(string input, int expected)
+        {
+            var tmp = NexusParser.Number.Parse(input);
+            Assert.IsType<I64>(tmp);
+            var i64 = (I64) tmp;
+            Assert.Equal(expected, i64.Value);
+        }
+
         [Fact]
         public void FunctionFail()
         {
