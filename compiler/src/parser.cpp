@@ -19,7 +19,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 	volt::parser::Variable,
 	(std::string, type)
 	(std::string, name)
-	(std::optional<volt::parser::VariableDefinition>, initialization)
+	(std::optional<volt::parser::Factor>, initialization)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
@@ -55,11 +55,24 @@ namespace volt
 				using boost::spirit::_val;
 				using boost::phoenix::at_c;
 				using ascii::char_;
-				
+
 				identifier = lexeme[+char_("a-zA-Z_0-9")];
+				
 				quoted_text = '"' >> *(char_ - '"') >> '"';
-				variable_declaration = identifier >> identifier >> -('=' >> (long_long | ulong_long | double_ | quoted_text)) >> ';';
-				class_definition = variable_declaration;
+
+				//factor = long_long | ulong_long | double_ | quoted_text | '[' >> *factor >> ']';
+
+				array_declaration = identifier >> "[]" >> identifier >> -('=' >> factor);
+
+                variable_declaration = identifier >> identifier >> -('=' >> *factor);
+
+				function_definition = variable_declaration >> ';';
+
+			    function_declaration = identifier >> identifier >> '(' >> -(variable_declaration >> *(',' >> variable_declaration)) >> ')'
+                    >> '{' >> *function_definition >> '}';
+
+				class_definition = variable_declaration >> ';' | function_declaration;
+
 				class_declaration = lit("class") >> identifier >> '{' >> *class_definition >> '}';
 
 				BOOST_SPIRIT_DEBUG_NODE(identifier);
@@ -69,10 +82,14 @@ namespace volt
 			}
 
 			qi::rule<T, std::string(), ascii::space_type> identifier, quoted_text;
+			qi::rule<T, Factor(), ascii::space_type> factor;
+			//qi::rule<T, Initialization(), ascii::space_type> initialization;
 			qi::rule<T, Variable(), ascii::space_type> variable_declaration;
+			qi::rule<T, Array(), ascii::space_type> array_declaration;
 			qi::rule<T, ClassDefinition(), ascii::space_type> class_definition;
 			qi::rule<T, Class(), ascii::space_type> class_declaration;
-			qi::rule<T, int64_t, ascii::space_type> variable_initialization;
+            qi::rule<T, Function(), ascii::space_type> function_declaration;
+			qi::rule<T, FunctionDefinition(), ascii::space_type> function_definition;
 		};
 	}
 }

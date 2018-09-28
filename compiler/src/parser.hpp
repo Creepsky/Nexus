@@ -9,16 +9,32 @@ namespace volt
 {
 	namespace parser
 	{
-		using VariableDefinition = std::variant<int64_t, uint64_t, double, std::string>;
+		using Factor = std::variant<int64_t, uint64_t, double, std::string>;
 
 		struct Variable
 		{
 			std::string type;
 			std::string name;
-			std::optional<VariableDefinition> initialization;
+			std::optional<Factor> initialization;
 		};
 
-		using ClassDefinition = std::variant<Variable>;
+		struct Array
+		{
+			std::string type;
+			std::string name;
+			std::optional<std::vector<Factor>> initialization;
+		};
+		
+		struct Function
+        {
+            std::string return_value;
+            std::string name;
+            std::vector<Variable> parameter;
+        };
+
+		using FunctionDefinition = std::variant<Variable>;
+
+		using ClassDefinition = std::variant<Variable, Function>;
 
 		struct Class
 		{
