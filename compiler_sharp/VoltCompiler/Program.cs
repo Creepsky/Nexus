@@ -274,13 +274,13 @@ namespace Nexus
 
         public static Parser<IStatement> FunctionStatement =>
             Function.Shift()
-                .Or(VariableStatement.Shift())
+                .Or(ReturnStatement.Shift())
                 .Or(AssigmnentStatement.Shift())
                 .Or(FunctionCallStatement.Shift())
                 .Or(IfStatement.Shift())
                 .Or(ForStatement.Shift())
                 .Or(WhileStatement.Shift())
-                .Or(ReturnStatement.Shift());
+                .Or(VariableStatement.Shift());
 
         public static Parser<IStatement> FunctionParameter =>
             from type in Type.Shift()
