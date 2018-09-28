@@ -115,6 +115,13 @@ namespace Nexus.Test
         }
 
         [Fact]
+        public void Boolean()
+        {
+            Assert.True(NexusParser.BooleanLiteral.Parse("true").Value);
+            Assert.False(NexusParser.BooleanLiteral.Parse("false").Value);
+        }
+
+        [Fact]
         public void Function()
         {
             var function = NexusParser.Function.Parse("bool test_function(i8 parameter1, u8 parameter2 = 500){ return true; }");
