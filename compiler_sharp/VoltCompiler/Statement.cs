@@ -37,7 +37,10 @@
     {
         public IStatement Initialization;
         public IExpression Condition;
-        public IExpression Step;
+        public IStatement Step;
         public IList<IStatement> Body;
     }
+
+    public class EmptyStatement : IStatement
+    { }
 }

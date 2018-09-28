@@ -103,16 +103,31 @@ namespace Nexus
                 Setter = false
             };
 
-        public static Parser<IStatement> AssigmnentStatement =>
+        public static Parser<IStatement> AssignmentStatementDefinition =>
             from lvalue in VarFactor
             from rvalue in Assignment.Shift()
-            from colon in Parse.Char(';').Shift()
             select new AssignmentStatement{LValue = lvalue, RValue = rvalue};
 
-        public static readonly Parser<IStatement> FunctionBody =
-            from stmt in FunctionStatement
+        public static Parser<IStatement> AssigmnentStatement =>
+            from assignment in AssignmentStatementDefinition.Shift()
             from colon in Parse.Char(';').Shift()
-            select stmt;
+            select assignment;
+
+        public static Parser<IStatement> FunctionCallStatementDefinition =>
+            from name in Identifier
+            from lparen in Parse.Char('(').Shift()
+            from parameter in Expression.DelimitedBy(Parse.Char(',')).Optional()
+            from rparen in Parse.Char(')').Shift()
+            select new FunctionCallStatement
+            {
+                Name = name,
+                Parameter = parameter.GetOrElse(new List<IExpression>()).ToList()
+            };
+
+        public static Parser<IStatement> FunctionCallStatement =>
+            from call in FunctionCallStatementDefinition.Shift()
+            from colon in Parse.Char(';').Shift()
+            select call;
 
         public static Parser<IStatement> ReturnStatement =>
             from keyword in Parse.String("return").Text()
@@ -155,16 +170,24 @@ namespace Nexus
                 Else = elseBody.GetOrDefault()
             };
 
-        public static Parser<IStatement> ForInitialization => VariableStatement.Or(AssigmnentStatement);
+        public static Parser<IStatement> ForInitialization =>
+            VariableStatement
+                .Or(AssigmnentStatement)
+                .Or(FunctionCallStatement)
+                .Or(from colon in Parse.Char(';').Shift()
+                    select new EmptyStatement());
+
+        public static Parser<IStatement> ForStep =>
+            AssignmentStatementDefinition
+                .Or(FunctionCallStatementDefinition);
 
         public static Parser<IStatement> ForStatement =>
             from keyword in Parse.String("for")
             from lparen in Parse.Char('(').Shift()
             from initalization in ForInitialization.Shift()
-            from colon1 in Parse.Char(';').Shift()
-            from condition in Comparison.Shift()
+            from condition in Comparison.Shift().Optional()
             from colon2 in Parse.Char(';').Shift()
-            from step in Expression.Shift()
+            from step in ForStep.Shift().Optional()
             from rparen in Parse.Char(')').Shift()
             from begin in Parse.Char('{').Shift()
             from body in FunctionStatement.Many()
@@ -172,8 +195,8 @@ namespace Nexus
             select new ForStatement
             {
                 Initialization = initalization,
-                Condition = condition,
-                Step = step,
+                Condition = condition.GetOrDefault(),
+                Step = step.GetOrDefault(),
                 Body = body.ToList()
             };
 
@@ -278,6 +301,9 @@ namespace Nexus
 
     internal static class Program
     {
+        private static void Test()
+        {}
+
         private static int Main(string[] args)
         {
             if (args.Length < 1)
@@ -285,7 +311,7 @@ namespace Nexus
                 Console.WriteLine("Input file not set");
                 return 1;
             }
-
+            
             var content = File.ReadAllText(args[0]);
             var parsedContent = NexusParser.Class.Parse(content);
             var printer = new Printer(Console.Out);
