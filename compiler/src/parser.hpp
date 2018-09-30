@@ -4,18 +4,22 @@
 #include <string>
 #include <vector>
 #include <optional>
+#include "types.hpp"
 
-namespace volt
+namespace nexus
 {
 	namespace parser
 	{
 		using Factor = std::variant<int64_t, uint64_t, double, std::string>;
-
+		using Term = nullptr_t;
+		using Expression = nullptr_t;
+		
 		struct Variable
 		{
-			std::string type;
+			TypeDefinition type;
 			std::string name;
-			std::optional<Factor> initialization;
+			bool getter, setter;
+			std::optional<Expression> initialization;
 		};
 
 		struct Array

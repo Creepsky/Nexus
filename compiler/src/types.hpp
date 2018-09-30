@@ -2,23 +2,38 @@
 
 #include <string>
 #include <map>
-#include <limits>
 
 enum class Type
 {
-	auto_,
-    i8, i16, i32, i64,
-    u8, u16, u32, u64,
-    f32, f64,
-    byte, usize,
-	string
+	Auto,
+    I8, I16, I32, I64,
+    U8, U16, U32, U64,
+    F32, F64,
+    Byte, USize,
+	String
 };
 
-namespace volt
+namespace nexus
 {
-	namespace parser {
-		struct Variable;
-	}
+	struct TypeDefinition
+	{
+		std::string original_type;
+		std::string type;
+		int array;
+
+		TypeDefinition(std::string type, const int array = 0)
+			: original_type(std::move(type)), array(array)
+		{
+			type = original_type;
+		}
+
+		bool is_array() const;
+		bool is_inferred() const;
+		bool is_tuple() const;
+		bool is_primitive() const;
+
+		std::string to_cpp_type() const;
+	};
 
 	struct Types
 	{

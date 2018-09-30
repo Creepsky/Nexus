@@ -4,7 +4,6 @@
 #include <fstream>
 #include <iterator>
 #include "parser.hpp"
-#include "class.hpp"
 
 int main(const int argc, const char** argv)
 {
@@ -37,7 +36,7 @@ int main(const int argc, const char** argv)
 
 	file_stream.close();
 
-	volt::parser::Class ast;
+	nexus::parser::Class ast;
 
 	if (parse(content, ast))
 	{
@@ -45,17 +44,17 @@ int main(const int argc, const char** argv)
 		std::cout << "Parsing succeeded" << std::endl;
 		std::cout << "-------------------------" << std::endl;
 
-		try
-		{
-			volt::generator::Class class_obj(ast);
-			class_obj.generate_header(std::cout);
-			class_obj.generate_source(std::cout);
-		}
-		catch (const std::exception& exc)
-		{
-			std::cerr << "Error while generating C++ code: " << exc.what() << std::endl;
-			return 1;
-		}
+		//try
+		//{
+		//	nexus::generator::Class class_obj(ast);
+		//	class_obj.generate_header(std::cout);
+		//	class_obj.generate_source(std::cout);
+		//}
+		//catch (const std::exception& exc)
+		//{
+		//	std::cerr << "Error while generating C++ code: " << exc.what() << std::endl;
+		//	return 1;
+		//}
 
 		//client::mini_xml_printer printer;
 		//printer(ast);

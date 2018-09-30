@@ -16,19 +16,33 @@ namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
 BOOST_FUSION_ADAPT_STRUCT(
-	volt::parser::Variable,
-	(std::string, type)
-	(std::string, name)
-	(std::optional<volt::parser::Factor>, initialization)
+	nexus::TypeDefinition,
+	(std::string, original_type)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-	volt::parser::Class,
+	nexus::parser::Variable,
+	(nexus::TypeDefinition, type)
 	(std::string, name)
-	(std::vector<volt::parser::ClassDefinition>, member)
+	(bool, getter)
+	(bool, setter)
+	(std::optional<nexus::parser::Expression>, initialization)
 )
 
-namespace volt
+BOOST_FUSION_ADAPT_STRUCT(
+	nexus::parser::Class,
+	(std::string, name)
+	(std::vector<nexus::parser::ClassDefinition>, member)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    nexus::parser::Function,
+    (std::string, return_value)
+    (std::string, name)
+    (std::vector<nexus::parser::Variable>, parameter)
+)
+
+namespace nexus
 {
 	namespace parser
 	{
@@ -62,9 +76,9 @@ namespace volt
 
 				//factor = long_long | ulong_long | double_ | quoted_text | '[' >> *factor >> ']';
 
-				array_declaration = identifier >> "[]" >> identifier >> -('=' >> factor);
-
-                variable_declaration = identifier >> identifier >> -('=' >> *factor);
+				type = identifier >> *lit("[]");
+				
+                variable_declaration = type >> identifier >> -('=' >> *factor);
 
 				function_definition = variable_declaration >> ';';
 
@@ -83,6 +97,7 @@ namespace volt
 
 			qi::rule<T, std::string(), ascii::space_type> identifier, quoted_text;
 			qi::rule<T, Factor(), ascii::space_type> factor;
+			qi::rule<T, TypeDefinition(), ascii::space_type> type;
 			//qi::rule<T, Initialization(), ascii::space_type> initialization;
 			qi::rule<T, Variable(), ascii::space_type> variable_declaration;
 			qi::rule<T, Array(), ascii::space_type> array_declaration;
@@ -94,7 +109,7 @@ namespace volt
 	}
 }
 
-bool volt::parser::parse(const std::string& input, Class& ast)
+bool nexus::parser::parse(const std::string& input, Class& ast)
 {
 	const ClassGrammar<std::string::const_iterator> grammar;
     auto iter = input.begin();
