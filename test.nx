@@ -1,7 +1,7 @@
 class MyClass
 {
-    i8 i8_ = 100;
     u32 u32_ get = 200;
+    i8 i8_ = (100_i64 + 15) * 18;
     usize usize_ set = 300;
     string stringEmpty_;
     string string_ set get = "abcdef";
@@ -14,9 +14,41 @@ class MyClass
     i32 [] a = [1, 2, (3 + 4) * 5];
     i64 hex1 = 0xFF;
     i64 hex2 = 0xFF;
+    i64 [][] m4 = [
+        [123, 456, 789],
+        [123, 456, 789],
+        [123, 456, 789]
+    ];
+    [i32 -> string] map_ = [
+        0 -> "test",
+        1 -> "test2",
+        2 -> "test3"
+    ];
+
+    void explode()
+    {
+    }
+
+    void increment(i32 i)
+    {
+    }
+
+    void function_map(i32 id, string value)
+    {
+        map_[id] = value;
+    }
+
+    string function_map(i32 id)
+    {
+        return map_[id];
+    }
 
     string function0()
-    {}
+    {
+        i8 test()
+        {
+            i32 a = 0.f;
+        }
 
         if (a < 0)
         {
@@ -47,12 +79,17 @@ class MyClass
 
     i64 function2(string param1 = "", usize param2 = 0)
     {
-        auto i = 0. until 5.;
+        auto i = 0 .. a;
 
         for (int i = 0; i < 5; i = i + 1)
         {
 
         }
+
+        string a = "abc";
+        string b;
+
+        function1(a);
     }
 
     i32 function3()
@@ -62,6 +99,9 @@ class MyClass
 
     (i32, (string, i32), i32) [] function4()
     {
-        
     }
+}
+
+i32 MyClass.extensionFunction() {
+    return 0;
 }
