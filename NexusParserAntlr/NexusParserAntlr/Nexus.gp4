@@ -1,0 +1,135 @@
+grammar Nexus;
+
+/* Parser */
+
+file_declaration :        class
+                        | extension_function ;
+
+file : file_declaration* ;
+
+class : CLASS IDENTIFIER LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
+
+class_member :    variable_declaration
+                | function_declaration ;
+
+tuple_declaration : LEFT_BRACE type (COMMA type)*  RIGHT_BRACE;
+
+type :    IDENTIFIER '[]'*
+        | tuple_declaration '[]'*
+        | LEFT_BRACKET type ARROW_RIGHT (COMMA )* type RIGHT_BRACKET '[]'* ;
+
+variable_declaration : type IDENTIFIER SET? GET? (EQUAL expression)? COLON ;
+
+function_parameter : type IDENTIFIER (EQUAL expression)?;
+
+function_declaration : type IDENTIFIER LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
+                       LEFT_CURLY_BRACE function_body* RIGHT_CURLY_BRACE ;
+
+assignment_statement : expression EQUAL expression COLON ;
+
+return_statement : RETURN expression COLON ;
+
+variable_statement : type IDENTIFIER (EQUAL expression)? COLON ;
+
+if_statement :  IF LEFT_BRACE comparison RIGHT_BRACE
+                LEFT_CURLY_BRACE function_body* RIGHT_CURLY_BRACE
+                ELSE LEFT_CURLY_BRACE function_body* RIGHT_CURLY_BRACE ;
+
+while_statement : WHILE LEFT_BRACE comparison RIGHT_BRACE
+                  LEFT_CURLY_BRACE function_body* RIGHT_CURLY_BRACE ;
+
+for_init :        assignment_statement
+                | variable_statement ;
+
+for_statement : FOR LEFT_BRACE for_init comparison COLON expression RIGHT_BRACE
+                LEFT_CURLY_BRACE function_body* RIGHT_CURLY_BRACE ;
+
+function_call_statement : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE COLON ;
+
+function_body :   assignment_statement
+                | return_statement
+                | function_declaration
+                | variable_statement
+                | if_statement
+                | while_statement
+                | for_statement
+                | function_call_statement ;
+
+expression :	  expression STAR expression
+                | expression SLASH expression
+                | expression PLUS expression
+                | expression MINUS expression
+                | LEFT_BRACE expression (COMMA expression)+ RIGHT_BRACE
+		| LEFT_BRACE expression RIGHT_BRACE
+                | LEFT_BRACKET expression(COMMA expression)* RIGHT_BRACKET
+                | LEFT_BRACKET expression ARROW_RIGHT expression (COMMA expression ARROW_RIGHT expression)* RIGHT_BRACKET
+                | expression RANGE expression
+                | expression EQUAL expression
+		| factor ;
+
+boolean : TRUE | FALSE ;
+
+array_access : IDENTIFIER LEFT_BRACKET expression RIGHT_BRACKET ;
+
+number :  INTEGER INTEGER_SUFFIX?
+        | REAL REAL_SUFFIX? ;
+
+factor :      number
+            | boolean
+            | BINARY
+            | HEX
+            | QUOTED_TEXT
+            | array_access
+            | IDENTIFIER ;
+
+comparison :      expression EQUAL expression
+                | expression LESS expression
+                | expression LESS_EQUAL expression
+                | expression GREATER expression
+                | expression GREATER_EQUAL expression ;
+
+extension_function : type IDENTIFIER DOT IDENTIFIER LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
+                     LEFT_CURLY_BRACE function_body* RIGHT_CURLY_BRACE ;
+
+/* Lexer */
+
+CLASS : 'class' ;
+LEFT_CURLY_BRACE : '{' ;
+RIGHT_CURLY_BRACE : '}' ;
+LEFT_BRACE : '(' ;
+RIGHT_BRACE : ')' ;
+LEFT_BRACKET : '[' ;
+RIGHT_BRACKET : ']' ;
+COLON : ';' ;
+ARROW_RIGHT : '->' ;
+BINARY : ('b'|'B') 'x' ('0'|'1')+ ;
+HEX : '0x' [0-9A-F]+ ;
+INTEGER : ('-'|'+')?[0-9]+(','[0-9]+)* ;
+REAL : ('-'|'+')?[0-9]+'.'[0-9]* ;
+IF : 'if' ;
+ELSE : 'else' ;
+ELSE_IF : ELSE IF ;
+WHILE : 'while' ;
+FOR : 'for' ;
+EQUAL : '=' ;
+LESS : '<' ;
+LESS_EQUAL : '<=' ;
+GREATER : '>' ;
+GREATER_EQUAL : '>=' ;
+QUOTED_TEXT : '"' .*? '"' ;
+TRUE : 'true' ;
+FALSE : 'false' ;
+PLUS : '+' ;
+MINUS : '-' ;
+STAR: '*' ;
+SLASH: '/' ;
+SET : 'set' ;
+GET : 'get' ;
+COMMA : ',' ;
+RETURN : 'return' ;
+RANGE : '..' ;
+DOT : '.' ;
+INTEGER_SUFFIX : '_' ('i'|'u') ('8'|'16'|'32'|'64') ;
+REAL_SUFFIX : '_f' ('32'|'64') | 'f' | 'd' ;
+IDENTIFIER : [a-zA-Z_-][a-zA-Z0-9_-]* ;
+WHITESPACE : [ \r\t\n]+ -> skip ;
