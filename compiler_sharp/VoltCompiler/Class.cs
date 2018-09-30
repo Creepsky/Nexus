@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Nexus
 {
-    public class Class
+    public class Class : IStatement
     {
         public string Name;
         public List<IStatement> Members;

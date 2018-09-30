@@ -342,6 +342,26 @@ namespace Nexus
                 Body = body.ToList()
             };
 
+        public static Parser<ExtensionFunction> ExtensionFunction =>
+            from returnType in Type.Named("function return value")
+            from className in Identifier.Shift().Named("class name")
+            from dot in Parse.Char('.').Shift()
+            from name in Identifier.Shift().Named("function name")
+            from parametersBegin in Parse.Char('(').Shift().Named("function parameters begin")
+            from parameters in FunctionParameter.Shift().DelimitedBy(Parse.Char(',')).Optional().Named("function parameters")
+            from parametersEnd in Parse.Char(')').Shift().Named("function parameters end")
+            from bodyBegin in Parse.Char('{').Shift().Named("function body begin")
+            from body in FunctionStatement.Named("function body").Many()
+            from bodyEnd in Parse.Char('}').Shift().Named("function body end")
+            select new ExtensionFunction
+            {
+                Name = name,
+                Class = className,
+                ReturnType = returnType,
+                Parameters = parameters.GetOrElse(new List<IStatement>()).Select(i => (Variable) i).ToList(),
+                Body = body.ToList()
+            };
+
         public static Parser<IStatement> ClassMembers =>
             Function.Named("class function").Shift()
                 .Or(Variable
@@ -362,6 +382,14 @@ namespace Nexus
             from definition in ClassDefinition.Named("class member")
             from end in Parse.Char('}').Named("class definition end '}'").Shift()
             select new Class {Name = name, Members = definition.ToList()};
+
+        public static Parser<IStatement> FileStatement =>
+            (from c in Class select c as IStatement)
+            .Or(ExtensionFunction);
+
+        public static Parser<IEnumerable<IStatement>> File =>
+            from stmt in FileStatement.Shift().Many()
+            select stmt.ToList();
 
         public static Parser<IExpression> VariableLiteral =>
             from identifier in Identifier
@@ -425,12 +453,12 @@ namespace Nexus
             }
             
             var content = File.ReadAllText(args[0]);
-            var parsedContent = NexusParser.Class.Parse(content);
+            var parsedContent = NexusParser.File.Parse(content);
             var printer = new Printer(Console.Out);
-            var compilationUnit = new CompilationUnit(parsedContent);
+            //var compilationUnit = new CompilationUnit(parsedContent);
 
-            compilationUnit.ToHeader(printer);
-            compilationUnit.ToSource(printer);
+            //compilationUnit.ToHeader(printer);
+            //compilationUnit.ToSource(printer);
 
             return 0;
         }
