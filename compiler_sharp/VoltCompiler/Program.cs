@@ -326,7 +326,7 @@ namespace Nexus
             };
 
         public static readonly Parser<Function> Function =
-            from returnType in Type.Named("function return value")
+            from returnType in Type
             from name in Identifier.Shift().Named("function name")
             from parametersBegin in Parse.Char('(').Shift().Named("function parameters begin")
             from parameters in FunctionParameter.Shift().DelimitedBy(Parse.Char(',')).Optional().Named("function parameters")
@@ -343,7 +343,7 @@ namespace Nexus
             };
 
         public static Parser<ExtensionFunction> ExtensionFunction =>
-            from returnType in Type.Named("function return value")
+            from returnType in Type
             from className in Identifier.Shift().Named("class name")
             from dot in Parse.Char('.').Shift()
             from name in Identifier.Shift().Named("function name")
@@ -373,14 +373,20 @@ namespace Nexus
                 .Shift();
 
         public static Parser<IEnumerable<IStatement>> ClassDefinition =>
-            ClassMembers.Named("class member").Many();
+            Parse.Char('}')
+                .Select(i => new List<IStatement>())
+                .Or(from member in ClassMembers
+                        .Shift()
+                        .Then(i => Parse.Char('}').Optional().Select(j => i))
+                        .XMany()
+                    select member.ToList());
 
         public static Parser<Class> Class =>
             from begin in Parse.String("class").Named("'class' keyword")
             from name in Identifier.Named("class name").Shift()
             from start in Parse.Char('{').Named("class definition start '{'").Shift()
-            from definition in ClassDefinition.Named("class member")
-            from end in Parse.Char('}').Named("class definition end '}'").Shift()
+            from definition in ClassDefinition.Shift().Named("class member")
+            //from end in Parse.Char('}').Named("class definition end '}'").Shift()
             select new Class {Name = name, Members = definition.ToList()};
 
         public static Parser<IStatement> FileStatement =>

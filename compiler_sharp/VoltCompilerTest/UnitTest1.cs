@@ -206,7 +206,7 @@ namespace Nexus.Test
         [InlineData("i32            function1(i32 param1, usize param2)   {    }    ", "i32", "function1")]
         public void Functions(string input, string returnType, string name)
         {
-            var function = (Function)NexusParser.Function.Parse(input);
+            var function = NexusParser.Function.Parse(input);
             Assert.Equal(returnType, function.ReturnType.Type);
             Assert.Equal(name, function.Name);
         }
