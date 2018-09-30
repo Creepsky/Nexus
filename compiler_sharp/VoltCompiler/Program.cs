@@ -116,6 +116,12 @@ namespace Nexus
                 .Or(ArrayAccessLiteral)
                 .Or(VariableLiteral);
 
+        public static Parser<(IExpression, IExpression)> KeyValue =>
+            from key in Expression
+            from mapping in Parse.String("->").Shift()
+            from value in Expression.Shift()
+            select (key, value);
+
         public static Parser<IExpression> Factor =>
                 // expression inside parentheses
                 (from leftParentheses in Parse.Char('(')
@@ -124,12 +130,20 @@ namespace Nexus
                     select expr)
                 // tuple
                 .Or(from begin in Parse.Char('(')
-                    from values in Expression.Shift().DelimitedBy(Parse.Char(','))
+                    from values in Expression.Shift().DelimitedBy(Parse.Char(',').Shift())
                     from end in Parse.Char(')').Shift()
                     select new Tuple{Values = values.ToList()})
+                // map
+                .Or(from begin in Parse.Char('[')
+                    from values in KeyValue.Shift().DelimitedBy(Parse.Char(',').Shift())
+                    from end in Parse.Char(']').Shift()
+                    select new MapLiteral
+                    {
+                        Values = values.ToDictionary(i => i.Item1, i => i.Item2)
+                    })
                 // array
                 .Or(from begin in Parse.Char('[')
-                    from values in Expression.Shift().DelimitedBy(Parse.Char(','))
+                    from values in Expression.Shift().DelimitedBy(Parse.Char(',').Shift())
                     from end in Parse.Char(']').Shift()
                     select new ArrayLiteral
                     {
@@ -138,10 +152,20 @@ namespace Nexus
                 .Or(VarFactor);
 
         public static readonly Parser<TypeDefinition> Type =
+            // array
             (from type in Identifier.Named("variable type")
                 from array in Parse.String("[]").Shift().Many().Optional()
                 select new TypeDefinition(type, array.GetOrElse(new List<List<char>>()).Count()))
-            .Or(from start in Parse.Char('(').Shift()
+            // map
+            .Or(from start in Parse.Char('[')
+                from key in Type.Shift()
+                from arrow in Parse.String("->").Shift()
+                from value in Type.Shift()
+                from end in Parse.Char(']').Shift()
+                from array in Parse.String("[]").Shift().Many().Optional()
+                select TypesExtension.CreateMapTypeDefinition(key, value, array.GetOrElse(new List<List<char>>()).Count()))
+            // tuple
+            .Or(from start in Parse.Char('(')
                 from types in Type.Shift().DelimitedBy(Parse.Char(','))
                 from end in Parse.Char(')').Shift()
                 from array in Parse.String("[]").Shift().Many().Optional()

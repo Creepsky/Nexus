@@ -418,4 +418,9 @@ namespace Nexus
     {
         public IList<IExpression> Values;
     }
+
+    public class MapLiteral : IExpression
+    {
+        public IDictionary<IExpression, IExpression> Values;
+    }
 }

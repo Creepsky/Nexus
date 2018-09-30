@@ -146,5 +146,8 @@ namespace Nexus
 
         public static TypeDefinition CreateTupleTypeDefinition(IEnumerable<TypeDefinition> types, int array) =>
             new TypeDefinition('(' + string.Join(',', types) + ')', array);
+
+        public static TypeDefinition CreateMapTypeDefinition(TypeDefinition key, TypeDefinition value, int array) =>
+            new TypeDefinition('[' + key.ToString() + "->" + value.ToString() + ']', array);
     }
 }
