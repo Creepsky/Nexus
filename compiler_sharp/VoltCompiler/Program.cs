@@ -421,8 +421,11 @@ namespace Nexus
                .Or(Factor.Shift());
 
         public static Parser<IExpression> Expression =>
-            (from left in Term.Shift()
-                from op in Parse.Char('*').Shift()
+            (from left in Factor.Shift()
+             from increment in Parse.String("++").Shift()
+             select new IncrementLiteral { LeftExpression = left } as IExpression)
+            .Or(from left in Term.Shift()
+                    from op in Parse.Char('*').Shift()
                 from right in Expression.Shift()
                 select new Expression
                     {LeftExpression = left, Type = ExpressionType.Multiply, RightExpression = right})

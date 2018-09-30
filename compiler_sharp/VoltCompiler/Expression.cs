@@ -423,4 +423,9 @@ namespace Nexus
     {
         public IDictionary<IExpression, IExpression> Values;
     }
+
+    public class IncrementLiteral : IExpression
+    {
+        public IExpression LeftExpression;
+    }
 }
