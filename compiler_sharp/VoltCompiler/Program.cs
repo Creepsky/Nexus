@@ -384,11 +384,13 @@ namespace Nexus
             select new Class {Name = name, Members = definition.ToList()};
 
         public static Parser<IStatement> FileStatement =>
-            (from c in Class select c as IStatement)
-            .Or(ExtensionFunction);
+            Class.Select(i => i as IStatement)
+                .Or(ExtensionFunction);
 
         public static Parser<IEnumerable<IStatement>> File =>
-            from stmt in FileStatement.Shift().Many()
+            from stmt in FileStatement.Shift()
+                .Then(i => Parse.LineTerminator.Optional().Select(j => i))
+                .XMany()
             select stmt.ToList();
 
         public static Parser<IExpression> VariableLiteral =>
