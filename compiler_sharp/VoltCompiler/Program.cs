@@ -92,7 +92,7 @@ namespace Nexus
         public static Parser<RangeLiteral> RangeLiteral =>
             //from begin in Parse.Char('[').Shift()
             from start in RangeIndex.Shift()
-            from dots in Parse.String("until").Shift()
+            from dots in Parse.String("..").Or(Parse.String("until")).Shift()
             from end in RangeIndex.Shift()
             //from stop in Parse.Char(']').Shift()
             select new RangeLiteral
