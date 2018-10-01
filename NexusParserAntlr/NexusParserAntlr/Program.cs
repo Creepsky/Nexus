@@ -4,9 +4,9 @@ using Antlr4.Runtime;
 
 namespace NexusParserAntlr
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var textReader = new StreamReader(args[0]);
             var input = new AntlrInputStream(textReader);
@@ -15,7 +15,9 @@ namespace NexusParserAntlr
             var parser = new NexusParser(tokenStream);
             //parser.RemoveErrorListeners();
             //parser.AddErrorListener(new ErrorListener());
-            var parsed = parser.file();
-        }
+            var ast = parser.file();
+            var visitor = new NexusGrammarVisitor();
+            var file = visitor.Visit(ast);
+         }
     }
 }

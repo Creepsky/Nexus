@@ -56,17 +56,26 @@ public interface INexusVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitClass_member([NotNull] NexusParser.Class_memberContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="NexusParser.tuple_declaration"/>.
+	/// Visit a parse tree produced by the <c>namedType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitTuple_declaration([NotNull] NexusParser.Tuple_declarationContext context);
+	Result VisitNamedType([NotNull] NexusParser.NamedTypeContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="NexusParser.type"/>.
+	/// Visit a parse tree produced by the <c>tupleType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitType([NotNull] NexusParser.TypeContext context);
+	Result VisitTupleType([NotNull] NexusParser.TupleTypeContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>mapType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMapType([NotNull] NexusParser.MapTypeContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="NexusParser.variable_declaration"/>.
 	/// </summary>
@@ -140,6 +149,12 @@ public interface INexusVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunction_body([NotNull] NexusParser.Function_bodyContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="NexusParser.function_body_statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunction_body_statement([NotNull] NexusParser.Function_body_statementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="NexusParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -163,6 +178,12 @@ public interface INexusVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitNumber([NotNull] NexusParser.NumberContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="NexusParser.quoted_text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitQuoted_text([NotNull] NexusParser.Quoted_textContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="NexusParser.factor"/>.
 	/// </summary>

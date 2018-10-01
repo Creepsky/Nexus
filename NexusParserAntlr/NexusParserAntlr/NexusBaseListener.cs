@@ -83,29 +83,47 @@ public partial class NexusBaseListener : INexusListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitClass_member([NotNull] NexusParser.Class_memberContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="NexusParser.tuple_declaration"/>.
+	/// Enter a parse tree produced by the <c>namedType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterTuple_declaration([NotNull] NexusParser.Tuple_declarationContext context) { }
+	public virtual void EnterNamedType([NotNull] NexusParser.NamedTypeContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="NexusParser.tuple_declaration"/>.
+	/// Exit a parse tree produced by the <c>namedType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitTuple_declaration([NotNull] NexusParser.Tuple_declarationContext context) { }
+	public virtual void ExitNamedType([NotNull] NexusParser.NamedTypeContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="NexusParser.type"/>.
+	/// Enter a parse tree produced by the <c>tupleType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterType([NotNull] NexusParser.TypeContext context) { }
+	public virtual void EnterTupleType([NotNull] NexusParser.TupleTypeContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="NexusParser.type"/>.
+	/// Exit a parse tree produced by the <c>tupleType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitType([NotNull] NexusParser.TypeContext context) { }
+	public virtual void ExitTupleType([NotNull] NexusParser.TupleTypeContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>mapType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMapType([NotNull] NexusParser.MapTypeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>mapType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMapType([NotNull] NexusParser.MapTypeContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="NexusParser.variable_declaration"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -251,6 +269,18 @@ public partial class NexusBaseListener : INexusListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunction_body([NotNull] NexusParser.Function_bodyContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="NexusParser.function_body_statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFunction_body_statement([NotNull] NexusParser.Function_body_statementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="NexusParser.function_body_statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFunction_body_statement([NotNull] NexusParser.Function_body_statementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="NexusParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -298,6 +328,18 @@ public partial class NexusBaseListener : INexusListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitNumber([NotNull] NexusParser.NumberContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="NexusParser.quoted_text"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterQuoted_text([NotNull] NexusParser.Quoted_textContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="NexusParser.quoted_text"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitQuoted_text([NotNull] NexusParser.Quoted_textContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="NexusParser.factor"/>.
 	/// <para>The default implementation does nothing.</para>

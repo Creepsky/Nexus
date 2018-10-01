@@ -71,25 +71,41 @@ public interface INexusListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitClass_member([NotNull] NexusParser.Class_memberContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="NexusParser.tuple_declaration"/>.
+	/// Enter a parse tree produced by the <c>namedType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterTuple_declaration([NotNull] NexusParser.Tuple_declarationContext context);
+	void EnterNamedType([NotNull] NexusParser.NamedTypeContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="NexusParser.tuple_declaration"/>.
+	/// Exit a parse tree produced by the <c>namedType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitTuple_declaration([NotNull] NexusParser.Tuple_declarationContext context);
+	void ExitNamedType([NotNull] NexusParser.NamedTypeContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="NexusParser.type"/>.
+	/// Enter a parse tree produced by the <c>tupleType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterType([NotNull] NexusParser.TypeContext context);
+	void EnterTupleType([NotNull] NexusParser.TupleTypeContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="NexusParser.type"/>.
+	/// Exit a parse tree produced by the <c>tupleType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitType([NotNull] NexusParser.TypeContext context);
+	void ExitTupleType([NotNull] NexusParser.TupleTypeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>mapType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMapType([NotNull] NexusParser.MapTypeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>mapType</c>
+	/// labeled alternative in <see cref="NexusParser.type"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMapType([NotNull] NexusParser.MapTypeContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="NexusParser.variable_declaration"/>.
 	/// </summary>
@@ -211,6 +227,16 @@ public interface INexusListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunction_body([NotNull] NexusParser.Function_bodyContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="NexusParser.function_body_statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunction_body_statement([NotNull] NexusParser.Function_body_statementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="NexusParser.function_body_statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunction_body_statement([NotNull] NexusParser.Function_body_statementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="NexusParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -250,6 +276,16 @@ public interface INexusListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitNumber([NotNull] NexusParser.NumberContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="NexusParser.quoted_text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterQuoted_text([NotNull] NexusParser.Quoted_textContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="NexusParser.quoted_text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitQuoted_text([NotNull] NexusParser.Quoted_textContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="NexusParser.factor"/>.
 	/// </summary>
