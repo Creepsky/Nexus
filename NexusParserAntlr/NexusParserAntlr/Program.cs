@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Antlr4.Runtime;
 
@@ -16,8 +17,9 @@ namespace NexusParserAntlr
             //parser.RemoveErrorListeners();
             //parser.AddErrorListener(new ErrorListener());
             var ast = parser.file();
+            Debug.WriteLine(ast.ToStringTree(parser));
             var visitor = new NexusGrammarVisitor();
             var file = visitor.Visit(ast);
-         }
+        }
     }
 }
