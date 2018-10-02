@@ -97,6 +97,8 @@ extension_function : type className=IDENTIFIER DOT name=IDENTIFIER LEFT_BRACE (f
 
 /* Lexer */
 
+COMMENT : '//' ~('\r'|'\n')* -> skip ;
+MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;
 CLASS : 'class' ;
 LEFT_CURLY_BRACE : '{' ;
 RIGHT_CURLY_BRACE : '}' ;
