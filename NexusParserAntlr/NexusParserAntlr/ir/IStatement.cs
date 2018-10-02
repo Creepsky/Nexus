@@ -37,12 +37,6 @@ namespace NexusParserAntlr.ir
         public IList<IStatement> Body;
     }
 
-    public class FunctionCallStatement : IStatement
-    {
-        public string Name;
-        public IList<IExpression> Parameter;
-    }
-
     public class ExtensionFunction : IStatement
     {
         public IType ReturnType;
@@ -55,5 +49,11 @@ namespace NexusParserAntlr.ir
         {
             return $"{ReturnType} {Class}.{Name}()";
         }
+    }
+
+    public class TupleExplosionStatement : IStatement
+    {
+        public IList<string> Names;
+        public IExpression Right;
     }
 }

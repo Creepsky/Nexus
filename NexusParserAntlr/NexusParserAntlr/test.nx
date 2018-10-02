@@ -27,6 +27,7 @@ class MyClass
 
     void explode()
     {
+        auto x, y, _ = function4();
     }
 
     void increment(i32 i)

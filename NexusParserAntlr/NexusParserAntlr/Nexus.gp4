@@ -30,6 +30,13 @@ return_statement : RETURN expression COLON ;
 
 variable_statement : type IDENTIFIER (EQUAL expression)? COLON ;
 
+tuple_explosion_expression :      IDENTIFIER
+                                | array_access
+                                | function_call
+                                ;
+
+tuple_explosion_statement : IDENTIFIER IDENTIFIER (COMMA IDENTIFIER)* EQUAL tuple_explosion_expression COLON ;
+
 if_statement :  IF LEFT_BRACE comparison RIGHT_BRACE
                 LEFT_CURLY_BRACE then=function_body RIGHT_CURLY_BRACE
                 ELSE LEFT_CURLY_BRACE else=function_body RIGHT_CURLY_BRACE ;
@@ -43,7 +50,7 @@ for_init :        assignment_statement
 for_statement : FOR LEFT_BRACE for_init comparison COLON expression RIGHT_BRACE
                 LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
-function_call_statement : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE COLON ;
+function_call : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE ;
 
 function_body : function_body_statement * ;
 
@@ -55,19 +62,22 @@ function_body_statement :
                 | if_statement
                 | while_statement
                 | for_statement
-                | function_call_statement ;
+                | function_call COLON
+                | tuple_explosion_statement ;
 
-expression :	  expression STAR expression
-                | expression SLASH expression
-                | expression PLUS expression
-                | expression MINUS expression
-                | LEFT_BRACE expression (COMMA expression)+ RIGHT_BRACE
-		| LEFT_BRACE expression RIGHT_BRACE
-                | LEFT_BRACKET expression(COMMA expression)* RIGHT_BRACKET
-                | LEFT_BRACKET expression ARROW_RIGHT expression (COMMA expression ARROW_RIGHT expression)* RIGHT_BRACKET
-                | expression RANGE expression
-                | expression EQUAL expression
-		| factor ;
+key_value_pair : expression ARROW_RIGHT expression ;
+
+expression :	  expression STAR expression #mul
+                | expression SLASH expression #div
+                | expression PLUS expression #add
+                | expression MINUS expression #sub
+                | LEFT_BRACE expression (COMMA expression)+ RIGHT_BRACE #tuple
+                | LEFT_BRACE expression RIGHT_BRACE #paren
+                | LEFT_BRACKET expression(COMMA expression)* RIGHT_BRACKET #array
+                | LEFT_BRACKET key_value_pair (COMMA key_value_pair)* RIGHT_BRACKET #map
+                | expression RANGE expression #range
+                | expression EQUAL expression #test
+                | factor #fact ;
 
 boolean : TRUE | FALSE ;
 

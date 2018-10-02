@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -31,6 +32,11 @@ namespace NexusParserAntlr.ir
         public IExpression End;
     }
 
+    public class MapLiteral : IExpression
+    {
+        public IDictionary<IExpression, IExpression> Values;
+    }
+
     public class Text : IExpression
     {
         public string Value;
@@ -39,6 +45,37 @@ namespace NexusParserAntlr.ir
         {
             return Value;
         }
+    }
+
+    public class ArrayLiteral : IExpression
+    {
+        public IList<IExpression> Values;
+    }
+
+    public class TupleLiteral : IExpression
+    {
+        public IList<IExpression> Values;
+    }
+
+    public class FunctionCall : IExpression
+    {
+        public string Name;
+        public IList<IExpression> Parameter;
+    }
+
+    public enum BinaryOperatorType
+    {
+        Add,
+        Sub,
+        Mul,
+        Div
+    }
+
+    public class BinaryOperation : IExpression
+    {
+        public IExpression Left;
+        public BinaryOperatorType Type;
+        public IExpression Right;
     }
 
     public class NumberLiteral : IExpression
@@ -250,6 +287,11 @@ namespace NexusParserAntlr.ir
     public class NumberLiteral<T> : NumberLiteral
     {
         public T Value;
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
 
         //public char Sign;
         //public string IntegerPart;
