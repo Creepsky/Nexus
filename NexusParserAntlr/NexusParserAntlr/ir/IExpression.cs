@@ -189,7 +189,7 @@ namespace NexusParserAntlr.ir
                 {
                     switch (type)
                     {
-                        case PrimitiveType.I8: return new I8 { Value = SByte.Parse(integerPart) };
+                        case PrimitiveType.I8: return new I8 { Value = sbyte.Parse(integerPart) };
                         case PrimitiveType.I16: return new I16 { Value = short.Parse(integerPart) };
                         case PrimitiveType.I32: return new I32 { Value = int.Parse(integerPart) };
                         case PrimitiveType.I64: return new I64 { Value = long.Parse(integerPart) };
@@ -292,85 +292,6 @@ namespace NexusParserAntlr.ir
         {
             return Value.ToString();
         }
-
-        //public char Sign;
-        //public string IntegerPart;
-        //public string DecimalPart;
-        //public string Suffix;
-
-        //public char AsI8() => IntegerCast(char.Parse);
-
-        //public short AsI16() => IntegerCast(short.Parse);
-
-        //public int AsI32() => IntegerCast(int.Parse);
-
-        //public long AsI64() => IntegerCast(long.Parse);
-
-        //public byte AsU8() => IntegerCast(byte.Parse);
-
-        //public ushort AsU16() => IntegerCast(ushort.Parse);
-
-        //public uint AsU32() => IntegerCast(uint.Parse);
-
-        //public ulong AsU64() => IntegerCast(ulong.Parse);
-
-        //public ulong AsUSize()
-        //{
-        //    switch (UIntPtr.Size)
-        //    {
-        //        case 4:
-        //            // 32 bits
-        //            return IntegerCast(uint.Parse);
-        //        case 8:
-        //            // 64 bits
-        //            return IntegerCast(ulong.Parse);
-        //        default:
-        //            // unknown bits
-        //            throw new ArgumentOutOfRangeException(nameof(UIntPtr.Size), UIntPtr.Size, "Unknown architecture");
-        //    }
-        //}
-
-        //private T IntegerCast<T>(Func<string, T> lambda)
-        //{
-        //    if (!string.IsNullOrWhiteSpace(DecimalPart))
-        //    {
-        //        // TODO: warning, truncation
-        //    }
-
-        //    return lambda($"{Sign}{IntegerPart}");
-        //}
-
-        //public float AsF32() => (float) AsF64();
-
-        //public double AsF64()
-        //{
-        //    var f64 = "";
-
-        //    if (Sign != '+')
-        //        f64 += Sign;
-
-        //    f64 += IntegerPart;
-
-        //    if (string.IsNullOrWhiteSpace(DecimalPart))
-        //        f64 += $".{DecimalPart}";
-
-        //    return double.Parse(f64);
-        //}
-
-        //public override string ToString()
-        //{
-        //    var toString = "";
-
-        //    if (Sign == '-')
-        //        toString += "-";
-
-        //    toString += IntegerPart;
-
-        //    if (!string.IsNullOrWhiteSpace(DecimalPart))
-        //        toString += $".{DecimalPart}";
-
-        //    return toString;
-        //}
     }
 
     public class I8 : NumberLiteral<sbyte> { }
