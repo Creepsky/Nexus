@@ -332,14 +332,14 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
-*/.antlr
-*/*.interp
-*/*.tokens
-*/*BaseListener.cs
-*/*BaseVisitor.cs
-*/*GrammarVisitor.cs
-*/*Lexer.cs
-*/*Lexer.tokens
-*/*Listener.cs
-*/*Parser.cs
-*/*Visitor.cs
+*.antlr
+*.interp
+*.tokens
+*BaseListener.cs
+*BaseVisitor.cs
+*GrammarVisitor.cs
+*Lexer.cs
+*Lexer.tokens
+*Listener.cs
+*Parser.cs
+*Visitor.cs
