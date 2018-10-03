@@ -143,6 +143,8 @@ namespace NexusParserAntlr
             Right = (IExpression) Visit(context.expression(1)),
         };
 
+        public override object VisitParen(NexusParser.ParenContext context) => Visit(context.expression());
+
         public override object VisitArray(NexusParser.ArrayContext context) => new ArrayLiteral
         {
             Values = context.expression().Select(i => (IExpression) Visit(i)).ToList()
