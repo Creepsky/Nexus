@@ -6,6 +6,12 @@ namespace NexusParserAntlr.ir
     public interface IStatement
     { }
 
+    public class File
+    {
+        public IList<Class> Classes;
+        public IList<ExtensionFunction> ExtensionFunctions;
+    }
+
     public class AssignmentStatement : IStatement
     {
         public IExpression Left;
