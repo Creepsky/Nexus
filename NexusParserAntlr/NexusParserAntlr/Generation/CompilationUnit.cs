@@ -193,6 +193,7 @@ namespace NexusParserAntlr.Generation
         {
             printer.WriteLine($"#include \"{Name}.hpp\"");
             printer.WriteLine();
+            
             // constructor
             printer.WriteLine($"{Name}::{Name}()");
             printer.Push();
@@ -205,8 +206,12 @@ namespace NexusParserAntlr.Generation
             }
             printer.WriteLine();
             printer.Pop();
-            printer.WriteLine("{}");
+            printer.WriteLine("{ }");
             printer.WriteLine();
+            
+            // functions
+            foreach (var i in Public.Functions)
+                i.ToSource(printer);
         }
     }
 }

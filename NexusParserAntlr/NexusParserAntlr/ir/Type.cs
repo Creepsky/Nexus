@@ -138,6 +138,12 @@ namespace NexusParserAntlr.ir
                 case "f32": return PrimitiveType.F32;
                 case "f64": return PrimitiveType.F64;
                 case "string": return PrimitiveType.String;
+                case "short": return PrimitiveType.I16;
+                case "int": return PrimitiveType.I32;
+                case "long": return PrimitiveType.I64;
+                case "ushort": return PrimitiveType.U16;
+                case "uint": return PrimitiveType.U32;
+                case "ulong": return PrimitiveType.U64;
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
