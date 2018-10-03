@@ -20,9 +20,9 @@ class MyClass
         [123, 456, 789]
     ];
     [i32 -> string] map_ = [
-        0 -> "test",
-        1 -> "test2",
-        2 -> "test3"
+        0 -> "asdfg",
+        100 -> "qwert",
+        222 -> "yxcvb"
     ];
 
     void explode()

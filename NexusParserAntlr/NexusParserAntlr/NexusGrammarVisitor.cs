@@ -192,8 +192,8 @@ namespace NexusParserAntlr
         public override object VisitMap(NexusParser.MapContext context) => new MapLiteral
         {
             Values = context.key_value_pair().ToDictionary(
-                i => (IExpression) Visit(i),
-                j => (IExpression) Visit(j)
+                i => (IExpression) Visit(i.expression(0)),
+                i => (IExpression) Visit(i.expression(1))
             )
         };
 
