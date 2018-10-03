@@ -124,6 +124,14 @@ namespace NexusParserAntlr
             Parameter = context.expression().Select(i => (IExpression) Visit(i)).ToList()
         };
 
+        public override object VisitFunction_body_statement(NexusParser.Function_body_statementContext context)
+        {
+            if (context.function_call() != null)
+                return new FunctionCallStatement {FunctionCall = (FunctionCall) VisitFunction_call(context.function_call())};
+
+            return base.VisitFunction_body_statement(context);
+        }
+
         public override object VisitDiv(NexusParser.DivContext context) => new BinaryOperation
         {
             Left = (IExpression) Visit(context.expression(0)),

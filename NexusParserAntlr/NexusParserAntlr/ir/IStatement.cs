@@ -70,4 +70,9 @@ namespace NexusParserAntlr.ir
             return $"{Type} {Name}({string.Join(',', Parameter.Select(i => i.Type))})";
         }
     }
+
+    public class FunctionCallStatement : IStatement
+    {
+        public FunctionCall FunctionCall;
+    }
 }
