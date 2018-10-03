@@ -136,6 +136,13 @@ namespace NexusParserAntlr
             };
         }
 
+        public override object VisitSub(NexusParser.SubContext context) => new BinaryOperation
+        {
+            Left = (IExpression) Visit(context.expression(0)),
+            Type = BinaryOperatorType.Sub,
+            Right = (IExpression) Visit(context.expression(1)),
+        };
+
         public override object VisitArray(NexusParser.ArrayContext context) => new ArrayLiteral
         {
             Values = context.expression().Select(i => (IExpression) Visit(i)).ToList()
