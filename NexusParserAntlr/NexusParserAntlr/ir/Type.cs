@@ -10,6 +10,8 @@ namespace NexusParserAntlr.ir
         bool IsPrimitive();
 
         string ToCpp();
+
+        int Array { get; }
     }
 
     public enum PrimitiveType
@@ -24,7 +26,7 @@ namespace NexusParserAntlr.ir
     public class SimpleType : IType
     {
         public string Name;
-        public int Array;
+        public int Array { get; set; }
 
         public bool IsPrimitive()
         {
@@ -47,7 +49,7 @@ namespace NexusParserAntlr.ir
         {
             try
             {
-                return TypesExtension.ToType(Name).ToCpp();
+                return TypesExtension.ToType(Name).ToCpp().ToArray(Array);
             }
             catch (Exception)
             {
@@ -64,7 +66,7 @@ namespace NexusParserAntlr.ir
     public class TupleType : IType
     {
         public IList<IType> Types;
-        public int Array;
+        public int Array { get; set; }
 
         public override string ToString()
         {
@@ -72,9 +74,10 @@ namespace NexusParserAntlr.ir
         }
 
         public bool IsPrimitive() => false;
+
         public string ToCpp()
         {
-            return $"std::tuple<{string.Join(", ", Types.Select(i => i.ToCpp()))}>";
+            return $"std::tuple<{string.Join(", ", Types.Select(i => i.ToCpp().ToArray(Array)))}>";
         }
     }
 
@@ -82,7 +85,7 @@ namespace NexusParserAntlr.ir
     {
         public IType KeyType;
         public IType ValueType;
-        public int Array;
+        public int Array { get; set; }
 
         public override string ToString()
         {
@@ -93,7 +96,7 @@ namespace NexusParserAntlr.ir
 
         public string ToCpp()
         {
-            return $"std::map<{KeyType.ToCpp()}, {ValueType.ToCpp()}>";
+            return $"std::map<{KeyType.ToCpp().ToArray(Array)}, {ValueType.ToCpp().ToArray(Array)}>";
         }
     }
 
@@ -159,5 +162,15 @@ namespace NexusParserAntlr.ir
         {
             PrimitiveType.F32, PrimitiveType.F64
         };
+
+        public static string ToArray(this string cppString, int array)
+        {
+            if (array == 0)
+                return cppString;
+
+            return string.Concat(Enumerable.Repeat("std::vector<", array)) +
+                   cppString +
+                   string.Concat(Enumerable.Repeat('>', array));
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection.Metadata;
+using Antlr4.Runtime;
 
 namespace NexusParserAntlr.ir
 {
@@ -13,54 +14,73 @@ namespace NexusParserAntlr.ir
     public class BooleanLiteral : IExpression
     {
         public bool Value;
+
+        public override string ToString() => Value ? "true" : "false";
     }
 
     public class ArrayAccess : IExpression
     {
         public string Name;
         public IExpression Index;
+
+        public override string ToString() => $"{Name}[{Index}]";
     }
 
     public class VariableLiteral : IExpression
     {
         public string Name;
+
+        public override string ToString() => Name;
     }
 
     public class RangeLiteral : IExpression
     {
         public IExpression Start;
         public IExpression End;
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 
     public class MapLiteral : IExpression
     {
         public IDictionary<IExpression, IExpression> Values;
+
+        public override string ToString()
+        {
+            return '{' + string.Join(", ", Values.Select(i => '{' + i.Key.ToString() + ", " + i.Value.ToString() + '}')) + '}';
+        }
     }
 
     public class Text : IExpression
     {
         public string Value;
 
-        public override string ToString()
-        {
-            return Value;
-        }
+        public override string ToString() => '"' + Value + '"';
     }
 
     public class ArrayLiteral : IExpression
     {
         public IList<IExpression> Values;
+
+        public override string ToString() => '{' + string.Join(", ", Values) + '}';
     }
 
     public class TupleLiteral : IExpression
     {
         public IList<IExpression> Values;
+
+        public override string ToString() => $"std::make_tuple({string.Join(", ", Values)})";
     }
 
     public class FunctionCall : IExpression
     {
         public string Name;
         public IList<IExpression> Parameter;
+
+        public override string ToString() => $"{Name}({string.Join(", ", Parameter)})";
     }
 
     public enum BinaryOperatorType
@@ -76,6 +96,24 @@ namespace NexusParserAntlr.ir
         public IExpression Left;
         public BinaryOperatorType Type;
         public IExpression Right;
+
+        public override string ToString()
+        {
+            char op;
+
+            if (Type == BinaryOperatorType.Add)
+                op = '+';
+            else if (Type == BinaryOperatorType.Div)
+                op = '/';
+            else if (Type == BinaryOperatorType.Sub)
+                op = '-';
+            else if (Type == BinaryOperatorType.Mul)
+                op = '*';
+            else
+                throw new ArgumentOutOfRangeException(nameof(Type), Type, "unknown binary type");
+
+            return $"{Left} {op} {Right}";
+        }
     }
 
     public class NumberLiteral : IExpression
