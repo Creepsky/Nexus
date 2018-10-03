@@ -196,8 +196,14 @@ namespace NexusParserAntlr.Generation
             // constructor
             printer.WriteLine($"{Name}::{Name}()");
             printer.Push();
-            printer.WriteLine(
-                $": {string.Join(", ", Private.Members.Select(i => $"{i.Variable.Name}{{{i.Variable.Initialization?.ToString() ?? string.Empty}}}"))}");
+            printer.WriteLine(":");
+            foreach (var i in Private.Members)
+            {
+                printer.Write($"{i.Variable.Name}{{{i.Variable.Initialization?.ToString() ?? string.Empty}}}");
+                if (i != Private.Members.Last())
+                    printer.WriteLine(",");
+            }
+            printer.WriteLine();
             printer.Pop();
             printer.WriteLine("{}");
             printer.WriteLine();
