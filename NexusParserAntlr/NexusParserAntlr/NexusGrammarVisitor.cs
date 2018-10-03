@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using NexusParserAntlr.ir;
 
@@ -75,6 +75,12 @@ namespace NexusParserAntlr
             Setter = false,
             Getter = false,
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression())
+        };
+
+        public override object VisitTuple_explosion_statement(NexusParser.Tuple_explosion_statementContext context) => new TupleExplosionStatement
+        {
+            Names = context.IDENTIFIER().Skip(1).Select(i => i.GetText()).ToList(),
+            Right = (IExpression) Visit(context.tuple_explosion_expression())
         };
 
         public override object VisitIf_statement(NexusParser.If_statementContext context) => new IfStatement
