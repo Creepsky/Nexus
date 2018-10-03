@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NexusParserAntlr.ir;
 
@@ -108,10 +108,58 @@ namespace NexusParserAntlr
             Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList()
         };
 
-        public override object VisitFunction_call_statement(NexusParser.Function_call_statementContext context) => new FunctionCallStatement
+        public override object VisitFunction_call(NexusParser.Function_callContext context) => new FunctionCall
         {
             Name = context.IDENTIFIER().GetText(),
             Parameter = context.expression().Select(i => (IExpression) Visit(i)).ToList()
+        };
+
+        public override object VisitDiv(NexusParser.DivContext context) => new BinaryOperation
+        {
+            Left = (IExpression) Visit(context.expression(0)),
+            Type = BinaryOperatorType.Div,
+            Right = (IExpression) Visit(context.expression(1)),
+        };
+
+        public override object VisitAdd(NexusParser.AddContext context) => new BinaryOperation
+        {
+            Left = (IExpression) Visit(context.expression(0)),
+            Type = BinaryOperatorType.Add,
+            Right = (IExpression) Visit(context.expression(1)),
+        };
+
+        public override object VisitTuple(NexusParser.TupleContext context)
+        {
+            return new TupleLiteral
+            {
+                Values = context.expression().Select(i => (IExpression) Visit(i)).ToList()
+            };
+        }
+
+        public override object VisitArray(NexusParser.ArrayContext context) => new ArrayLiteral
+        {
+            Values = context.expression().Select(i => (IExpression) Visit(i)).ToList()
+        };
+
+        public override object VisitMul(NexusParser.MulContext context) => new BinaryOperation
+        {
+            Left = (IExpression) Visit(context.expression(0)),
+            Type = BinaryOperatorType.Mul,
+            Right = (IExpression) Visit(context.expression(1)),
+        };
+
+        public override object VisitRange(NexusParser.RangeContext context) => new RangeLiteral
+        {
+            Start = (IExpression) Visit(context.expression(0)),
+            End = (IExpression) Visit(context.expression(1)),
+        };
+
+        public override object VisitMap(NexusParser.MapContext context) => new MapLiteral
+        {
+            Values = context.key_value_pair().ToDictionary(
+                i => (IExpression) Visit(i),
+                j => (IExpression) Visit(j)
+            )
         };
 
         public override object VisitBoolean(NexusParser.BooleanContext context) => new BooleanLiteral
