@@ -6,7 +6,11 @@ using System.Reflection.Metadata;
 namespace NexusParserAntlr.ir
 {
     public interface IType
-    { }
+    {
+        bool IsPrimitive();
+
+        string ToCpp();
+    }
 
     public enum PrimitiveType
     {
@@ -39,6 +43,18 @@ namespace NexusParserAntlr.ir
             }
         }
 
+        public string ToCpp()
+        {
+            try
+            {
+                return TypesExtension.ToType(Name).ToCpp();
+            }
+            catch (Exception)
+            {
+                return Name;
+            }
+        }
+
         public override string ToString()
         {
             return $"{Name}{string.Concat(Enumerable.Repeat("[]", Array))}";
@@ -54,6 +70,12 @@ namespace NexusParserAntlr.ir
         {
             return $"({string.Join(',', Types)}) {string.Concat(Enumerable.Repeat("[]", Array))}";
         }
+
+        public bool IsPrimitive() => false;
+        public string ToCpp()
+        {
+            return $"std::tuple<{string.Join(", ", Types.Select(i => i.ToCpp()))}>";
+        }
     }
 
     public class MapType : IType
@@ -65,6 +87,13 @@ namespace NexusParserAntlr.ir
         public override string ToString()
         {
             return $"[{KeyType} -> {ValueType}] {string.Concat(Enumerable.Repeat("[]", Array))}";
+        }
+
+        public bool IsPrimitive() => false;
+
+        public string ToCpp()
+        {
+            return $"std::map<{KeyType.ToCpp()}, {ValueType.ToCpp()}>";
         }
     }
 
