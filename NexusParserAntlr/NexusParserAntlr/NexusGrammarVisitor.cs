@@ -229,7 +229,7 @@ namespace NexusParserAntlr
                 return NumberLiteral.ParseHex(context.HEX().GetText().Substring(2));
 
             if (context.quoted_text() != null)
-                return new Text { Value = context.quoted_text().text.Text };
+                return new Text { Value = context.quoted_text().text == null ? string.Empty : context.quoted_text().text.Text };
 
             if (context.IDENTIFIER() != null)
                 return new VariableLiteral { Name = context.IDENTIFIER().GetText() };
