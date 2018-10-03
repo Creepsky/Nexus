@@ -6,8 +6,16 @@ namespace NexusParserAntlr
 {
     public class NexusGrammarVisitor : NexusBaseVisitor<object>
     {
-        public override object VisitFile(NexusParser.FileContext context) =>
-            context.file_declaration().Select(Visit).ToList();
+        public override object VisitFile(NexusParser.FileContext context)
+        {
+            var list = context.file_declaration().Select(Visit).ToList();
+
+            return new File
+            {
+                Classes = list.Where(i => i.GetType() == typeof(Class)).Select(i => (Class) i).ToList(),
+                ExtensionFunctions = list.Where(i => i.GetType() == typeof(ExtensionFunction)).Select(i => (ExtensionFunction) i).ToList()
+            };
+        }
 
         public override object VisitClass(NexusParser.ClassContext context)
         {

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using Antlr4.Runtime;
+using NexusParserAntlr.Generation;
 
 namespace NexusParserAntlr
 {
@@ -19,7 +20,14 @@ namespace NexusParserAntlr
             var ast = parser.file();
             Debug.WriteLine(ast.ToStringTree(parser));
             var visitor = new NexusGrammarVisitor();
-            var file = visitor.Visit(ast);
+            var file = (ir.File) visitor.Visit(ast);
+            var printer = new Printer(Console.Out);
+            foreach (var i in file.Classes)
+            {
+                var compilationUnit = new CompilationUnit(i);
+                compilationUnit.ToHeader(printer);
+                compilationUnit .ToSource(printer);
+            }
         }
     }
 }
