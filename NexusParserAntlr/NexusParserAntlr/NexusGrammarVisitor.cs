@@ -49,10 +49,20 @@ namespace NexusParserAntlr
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression())
         };
 
+        public override object VisitFunction_parameter(NexusParser.Function_parameterContext context) => new Variable
+        {
+            Type = (IType) Visit(context.type()),
+            Name = context.IDENTIFIER().GetText(),
+            Setter = false,
+            Getter = false,
+            Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression())
+        };
+
         public override object VisitFunction_declaration(NexusParser.Function_declarationContext context) => new Function
         {
             Type = (IType) Visit(context.type()),
             Name = context.IDENTIFIER().GetText(),
+            Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList(),
             Statements = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i))
                 .ToList()
         };

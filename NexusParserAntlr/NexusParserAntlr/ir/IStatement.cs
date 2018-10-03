@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace NexusParserAntlr.ir
 {
@@ -55,5 +56,18 @@ namespace NexusParserAntlr.ir
     {
         public IList<string> Names;
         public IExpression Right;
+    }
+
+    public class Function : IStatement
+    {
+        public IType Type;
+        public string Name;
+        public IList<Variable> Parameter;
+        public IList<IStatement> Statements;
+
+        public override string ToString()
+        {
+            return $"{Type} {Name}({string.Join(',', Parameter.Select(i => i.Type))})";
+        }
     }
 }
