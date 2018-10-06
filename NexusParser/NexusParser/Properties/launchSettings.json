@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "NexusParser": {
-      "commandName": "Project",
-      "commandLineArgs": "../../../../../test.nx"
-    }
-  }
-}
