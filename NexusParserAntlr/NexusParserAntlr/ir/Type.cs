@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
+using NexusParserAntlr.Generation;
 
 namespace NexusParserAntlr.ir
 {
-    public interface IType
+    public interface IType : ICheckable
     {
         bool IsPrimitive();
 
@@ -62,6 +62,26 @@ namespace NexusParserAntlr.ir
         {
             return $"{Name}{string.Concat(Enumerable.Repeat("[]", Array))}";
         }
+
+        public void Check(Context context)
+        {
+            try
+            {
+                TypesExtension.ToType(Name);
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    context.GetClass(Name);
+
+                }
+                catch (Exception)
+                {
+                    throw new Exception($"unknown type {Name}");
+                }
+            }
+        }
     }
 
     public class TupleType : IType
@@ -79,6 +99,12 @@ namespace NexusParserAntlr.ir
         public string ToCpp()
         {
             return $"std::tuple<{string.Join(", ", Types.Select(i => i.ToCpp().ToArray(Array)))}>";
+        }
+
+        public void Check(Context context)
+        {
+            foreach (var i in Types)
+                i.Check(context);
         }
     }
 
@@ -98,6 +124,12 @@ namespace NexusParserAntlr.ir
         public string ToCpp()
         {
             return $"std::map<{KeyType.ToCpp().ToArray(Array)}, {ValueType.ToCpp().ToArray(Array)}>";
+        }
+
+        public void Check(Context context)
+        {
+            KeyType.Check(context);
+            ValueType.Check(context);
         }
     }
 
