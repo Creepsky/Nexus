@@ -8,17 +8,22 @@ using Antlr4.Runtime;
 namespace Nexus.ir
 {
     public interface IExpression
+    { }
+
+    public abstract class Expression : IExpression, IPositioned
     {
+        public int Line { get; set; }
+        public int Column { get; set; }
     }
 
-    public class BooleanLiteral : IExpression
+    public class BooleanLiteral : Expression
     {
         public bool Value;
 
         public override string ToString() => Value ? "true" : "false";
     }
 
-    public class ArrayAccess : IExpression
+    public class ArrayAccess : Expression
     {
         public string Name;
         public IExpression Index;
@@ -26,14 +31,14 @@ namespace Nexus.ir
         public override string ToString() => $"{Name}[{Index}]";
     }
 
-    public class VariableLiteral : IExpression
+    public class VariableLiteral : Expression
     {
         public string Name;
 
         public override string ToString() => Name;
     }
 
-    public class RangeLiteral : IExpression
+    public class RangeLiteral : Expression
     {
         public IExpression Start;
         public IExpression End;
@@ -44,7 +49,7 @@ namespace Nexus.ir
         }
     }
 
-    public class MapLiteral : IExpression
+    public class MapLiteral : Expression
     {
         public IDictionary<IExpression, IExpression> Values;
 
@@ -54,28 +59,28 @@ namespace Nexus.ir
         }
     }
 
-    public class Text : IExpression
+    public class Text : Expression
     {
         public string Value;
 
         public override string ToString() => '"' + Value + '"';
     }
 
-    public class ArrayLiteral : IExpression
+    public class ArrayLiteral : Expression
     {
         public IList<IExpression> Values;
 
         public override string ToString() => '{' + string.Join(", ", Values) + '}';
     }
 
-    public class TupleLiteral : IExpression
+    public class TupleLiteral : Expression
     {
         public IList<IExpression> Values;
 
         public override string ToString() => $"std::make_tuple({string.Join(", ", Values)})";
     }
 
-    public class FunctionCall : IExpression
+    public class FunctionCall : Expression
     {
         public string Name;
         public IList<IExpression> Parameter;
@@ -91,7 +96,7 @@ namespace Nexus.ir
         Div
     }
 
-    public class BinaryOperation : IExpression
+    public class BinaryOperation : Expression
     {
         public IExpression Left;
         public BinaryOperatorType Type;
@@ -116,7 +121,7 @@ namespace Nexus.ir
         }
     }
 
-    public class NumberLiteral : IExpression
+    public class NumberLiteral : Expression
     {
         public static NumberLiteral Parse(string integerPart, string decimalPart, string suffix)
         {

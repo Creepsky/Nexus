@@ -6,37 +6,43 @@ namespace Nexus.ir
     public interface IStatement
     { }
 
+    public abstract class Statement : IStatement, IPositioned
+    {
+        public int Line { get; set; }
+        public int Column { get; set; }
+    }
+
     public class File
     {
         public IList<Class> Classes;
         public IList<ExtensionFunction> ExtensionFunctions;
     }
 
-    public class AssignmentStatement : IStatement
+    public class AssignmentStatement : Statement
     {
         public IExpression Left;
         public IExpression Right;
     }
 
-    public class ReturnStatement : IStatement
+    public class ReturnStatement : Statement
     {
         public IExpression Value;
     }
 
-    public class IfStatement : IStatement
+    public class IfStatement : Statement
     {
         public ICondition Condition;
         public IList<IStatement> Then;
         public IList<IStatement> Else;
     }
 
-    public class WhileStatement : IStatement
+    public class WhileStatement : Statement
     {
         public ICondition Condition;
         public IList<IStatement> Body;
     }
 
-    public class ForStatement : IStatement
+    public class ForStatement : Statement
     {
         public IStatement Start;
         public ICondition Stop;
@@ -44,7 +50,7 @@ namespace Nexus.ir
         public IList<IStatement> Body;
     }
 
-    public class ExtensionFunction : IStatement
+    public class ExtensionFunction : Statement
     {
         public IType ReturnType;
         public string Class;
@@ -58,13 +64,13 @@ namespace Nexus.ir
         }
     }
 
-    public class TupleExplosionStatement : IStatement
+    public class TupleExplosionStatement : Statement
     {
         public IList<string> Names;
         public IExpression Right;
     }
 
-    public class Function : IStatement
+    public class Function : Statement
     {
         public IType Type;
         public string Name;
@@ -77,8 +83,22 @@ namespace Nexus.ir
         }
     }
 
-    public class FunctionCallStatement : IStatement
+    public class FunctionCallStatement : Statement
     {
         public FunctionCall FunctionCall;
+    }
+
+    public class Variable : Statement
+    {
+        public IType Type;
+        public string Name;
+        public bool Setter;
+        public bool Getter;
+        public IExpression Initialization;
+
+        public override string ToString()
+        {
+            return $"{Type} {Name}";
+        }
     }
 }

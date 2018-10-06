@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
@@ -24,7 +24,7 @@ namespace Nexus.ir
         Void
     }
 
-    public class SimpleType : IType
+    public class SimpleType : Expression, IType
     {
         public string Name;
         public int Array { get; set; }
@@ -84,7 +84,7 @@ namespace Nexus.ir
         }
     }
 
-    public class TupleType : IType
+    public class TupleType : Expression, IType
     {
         public IList<IType> Types;
         public int Array { get; set; }
@@ -108,7 +108,7 @@ namespace Nexus.ir
         }
     }
 
-    public class MapType : IType
+    public class MapType : Expression, IType
     {
         public IType KeyType;
         public IType ValueType;

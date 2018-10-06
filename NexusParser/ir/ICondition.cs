@@ -15,7 +15,7 @@ namespace Nexus.ir
         GreaterEquals
     }
 
-    public class Comparison : ICondition
+    public class Comparison : Expression, ICondition
     {
         public ComparisonType Type;
         public IExpression Left;

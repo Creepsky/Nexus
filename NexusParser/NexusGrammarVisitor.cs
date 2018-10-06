@@ -25,27 +25,35 @@ namespace Nexus
             {
                 Name = context.name.Text,
                 Variables = member.Where(i => i.GetType() == typeof(Variable)).Select(i => (Variable) i).ToList(),
-                Functions = member.Where(i => i.GetType() == typeof(Function)).Select(i => (Function) i).ToList()
+                Functions = member.Where(i => i.GetType() == typeof(Function)).Select(i => (Function) i).ToList(),
+                Line = context.Start.Line,
+                Column = context.Start.Column
             };
         }
 
         public override object VisitNamedType(NexusParser.NamedTypeContext context) => new SimpleType
         {
             Name = context.IDENTIFIER().GetText(),
-            Array = context.ARRAY_DECLARATION().Length
+            Array = context.ARRAY_DECLARATION().Length,
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitTupleType(NexusParser.TupleTypeContext context) => new TupleType
         {
             Types = context.type().Select(i => (IType) Visit(i)).ToList(),
-            Array = context.ARRAY_DECLARATION().Length
+            Array = context.ARRAY_DECLARATION().Length,
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitMapType(NexusParser.MapTypeContext context) => new MapType
         {
             KeyType = (IType) Visit(context.key),
             ValueType = (IType) Visit(context.value),
-            Array = context.ARRAY_DECLARATION().Length
+            Array = context.ARRAY_DECLARATION().Length,
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitVariable_declaration(NexusParser.Variable_declarationContext context) => new Variable
@@ -54,7 +62,9 @@ namespace Nexus
             Name = context.IDENTIFIER().GetText(),
             Getter = context.GET() != null,
             Setter = context.SET() != null,
-            Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression())
+            Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitFunction_parameter(NexusParser.Function_parameterContext context) => new Variable
@@ -63,7 +73,9 @@ namespace Nexus
             Name = context.IDENTIFIER().GetText(),
             Setter = false,
             Getter = false,
-            Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression())
+            Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitFunction_declaration(NexusParser.Function_declarationContext context) => new Function
@@ -72,18 +84,24 @@ namespace Nexus
             Name = context.IDENTIFIER().GetText(),
             Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList(),
             Statements = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i))
-                .ToList()
+                .ToList(),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitAssignment_statement(NexusParser.Assignment_statementContext context) => new AssignmentStatement
         {
             Left = (IExpression) Visit(context.left),
-            Right = (IExpression) Visit(context.right)
+            Right = (IExpression) Visit(context.right),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitReturn_statement(NexusParser.Return_statementContext context) => new ReturnStatement
         {
-            Value = (IExpression) Visit(context.expression())
+            Value = (IExpression) Visit(context.expression()),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitVariable_statement(NexusParser.Variable_statementContext context) => new Variable
@@ -92,13 +110,17 @@ namespace Nexus
             Name = context.IDENTIFIER().GetText(),
             Setter = false,
             Getter = false,
-            Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression())
+            Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitTuple_explosion_statement(NexusParser.Tuple_explosion_statementContext context) => new TupleExplosionStatement
         {
             Names = context.IDENTIFIER().Skip(1).Select(i => i.GetText()).ToList(),
-            Right = (IExpression) Visit(context.tuple_explosion_expression())
+            Right = (IExpression) Visit(context.tuple_explosion_expression()),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitIf_statement(NexusParser.If_statementContext context) => new IfStatement
@@ -109,13 +131,17 @@ namespace Nexus
                 .ToList(),
             Else = context.@else.function_body_statement()
                 .Select(i => (IStatement) Visit(i))
-                .ToList()
+                .ToList(),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitWhile_statement(NexusParser.While_statementContext context) => new WhileStatement
         {
             Condition = (ICondition) Visit(context.comparison()),
-            Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList()
+            Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitFor_statement(NexusParser.For_statementContext context) => new ForStatement
@@ -123,19 +149,28 @@ namespace Nexus
             Start = (IStatement) Visit(context.for_init()),
             Stop = (ICondition) Visit(context.comparison()),
             Step = (IExpression) Visit(context.expression()),
-            Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList()
+            Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitFunction_call(NexusParser.Function_callContext context) => new FunctionCall
         {
             Name = context.IDENTIFIER().GetText(),
-            Parameter = context.expression().Select(i => (IExpression) Visit(i)).ToList()
+            Parameter = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitFunction_body_statement(NexusParser.Function_body_statementContext context)
         {
             if (context.function_call() != null)
-                return new FunctionCallStatement {FunctionCall = (FunctionCall) VisitFunction_call(context.function_call())};
+                return new FunctionCallStatement
+                {
+                    FunctionCall = (FunctionCall) VisitFunction_call(context.function_call()),
+                    Line = context.Start.Line,
+                    Column = context.Start.Column
+                };
 
             return base.VisitFunction_body_statement(context);
         }
@@ -145,6 +180,8 @@ namespace Nexus
             Left = (IExpression) Visit(context.expression(0)),
             Type = BinaryOperatorType.Div,
             Right = (IExpression) Visit(context.expression(1)),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitAdd(NexusParser.AddContext context) => new BinaryOperation
@@ -152,13 +189,17 @@ namespace Nexus
             Left = (IExpression) Visit(context.expression(0)),
             Type = BinaryOperatorType.Add,
             Right = (IExpression) Visit(context.expression(1)),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitTuple(NexusParser.TupleContext context)
         {
             return new TupleLiteral
             {
-                Values = context.expression().Select(i => (IExpression) Visit(i)).ToList()
+                Values = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
+                Line = context.Start.Line,
+                Column = context.Start.Column
             };
         }
 
@@ -167,13 +208,17 @@ namespace Nexus
             Left = (IExpression) Visit(context.expression(0)),
             Type = BinaryOperatorType.Sub,
             Right = (IExpression) Visit(context.expression(1)),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitParen(NexusParser.ParenContext context) => Visit(context.expression());
 
         public override object VisitArray(NexusParser.ArrayContext context) => new ArrayLiteral
         {
-            Values = context.expression().Select(i => (IExpression) Visit(i)).ToList()
+            Values = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitMul(NexusParser.MulContext context) => new BinaryOperation
@@ -181,6 +226,8 @@ namespace Nexus
             Left = (IExpression) Visit(context.expression(0)),
             Type = BinaryOperatorType.Mul,
             Right = (IExpression) Visit(context.expression(1)),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitRange(NexusParser.RangeContext context) => new RangeLiteral
@@ -194,18 +241,24 @@ namespace Nexus
             Values = context.key_value_pair().ToDictionary(
                 i => (IExpression) Visit(i.expression(0)),
                 i => (IExpression) Visit(i.expression(1))
-            )
+            ),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitBoolean(NexusParser.BooleanContext context) => new BooleanLiteral
         {
-            Value = context.TRUE() != null
+            Value = context.TRUE() != null,
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitArray_access(NexusParser.Array_accessContext context) => new ArrayAccess
         {
             Name = context.IDENTIFIER().GetText(),
-            Index = (IExpression) Visit(context.expression())
+            Index = (IExpression) Visit(context.expression()),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitNumber(NexusParser.NumberContext context)
@@ -227,7 +280,9 @@ namespace Nexus
 
         public override object VisitQuoted_text(NexusParser.Quoted_textContext context) => new Text
         {
-            Value = context.text.Text
+            Value = context.text.Text,
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitFactor(NexusParser.FactorContext context)
@@ -275,6 +330,8 @@ namespace Nexus
                 Left = (IExpression) Visit(context.expression(0)),
                 Type = type,
                 Right = (IExpression) Visit(context.expression(1)),
+                Line = context.Start.Line,
+                Column = context.Start.Column
             };
         }
 
@@ -284,7 +341,9 @@ namespace Nexus
             Class = context.className.Text,
             Name = context.name.Text,
             Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList(),
-            Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList()
+            Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
     }
 }

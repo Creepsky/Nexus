@@ -2,7 +2,7 @@
 
 namespace Nexus.ir
 {
-    public class Class
+    public class Class : Statement
     {
         public string Name;
         public IList<Variable> Variables;
