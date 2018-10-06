@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -20,7 +20,8 @@ namespace NexusParserAntlr.ir
         U8, U16, U32, U64,
         USize,
         F32, F64,
-        String
+        String,
+        Void
     }
 
     public class SimpleType : IType
@@ -118,6 +119,7 @@ namespace NexusParserAntlr.ir
                 case PrimitiveType.F32: return "float";
                 case PrimitiveType.F64: return "double";
                 case PrimitiveType.String: return "std::string";
+                case PrimitiveType.Void: return "void";
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
@@ -144,6 +146,7 @@ namespace NexusParserAntlr.ir
                 case "ushort": return PrimitiveType.U16;
                 case "uint": return PrimitiveType.U32;
                 case "ulong": return PrimitiveType.U64;
+                case "void": return PrimitiveType.Void;
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
