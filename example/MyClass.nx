@@ -1,6 +1,6 @@
 class MyClass
 {
-    Test test_;
+    MyClass test_;
     u32 u32_ get = -123,456,789;
     i8 i8_ = (100_i64 + 15) * 18;
     usize usize_ set = 300;
