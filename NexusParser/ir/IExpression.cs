@@ -123,7 +123,7 @@ namespace Nexus.ir
 
     public class NumberLiteral : Expression
     {
-        public static NumberLiteral Parse(string integerPart, string decimalPart, string suffix)
+        public static NumberLiteral Parse(string integerPart, string decimalPart, string suffix, int line, int column)
         {
             var sign = integerPart.First() == '-' ? '-' : '+';
             integerPart = integerPart.Replace(",", "");
@@ -196,7 +196,7 @@ namespace Nexus.ir
                     switch (type)
                     {
                         case PrimitiveType.F32:
-                            return new F32 {Value = ParseFloat(real)};
+                            return new F32 {Value = ParseFloat(real), Line = line, Column = column};
                         case PrimitiveType.F64:
                             return new F64 {Value = ParseDouble(real)};
                         default:
@@ -207,18 +207,18 @@ namespace Nexus.ir
                 if (UIntPtr.Size == 4)
                 {
                     if (Try(ParseFloat, real, out var f32))
-                        return new F32 {Value = f32};
+                        return new F32 {Value = f32, Line = line, Column = column};
 
                     if (Try(ParseDouble, real, out var f64))
-                        return new F64 {Value = f64};
+                        return new F64 {Value = f64, Line = line, Column = column};
                 }
                 else if (UIntPtr.Size == 8)
                 {
                     if (Try(ParseDouble, real, out var f64))
-                        return new F64 {Value = f64};
+                        return new F64 {Value = f64, Line = line, Column = column};
 
                     if (Try(ParseFloat, real, out var f32))
-                        return new F32 {Value = f32};
+                        return new F32 {Value = f32, Line = line, Column = column};
                 }
                 else
                 {
@@ -232,56 +232,58 @@ namespace Nexus.ir
                 {
                     switch (type)
                     {
-                        case PrimitiveType.I8: return new I8 { Value = sbyte.Parse(integerPart) };
-                        case PrimitiveType.I16: return new I16 { Value = short.Parse(integerPart) };
-                        case PrimitiveType.I32: return new I32 { Value = int.Parse(integerPart) };
-                        case PrimitiveType.I64: return new I64 { Value = long.Parse(integerPart) };
-                        case PrimitiveType.U8: return new U8 { Value = byte.Parse(integerPart) };
-                        case PrimitiveType.U16: return new U16 { Value = ushort.Parse(integerPart) };
-                        case PrimitiveType.U32: return new U32 { Value = uint.Parse(integerPart) };
-                        case PrimitiveType.U64: return new U64 { Value = ulong.Parse(integerPart) };
+                        case PrimitiveType.I8: return new I8 { Value = sbyte.Parse(integerPart), Line = line, Column = column  };
+                        case PrimitiveType.I16: return new I16 { Value = short.Parse(integerPart), Line = line, Column = column };
+                        case PrimitiveType.I32: return new I32 { Value = int.Parse(integerPart), Line = line, Column = column };
+                        case PrimitiveType.I64: return new I64 { Value = long.Parse(integerPart), Line = line, Column = column };
+                        case PrimitiveType.U8: return new U8 { Value = byte.Parse(integerPart), Line = line, Column = column };
+                        case PrimitiveType.U16: return new U16 { Value = ushort.Parse(integerPart), Line = line, Column = column };
+                        case PrimitiveType.U32: return new U32 { Value = uint.Parse(integerPart), Line = line, Column = column };
+                        case PrimitiveType.U64: return new U64 { Value = ulong.Parse(integerPart), Line = line, Column = column };
                         // TODO: ulong to bit size
-                        case PrimitiveType.USize: return new USize { Value = ulong.Parse(integerPart) };
+                        case PrimitiveType.USize: return new USize { Value = ulong.Parse(integerPart), Line = line, Column = column };
                         default:
                             throw new ArgumentOutOfRangeException(nameof(type), type, "invalid type");
                     }
                 }
 
                 if (long.TryParse(integerPart, out var i64))
-                    return new I64 {Value = i64};
+                    return new I64 {Value = i64, Line = line, Column = column };
 
                 if (ulong.TryParse(integerPart, out var u64))
-                    return new U64 {Value = u64};
+                    return new U64 {Value = u64, Line = line, Column = column};
 
                 if (sbyte.TryParse(integerPart, out var i8))
-                    return new I8 {Value = i8};
+                    return new I8 {Value = i8, Line = line, Column = column};
 
                 if (short.TryParse(integerPart, out var i16))
-                    return new I16 {Value = i16};
+                    return new I16 {Value = i16, Line = line, Column = column};
 
                 if (int.TryParse(integerPart, out var i32))
-                    return new I32 {Value = i32};
+                    return new I32 {Value = i32, Line = line, Column = column};
 
                 if (byte.TryParse(integerPart, out var u8))
-                    return new U8 {Value = u8};
+                    return new U8 {Value = u8, Line = line, Column = column};
 
                 if (ushort.TryParse(integerPart, out var u16))
-                    return new U16 {Value = u16};
+                    return new U16 {Value = u16, Line = line, Column = column};
 
                 if (uint.TryParse(integerPart, out var u32))
-                    return new U32 {Value = u32};
+                    return new U32 {Value = u32, Line = line, Column = column};
             }
 
             return null;
         }
 
-        private static NumberLiteral ParseNumberBase(string number, int fromBase)
+        private static NumberLiteral ParseNumberBase(string number, int fromBase, int line, int column)
         {
             try
             {
                 return new I64
                 {
-                    Value = Convert.ToInt64(number, fromBase)
+                    Value = Convert.ToInt64(number, fromBase),
+                    Line = line,
+                    Column = column
                 };
 
             }
@@ -291,7 +293,9 @@ namespace Nexus.ir
                 {
                     return new U64
                     {
-                        Value = Convert.ToUInt64(number, fromBase)
+                        Value = Convert.ToUInt64(number, fromBase),
+                        Line = line,
+                        Column = column
                     };
 
                 }
@@ -302,9 +306,9 @@ namespace Nexus.ir
             }
         }
 
-        public static NumberLiteral ParseBinary(string bits) => ParseNumberBase(bits, 2);
+        public static NumberLiteral ParseBinary(string bits, int line, int column) => ParseNumberBase(bits, 2, line, column);
 
-        public static NumberLiteral ParseHex(string hex) => ParseNumberBase(hex, 16);
+        public static NumberLiteral ParseHex(string hex, int line, int column) => ParseNumberBase(hex, 16, line, column);
 
         private static float ParseFloat(string number) =>
             float.Parse(number, NumberStyles.Float, CultureInfo.InvariantCulture);

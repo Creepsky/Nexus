@@ -267,7 +267,9 @@ namespace Nexus
                 return NumberLiteral.Parse(
                     context.INTEGER().GetText(),
                     null,
-                    context.INTEGER_SUFFIX()?.GetText()
+                    context.INTEGER_SUFFIX()?.GetText(),
+                    context.Start.Line,
+                    context.Start.Column
                 );
 
             if (context.REAL() != null)
@@ -294,10 +296,10 @@ namespace Nexus
                 return VisitBoolean(context.boolean());
 
             if (context.BINARY() != null)
-                return NumberLiteral.ParseBinary(context.BINARY().GetText().Substring(2));
+                return NumberLiteral.ParseBinary(context.BINARY().GetText().Substring(2), context.Start.Line, context.Start.Column);
 
             if (context.HEX() != null)
-                return NumberLiteral.ParseHex(context.HEX().GetText().Substring(2));
+                return NumberLiteral.ParseHex(context.HEX().GetText().Substring(2), context.Start.Line, context.Start.Column);
 
             if (context.quoted_text() != null)
                 return new Text { Value = context.quoted_text().text == null ? string.Empty : context.quoted_text().text.Text };
