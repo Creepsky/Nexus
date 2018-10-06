@@ -1,19 +1,19 @@
-﻿using System.Linq;
-using NexusParserAntlr.ir;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace NexusParserAntlr.Generation
 {
-    public class ClassFunction
+    public class Function : IGenerationElement
     {
-        public readonly CompilationUnit Unit;
-        public readonly CompilationType Type;
-        private readonly Function _function;
+        public readonly Type Type;
+        public readonly IList<Variable> Parameter;
+        private readonly ir.Function _function;
 
-        public ClassFunction(CompilationUnit unit, Function function)
+        public Function(ir.Function function)
         {
-            Unit = unit;
             _function = function;
-            Type = new CompilationType(unit, function.Type);
+            Type = new Type(function.Type);
+            Parameter = function.Parameter.Select(i => new Variable(i)).ToList();
         }
 
         public void ToHeader(Printer printer)
@@ -42,14 +42,31 @@ namespace NexusParserAntlr.Generation
         public void ToSource(Printer printer)
         {
             Type.Print(printer);
-            printer.Write($" {Unit.Name}::{_function.Name}");
+            //printer.Write($" {((Class)Context.Element).Name}::{_function.Name}");
             printer.WriteLine(string.Join(", ", _function.Parameter.Select(i => $"{i.Type.ToCpp()} {i.Name}")));
             printer.WriteLine("{ }");
         }
 
-        public static void Compile(CompilationUnit unit, Function function)
+        public void Check(Context upperContext)
         {
-            // TODO: compile
+            var context = upperContext.StackNewContext(this);
+
+            Type.Check(context);
+
+            foreach (var i in Parameter)
+                i.Check(context);
+        }
+
+        public IGenerationElement Generate(Context upperContext)
+        {
+            var context = upperContext.StackNewContext(this);
+
+            Type.Generate(context);
+
+            foreach (var i in Parameter)
+                i.Generate(context);
+
+            return this;
         }
     }
 }
