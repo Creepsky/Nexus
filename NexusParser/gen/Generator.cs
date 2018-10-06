@@ -1,8 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Nexus.gen
 {
+    public struct CompilationUnit
+    {
+        public string Name;
+        public string Header;
+        public string Source;
+    }
+
     public class Generator
     {
         private readonly Context _globalContext = new Context();
@@ -25,6 +34,34 @@ namespace Nexus.gen
         {
             foreach (var i in _globalContext.GetElements())
                 i.Check(_globalContext);
+        }
+
+        public IList<CompilationUnit> Compile()
+        {
+            var compilationUnits = new List<CompilationUnit>();
+            var headerStringWriter = new StringWriter();
+            var sourceStringWriter = new StringWriter();
+            var headerPrinter = new Printer(headerStringWriter);
+            var sourcePrinter = new Printer(sourceStringWriter);
+
+            foreach (var i in _globalContext.GetElements()
+                .Where(i => i.GetType() == typeof(Class))
+                .Select(i => (Class)i))
+            {
+                headerStringWriter.GetStringBuilder().Clear();
+                sourceStringWriter.GetStringBuilder().Clear();
+
+                i.ToHeader(headerPrinter);
+                i.ToHeader(sourcePrinter);
+
+                compilationUnits.Add(new CompilationUnit{
+                    Name = i.Name,
+                    Header = headerStringWriter.ToString(),
+                    Source = sourceStringWriter.ToString()
+                });
+            }
+
+            return compilationUnits;
         }
     }
 }

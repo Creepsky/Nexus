@@ -2,7 +2,7 @@
   "profiles": {
     "NexusParser": {
       "commandName": "Project",
-      "commandLineArgs": "../../../../example"
+      "commandLineArgs": "../../../../example ../../../../example/output"
     }
   }
 }

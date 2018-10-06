@@ -17,6 +17,9 @@ namespace Nexus
             var generator = new Generator(files);
             generator.Generate();
             generator.Check();
+            Directory.CreateDirectory(args[1]);
+            foreach (var compilationUnit in generator.Compile())
+                SaveCompilationUnit(args[1], compilationUnit);
             return 0;
         }
 
@@ -32,6 +35,14 @@ namespace Nexus
             Debug.WriteLine(ast.ToStringTree(parser));
             var visitor = new NexusGrammarVisitor();
             return (ir.File) visitor.Visit(ast);
+        }
+
+        private static void SaveCompilationUnit(string outputFolder, CompilationUnit compilationUnit)
+        {
+            var headerPath = Path.Combine(outputFolder, compilationUnit.Name + ".hpp");
+            var sourcePath = Path.Combine(outputFolder, compilationUnit.Name + ".cpp");
+            File.AppendAllLines(headerPath, new []{compilationUnit.Header});
+            File.AppendAllLines(sourcePath, new []{compilationUnit.Source});
         }
     }
 }
