@@ -21,7 +21,8 @@ namespace Nexus.ir
         USize,
         F32, F64,
         String,
-        Void
+        Void,
+        Bool
     }
 
     public class SimpleType : Expression, IType
@@ -152,6 +153,7 @@ namespace Nexus.ir
                 case PrimitiveType.F64: return "double";
                 case PrimitiveType.String: return "std::string";
                 case PrimitiveType.Void: return "void";
+                case PrimitiveType.Bool: return "bool";
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
@@ -179,6 +181,8 @@ namespace Nexus.ir
                 case "uint": return PrimitiveType.U32;
                 case "ulong": return PrimitiveType.U64;
                 case "void": return PrimitiveType.Void;
+                case "bool": return PrimitiveType.Bool;
+                case "boolean": return PrimitiveType.Bool;
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
