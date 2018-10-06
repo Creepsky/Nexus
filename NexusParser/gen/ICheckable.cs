@@ -1,6 +1,4 @@
-﻿using Nexus.gen;
-
-namespace Nexus
+﻿namespace Nexus.gen
 {
     public interface ICheckable
     {
