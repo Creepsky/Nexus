@@ -2,7 +2,7 @@
   "profiles": {
     "NexusParserAntlr": {
       "commandName": "Project",
-      "commandLineArgs": "../../../test.nx"
+      "commandLineArgs": "../../.."
     }
   }
 }

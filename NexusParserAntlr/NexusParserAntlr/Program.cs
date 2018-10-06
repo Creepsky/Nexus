@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Antlr4.Runtime;
 using NexusParserAntlr.Generation;
 
@@ -8,26 +10,28 @@ namespace NexusParserAntlr
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static int Main(string[] args)
         {
-            var textReader = new StreamReader(args[0]);
+            var files = Directory.EnumerateFiles(args[0], "*.nx").Select(ParseFile).ToList();
+            var printer = new Printer(Console.Out);
+            var generator = new Generator(files);
+            generator.Generate();
+            generator.Check();
+            return 0;
+        }
+
+        private static ir.File ParseFile(string path)
+        {
+            var file = File.OpenRead(path);
+            var textReader = new StreamReader(file);
             var input = new AntlrInputStream(textReader);
             var lexer = new NexusLexer(input, Console.Out, Console.Error);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new NexusParser(tokenStream);
-            //parser.RemoveErrorListeners();
-            //parser.AddErrorListener(new ErrorListener());
             var ast = parser.file();
             Debug.WriteLine(ast.ToStringTree(parser));
             var visitor = new NexusGrammarVisitor();
-            var file = (ir.File) visitor.Visit(ast);
-            var printer = new Printer(Console.Out);
-            foreach (var i in file.Classes)
-            {
-                var compilationUnit = new CompilationUnit(i);
-                compilationUnit.ToHeader(printer);
-                compilationUnit .ToSource(printer);
-            }
+            return (ir.File) visitor.Visit(ast);
         }
     }
 }
