@@ -24,7 +24,7 @@ Let Nexus make the annoying stuff for you and concentrate on your work :)
 
 - write less, do more
 - simple and readable code
-- high level constructs and syntactic suggar
+- high level constructs and syntactic sugar
 - built-in asynchronicity through thread pools and channels
 - easy to use library manager
 - type safety
