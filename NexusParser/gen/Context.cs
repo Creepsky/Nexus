@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Nexus.ir.stmt;
 
@@ -49,7 +49,7 @@ namespace Nexus.gen
             if (UpperContext != null)
                 return UpperContext.Get(name);
 
-            throw new ArgumentOutOfRangeException(nameof(name), name, "element not found");
+            return null;
         }
 
         public Class GetClass(string name)
