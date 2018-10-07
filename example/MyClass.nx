@@ -35,12 +35,12 @@ class MyClass
     {
     }
 
-    void function_map(i32 id, string value)
+    void function_map_assignment(i32 id, string value)
     {
         map_[id] = value;
     }
 
-    string function_map(i32 id)
+    string function_map_access(i32 id)
     {
         return map_[id];
     }
