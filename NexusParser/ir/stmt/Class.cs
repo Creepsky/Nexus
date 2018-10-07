@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
 using Nexus.ir.expr;
@@ -139,39 +139,25 @@ namespace Nexus.ir.stmt
             if (phase == GenerationPhase.ForwardDeclaration)
             {
                 upperContext.Add(Name, this);
-
                 _context = upperContext.StackNewContext(this);
-
-                foreach (var i in Variables)
-                    i.Generate<Variable>(_context, phase);
-
-                foreach (var i in Functions)
-                    i.Generate<Function>(_context, phase);
             }
-            else if (phase == GenerationPhase.Declaration)
-            {
-                foreach (var i in Variables)
-                    Private.Variables.Add(i.Generate<Variable>(_context, phase));
 
-                foreach (var i in Functions)
-                    Public.Functions.Add(i.Generate<Function>(_context, phase));
+            foreach (var i in Variables)
+                i.Generate<Variable>(_context, phase);
 
-                //foreach (var i in _extensionFunctions)
-                //{
-                //    Public.Functions.Add(new Function
-                //    {
-                //        Name = i.Name,
-                //        Type = i.ReturnType,
-                //        Parameter = i.Parameter,
-                //        Statements = i.Body
-                //    }.Generate<Function>(context));
-                //}
-            }
-            else if (phase == GenerationPhase.Definition)
-            {
-                Private.Generate(_context, phase);
-                Public.Generate(_context, phase);
-            }
+            foreach (var i in Functions)
+                i.Generate<Function>(_context, phase);
+
+            //foreach (var i in _extensionFunctions)
+            //{
+            //    Public.Functions.Add(new Function
+            //    {
+            //        Name = i.Name,
+            //        Type = i.ReturnType,
+            //        Parameter = i.Parameter,
+            //        Statements = i.Body
+            //    }.Generate<Function>(context));
+            //}
 
             return this;
         }

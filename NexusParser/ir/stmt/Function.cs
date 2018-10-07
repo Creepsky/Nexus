@@ -77,6 +77,12 @@ namespace Nexus.ir.stmt
 
                 foreach (var i in Statements)
                     i.Generate(_context, phase);
+
+                if (upperContext.Element.GetType() == typeof(Class))
+                {
+                    var c = (Class) upperContext.Element;
+                    c.Public.Functions.Add(this);
+                }
             }
 
             return this;

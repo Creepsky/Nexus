@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Nexus.common;
 using Nexus.gen;
@@ -66,7 +66,7 @@ namespace Nexus.ir.stmt
             c.Private.Variables.Add(this);
 
             if (Getter)
-                c.Public.Functions.Add(new Function
+                c.Functions.Add(new Function
                 {
                     Name = $"get_{Name}",
                     Type = Type,
@@ -86,7 +86,7 @@ namespace Nexus.ir.stmt
                 }.Generate<Function>(context, GenerationPhase.ForwardDeclaration));
 
             if (Setter)
-                c.Public.Functions.Add(new Function
+                c.Functions.Add(new Function
                 {
                     Name = $"set_{Name}",
                     Type = c.Type,
