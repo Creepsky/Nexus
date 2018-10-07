@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
@@ -8,6 +8,7 @@ namespace Nexus.ir.expr
     public interface IType : IGenerationElement
     {
         bool IsPrimitive();
+        bool IsAuto();
 
         string ToCpp();
 
@@ -45,6 +46,11 @@ namespace Nexus.ir.expr
                 // class
                 return false;
             }
+        }
+
+        public bool IsAuto()
+        {
+            return Name == "auto";
         }
 
         public string ToCpp()
@@ -112,6 +118,8 @@ namespace Nexus.ir.expr
 
         public bool IsPrimitive() => false;
 
+        public bool IsAuto() => false;
+
         public string ToCpp()
         {
             return $"std::tuple<{string.Join(", ", Types.Select(i => i.ToCpp().ToArray(Array)))}>";
@@ -146,6 +154,8 @@ namespace Nexus.ir.expr
         }
 
         public bool IsPrimitive() => false;
+
+        public bool IsAuto() => false;
 
         public string ToCpp()
         {
