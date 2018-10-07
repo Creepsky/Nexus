@@ -12,7 +12,6 @@ namespace Nexus
         private static int Main(string[] args)
         {
             var files = Directory.EnumerateFiles(args[0], "*.nx").Select(ParseFile).ToList();
-            var printer = new Printer(Console.Out);
             var generator = new Generator(files);
             generator.Generate();
             generator.Check();

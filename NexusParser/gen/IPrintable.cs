@@ -3,7 +3,8 @@
     public enum PrintType
     {
         Header,
-        Source
+        Source,
+        Parameter
     }
 
     public interface IPrintable

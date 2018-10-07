@@ -157,6 +157,10 @@ namespace Nexus.ir.expr
             {
                 printer.Write(ToCpp());
             }
+            else if (type == PrintType.Parameter)
+            {
+                printer.Write(ToCpp());
+            }
         }
 
         public bool IsPrimitive() => false;

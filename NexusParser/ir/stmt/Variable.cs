@@ -152,6 +152,11 @@ namespace Nexus.ir.stmt
             {
                 printer.Write($"{Name}{{{Initialization}}}");
             }
+            else if (type == PrintType.Parameter)
+            {
+                Type.Print(PrintType.Parameter, printer);
+                printer.Write(' ' + Name);
+            }
         }
     }
 }

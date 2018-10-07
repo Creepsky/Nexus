@@ -43,7 +43,7 @@ namespace Nexus.gen
                 i.Check(_globalContext);
         }
 
-        public IList<CompilationUnit> Compile()
+        public IEnumerable<CompilationUnit> Compile()
         {
             var compilationUnits = new List<CompilationUnit>();
             var headerStringWriter = new StringWriter();
@@ -58,8 +58,8 @@ namespace Nexus.gen
                 headerStringWriter.GetStringBuilder().Clear();
                 sourceStringWriter.GetStringBuilder().Clear();
 
-                i.ToHeader(headerPrinter);
-                i.ToSource(sourcePrinter);
+                i.Print(PrintType.Header, headerPrinter);
+                i.Print(PrintType.Source, sourcePrinter);
 
                 compilationUnits.Add(new CompilationUnit{
                     Name = i.Name,

@@ -18,37 +18,6 @@ namespace Nexus.ir.stmt
             return $"{Type} {Name}({string.Join(',', Parameter.Select(i => i.Type))})";
         }
 
-        public void ToHeader(Printer printer)
-        {
-            Type.Print(PrintType.Header, printer);
-
-            printer.Write($" {Name}(");
-
-            if (Parameter.Any())
-            {
-                var last = Parameter.Last();
-
-                foreach (var i in Parameter)
-                {
-                    printer.Write(i.Type.IsPrimitive() ? $"{i.Type.ToCpp()}" : $"const {i.Type.ToCpp()}&");
-                    printer.Write($" {i.Name}");
-
-                    if (last != i)
-                        printer.Write(", ");
-                }
-            }
-
-            printer.WriteLine(");");
-        }
-
-        public void ToSource(Printer printer)
-        {
-            Type.Print(PrintType.Source, printer);
-            //printer.Write($" {((Class)Context.Element).Name}::{_function.Name}");
-            printer.WriteLine(string.Join(", ", Parameter.Select(i => $"{i.Type.ToCpp()} {i.Name}")));
-            printer.WriteLine("{ }");
-        }
-
         public override void Check(Context upperContext)
         {
             Type.Check(_context);
@@ -90,7 +59,43 @@ namespace Nexus.ir.stmt
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            if (type == PrintType.Header)
+            {
+                Type.Print(PrintType.Header, printer);
+
+                printer.Write($" {Name}(");
+
+                if (Parameter.Any())
+                {
+                    var last = Parameter.Last();
+
+                    foreach (var i in Parameter)
+                    {
+                        Type.Print(type, printer);
+                        printer.Write($" {i.Name}");
+
+                        if (last != i)
+                            printer.Write(", ");
+                    }
+                }
+
+                printer.WriteLine(");");
+            }
+            else if (type == PrintType.Source)
+            {
+                Type.Print(PrintType.Source, printer);
+                printer.Write($" {((Class)_context.UpperContext.Element).Name}::{Name}(");
+                // i.Type.IsPrimitive() ? $"{i.Type.ToCpp()}" : $"const {i.Type.ToCpp()}&
+                foreach (var i in Parameter)
+                {
+                    i.Print(PrintType.Parameter, printer);
+
+                    if (i != Parameter.Last())
+                        printer.Write(", ");
+                }
+                printer.WriteLine(")");
+                printer.WriteLine("{ }");
+            }
         }
     }
 }

@@ -81,60 +81,6 @@ namespace Nexus.ir.stmt
             return $"class {Name}";
         }
 
-        public void ToHeader(Printer printer)
-        {
-            printer.WriteLine("#pragma once");
-            printer.WriteLine();
-            // TODO: add #include function
-            //if (Public.Types.Any(i => i.IsArray()))
-            //    printer.WriteLine("#include <vector>");
-            //if (Public.Types.Any(i => i.Type == "string"))
-            //    printer.WriteLine("#include <string>");
-            printer.WriteLine();
-            printer.WriteLine($"class {Name}");
-            printer.WriteLine("{");
-            printer.WriteLine("public:");
-            printer.Push();
-            foreach (var i in Public.Functions)
-                i.ToHeader(printer);
-            printer.Pop();
-            printer.WriteLine();
-            printer.WriteLine("private:");
-            printer.Push();
-            foreach (var i in Private.Variables)
-                i.Print(PrintType.Header, printer);
-            printer.Pop();
-            printer.WriteLine("};");
-        }
-
-        public void ToSource(Printer printer)
-        {
-            printer.WriteLine($"#include \"{Name}.hpp\"");
-            printer.WriteLine();
-            
-            // constructor
-            printer.WriteLine($"{Name}::{Name}()");
-            printer.Push();
-            if (Private.Variables.Any())
-            {
-                printer.WriteLine(":");
-                foreach (var i in Private.Variables)
-                {
-                    i.Print(PrintType.Source, printer);
-                    if (i != Private.Variables.Last())
-                        printer.WriteLine(",");
-                }
-                printer.Pop();
-                printer.WriteLine();
-            }
-            printer.WriteLine("{ }");
-            printer.WriteLine();
-            
-            // functions
-            //foreach (var i in Public.Functions)
-            //    i.ToSource(printer);
-        }
-
         public override IGenerationElement Generate(Context upperContext, GenerationPhase phase)
         {
             if (phase == GenerationPhase.ForwardDeclaration)
@@ -165,7 +111,61 @@ namespace Nexus.ir.stmt
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            if (type == PrintType.Header)
+            {
+                printer.WriteLine("#pragma once");
+                printer.WriteLine();
+                // TODO: add #include function
+                //if (Public.Types.Any(i => i.IsArray()))
+                //    printer.WriteLine("#include <vector>");
+                //if (Public.Types.Any(i => i.Type == "string"))
+                //    printer.WriteLine("#include <string>");
+                printer.WriteLine();
+                printer.WriteLine($"class {Name}");
+                printer.WriteLine("{");
+                printer.WriteLine("public:");
+                printer.Push();
+                foreach (var i in Public.Functions)
+                    i.Print(type, printer);
+                printer.Pop();
+                printer.WriteLine();
+                printer.WriteLine("private:");
+                printer.Push();
+                foreach (var i in Private.Variables)
+                    i.Print(PrintType.Header, printer);
+                printer.Pop();
+                printer.WriteLine("};");
+            }
+            else if (type == PrintType.Source)
+            {
+                printer.WriteLine($"#include \"{Name}.hpp\"");
+                printer.WriteLine();
+            
+                // constructor
+                printer.WriteLine($"{Name}::{Name}()");
+                printer.Push();
+                if (Private.Variables.Any())
+                {
+                    printer.WriteLine(":");
+                    foreach (var i in Private.Variables)
+                    {
+                        i.Print(PrintType.Source, printer);
+                        if (i != Private.Variables.Last())
+                            printer.WriteLine(",");
+                    }
+                    printer.Pop();
+                    printer.WriteLine();
+                }
+                printer.WriteLine("{ }");
+                printer.WriteLine();
+
+                // functions
+                foreach (var i in Public.Functions)
+                {
+                    i.Print(type, printer);
+                    printer.WriteLine();
+                }
+            }
         }
 
         public override void Check(Context context)
