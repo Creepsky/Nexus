@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
 using Nexus.ir.expr;
@@ -95,14 +95,14 @@ namespace Nexus.ir.stmt
             printer.WriteLine("{");
             printer.WriteLine("public:");
             printer.Push();
-            //foreach (var i in Public.Functions)
-            //    i.ToHeader(printer);
+            foreach (var i in Public.Functions)
+                i.ToHeader(printer);
             printer.Pop();
             printer.WriteLine();
             printer.WriteLine("private:");
             printer.Push();
-            //foreach (var i in Private.Variables)
-            //    i.PrintHeaderDeclaration(printer);
+            foreach (var i in Private.Variables)
+                i.Print(PrintType.Header, printer);
             printer.Pop();
             printer.WriteLine("};");
         }
@@ -120,11 +120,12 @@ namespace Nexus.ir.stmt
                 printer.WriteLine(":");
                 foreach (var i in Private.Variables)
                 {
+                    i.Print(PrintType.Source, printer);
                     if (i != Private.Variables.Last())
                         printer.WriteLine(",");
                 }
-                printer.WriteLine();
                 printer.Pop();
+                printer.WriteLine();
             }
             printer.WriteLine("{ }");
             printer.WriteLine();

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Nexus.common;
 using Nexus.gen;
@@ -143,7 +143,15 @@ namespace Nexus.ir.stmt
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            if (type == PrintType.Header)
+            {
+                Type.Print(type, printer);
+                printer.WriteLine($" {Name};");
+            }
+            else if (type == PrintType.Source)
+            {
+                printer.Write($"{Name}{{{Initialization}}}");
+            }
         }
     }
 }

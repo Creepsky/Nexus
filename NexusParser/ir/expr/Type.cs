@@ -113,7 +113,10 @@ namespace Nexus.ir.expr
 
         public void Print(PrintType type, Printer printer)
         {
-            throw new NotImplementedException();
+            if (type == PrintType.Header)
+            {
+                printer.Write(ToCpp());
+            }
         }
 
         public bool IsPrimitive() => false;
@@ -150,7 +153,10 @@ namespace Nexus.ir.expr
 
         public void Print(PrintType type, Printer printer)
         {
-            throw new NotImplementedException();
+            if (type == PrintType.Header)
+            {
+                printer.Write(ToCpp());
+            }
         }
 
         public bool IsPrimitive() => false;
