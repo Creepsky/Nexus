@@ -3,29 +3,29 @@
 A simple yet powerful system programming language.
 
 ```c
+(int, string) create_tuple() {
+    return (123, "abc");
+}
+
+auto number, text = create_tuple();
+
+string [] values;
+auto upper_bound = 10;
+
+for (auto i : 0..upper_bound) {
+    values.add(text);
+}
+
 class A {
-    (int, string) create_tuple() {
-        return (123, "abc");
-    }
-
-    auto number, text = create_tuple();
-
-    string [] values;
-    auto upper_bound = 10;
-
-    for (auto i : 0..upper_bound) {
-        values.add(text);
-    }
+    long a;
 }
 
 int A.extension_function() {
-    return 123;
+    return a;
 }
 ```
 
 Nexus translates directly to C++ code, which makes interoperabilty with libraries a lot easier, and tries to generate the most performant code, while still being easy to write.
-
-Let Nexus make the annoying stuff for you and concentrate on your work :)
 
 ## Main Goals
 
