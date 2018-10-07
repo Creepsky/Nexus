@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Nexus.common;
 using Nexus.ir.stmt;
 
 namespace Nexus.gen
@@ -36,7 +37,7 @@ namespace Nexus.gen
         public void Add(string name, IGenerationElement element)
         {
             if (Contains(name))
-                throw new ArgumentException("element name already exist", nameof(name));
+                throw new RedeclarationException(element, Get(name), name);
 
             _symbols.Add(name, element);
         }
