@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using Nexus.ir;
+using Nexus.ir.expr;
+using Nexus.ir.stmt;
 
 namespace Nexus
 {

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
 
-namespace Nexus.ir
+namespace Nexus.ir.expr
 {
-    public interface IType : ICheckable
+    public interface IType : IGenerationElement
     {
         bool IsPrimitive();
 
@@ -64,7 +64,12 @@ namespace Nexus.ir
             return $"{Name}{string.Concat(Enumerable.Repeat("[]", Array))}";
         }
 
-        public void Check(Context context)
+        public void Print(PrintType type, Printer printer)
+        {
+            printer.Write(IsPrimitive() ? ToCpp() : $"const {ToCpp()}&");
+        }
+
+        public override void Check(Context context)
         {
             try
             {
@@ -79,9 +84,14 @@ namespace Nexus.ir
                 }
                 catch (Exception)
                 {
-                    throw new Exception($"unknown type {Name}");
+                    throw new Exception($"unknown type {Name} at line {Line}, column {Column}");
                 }
             }
+        }
+
+        public IGenerationElement Generate(Context context)
+        {
+            return this;
         }
     }
 
@@ -95,6 +105,11 @@ namespace Nexus.ir
             return $"({string.Join(',', Types)}) {string.Concat(Enumerable.Repeat("[]", Array))}";
         }
 
+        public void Print(PrintType type, Printer printer)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsPrimitive() => false;
 
         public string ToCpp()
@@ -102,10 +117,15 @@ namespace Nexus.ir
             return $"std::tuple<{string.Join(", ", Types.Select(i => i.ToCpp().ToArray(Array)))}>";
         }
 
-        public void Check(Context context)
+        public override void Check(Context context)
         {
             foreach (var i in Types)
                 i.Check(context);
+        }
+
+        public IGenerationElement Generate(Context context)
+        {
+            return this;
         }
     }
 
@@ -120,6 +140,11 @@ namespace Nexus.ir
             return $"[{KeyType} -> {ValueType}] {string.Concat(Enumerable.Repeat("[]", Array))}";
         }
 
+        public void Print(PrintType type, Printer printer)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsPrimitive() => false;
 
         public string ToCpp()
@@ -127,10 +152,15 @@ namespace Nexus.ir
             return $"std::map<{KeyType.ToCpp().ToArray(Array)}, {ValueType.ToCpp().ToArray(Array)}>";
         }
 
-        public void Check(Context context)
+        public override void Check(Context context)
         {
             KeyType.Check(context);
             ValueType.Check(context);
+        }
+
+        public IGenerationElement Generate(Context context)
+        {
+            return this;
         }
     }
 

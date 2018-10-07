@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Nexus.ir.stmt;
 
 namespace Nexus.gen
 {
     public class Context
     {
-        public Context UpperContext;
+        public readonly Context UpperContext;
         public readonly IGenerationElement Element;
         private readonly IDictionary<string, IGenerationElement> _symbols;
 
@@ -42,18 +43,18 @@ namespace Nexus.gen
 
         public IGenerationElement Get(string name)
         {
-            return Contains(name) ? _symbols[name] : null;
+            if (Contains(name))
+                return _symbols[name];
+
+            if (UpperContext != null)
+                return UpperContext.Get(name);
+
+            throw new ArgumentOutOfRangeException(nameof(name), name, "element not found");
         }
 
         public Class GetClass(string name)
         {
-            if (Contains(name))
-                return (Class)_symbols[name];
-
-            if (UpperContext != null)
-                return UpperContext.GetClass(name);
-
-            throw new ArgumentOutOfRangeException(nameof(name), name, "element not found");
+            return (Class)Get(name);
         }
 
         public Context StackNewContext(IGenerationElement element) => new Context(this, element);

@@ -1,126 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection.Metadata;
-using Antlr4.Runtime;
+using Nexus.gen;
 
-namespace Nexus.ir
+namespace Nexus.ir.expr
 {
-    public interface IExpression
-    { }
-
-    public abstract class Expression : IExpression, IPositioned
-    {
-        public int Line { get; set; }
-        public int Column { get; set; }
-    }
-
-    public class BooleanLiteral : Expression
-    {
-        public bool Value;
-
-        public override string ToString() => Value ? "true" : "false";
-    }
-
-    public class ArrayAccess : Expression
-    {
-        public string Name;
-        public IExpression Index;
-
-        public override string ToString() => $"{Name}[{Index}]";
-    }
-
-    public class VariableLiteral : Expression
-    {
-        public string Name;
-
-        public override string ToString() => Name;
-    }
-
-    public class RangeLiteral : Expression
-    {
-        public IExpression Start;
-        public IExpression End;
-
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-    }
-
-    public class MapLiteral : Expression
-    {
-        public IDictionary<IExpression, IExpression> Values;
-
-        public override string ToString()
-        {
-            return '{' + string.Join(", ", Values.Select(i => '{' + i.Key.ToString() + ", " + i.Value.ToString() + '}')) + '}';
-        }
-    }
-
-    public class Text : Expression
-    {
-        public string Value;
-
-        public override string ToString() => '"' + Value + '"';
-    }
-
-    public class ArrayLiteral : Expression
-    {
-        public IList<IExpression> Values;
-
-        public override string ToString() => '{' + string.Join(", ", Values) + '}';
-    }
-
-    public class TupleLiteral : Expression
-    {
-        public IList<IExpression> Values;
-
-        public override string ToString() => $"std::make_tuple({string.Join(", ", Values)})";
-    }
-
-    public class FunctionCall : Expression
-    {
-        public string Name;
-        public IList<IExpression> Parameter;
-
-        public override string ToString() => $"{Name}({string.Join(", ", Parameter)})";
-    }
-
-    public enum BinaryOperatorType
-    {
-        Add,
-        Sub,
-        Mul,
-        Div
-    }
-
-    public class BinaryOperation : Expression
-    {
-        public IExpression Left;
-        public BinaryOperatorType Type;
-        public IExpression Right;
-
-        public override string ToString()
-        {
-            char op;
-
-            if (Type == BinaryOperatorType.Add)
-                op = '+';
-            else if (Type == BinaryOperatorType.Div)
-                op = '/';
-            else if (Type == BinaryOperatorType.Sub)
-                op = '-';
-            else if (Type == BinaryOperatorType.Mul)
-                op = '*';
-            else
-                throw new ArgumentOutOfRangeException(nameof(Type), Type, "unknown binary type");
-
-            return $"{Left} {op} {Right}";
-        }
-    }
-
     public class NumberLiteral : Expression
     {
         public static NumberLiteral Parse(string integerPart, string decimalPart, string suffix, int line, int column)
@@ -328,6 +212,11 @@ namespace Nexus.ir
                 result = default(T);
                 return false;
             }
+        }
+
+        public override void Check(Context context)
+        {
+            throw new NotImplementedException();
         }
     }
 

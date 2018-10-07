@@ -1,4 +1,6 @@
 ﻿using System;
+using Nexus.gen;
+using Nexus.ir.expr;
 
 namespace Nexus.ir
 {
@@ -20,5 +22,10 @@ namespace Nexus.ir
         public ComparisonType Type;
         public IExpression Left;
         public IExpression Right;
+
+        public override void Check(Context context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
+using Nexus.ir.stmt;
 
 namespace Nexus.gen
 {
@@ -20,8 +20,7 @@ namespace Nexus.gen
         {
             foreach (var file in files)
                 foreach (var c in file.Classes)
-                    _globalContext.Add(c.Name, new Class(_globalContext, c,
-                        files.SelectMany(i => i.ExtensionFunctions).Where(i => i.Class == c.Name)));
+                    _globalContext.Add(c.Name, c);
         }
 
         public void Generate()
@@ -52,7 +51,7 @@ namespace Nexus.gen
                 sourceStringWriter.GetStringBuilder().Clear();
 
                 i.ToHeader(headerPrinter);
-                i.ToHeader(sourcePrinter);
+                i.ToSource(sourcePrinter);
 
                 compilationUnits.Add(new CompilationUnit{
                     Name = i.Name,

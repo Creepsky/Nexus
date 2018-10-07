@@ -1,6 +1,6 @@
 ﻿namespace Nexus.gen
 {
-    public interface IGenerationElement : ICheckable
+    public interface IGenerationElement : ICheckable, IPrintable
     {
         IGenerationElement Generate(Context context);
     }

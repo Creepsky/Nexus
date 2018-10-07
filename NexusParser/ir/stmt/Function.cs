@@ -1,32 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Nexus.gen;
+using Nexus.ir.expr;
 
-namespace Nexus.gen
+namespace Nexus.ir.stmt
 {
-    public class Function : IGenerationElement
+    public class Function : Statement
     {
-        public readonly Type Type;
-        public readonly IList<Variable> Parameter;
-        private readonly ir.Function _function;
+        public IType Type;
+        public string Name;
+        public IList<Variable> Parameter;
+        public IList<IStatement> Statements;
 
-        public Function(ir.Function function)
+        public override string ToString()
         {
-            _function = function;
-            Type = new Type(function.Type);
-            Parameter = function.Parameter.Select(i => new Variable(i)).ToList();
+            return $"{Type} {Name}({string.Join(',', Parameter.Select(i => i.Type))})";
         }
 
         public void ToHeader(Printer printer)
         {
-            Type.Print(printer);
+            Type.Print(PrintType.Header, printer);
 
-            printer.Write($" {_function.Name}(");
+            printer.Write($" {Name}(");
 
-            if (_function.Parameter.Any())
+            if (Parameter.Any())
             {
-                var last = _function.Parameter.Last();
+                var last = Parameter.Last();
 
-                foreach (var i in _function.Parameter)
+                foreach (var i in Parameter)
                 {
                     printer.Write(i.Type.IsPrimitive() ? $"{i.Type.ToCpp()}" : $"const {i.Type.ToCpp()}&");
                     printer.Write($" {i.Name}");
@@ -41,13 +42,13 @@ namespace Nexus.gen
 
         public void ToSource(Printer printer)
         {
-            Type.Print(printer);
+            Type.Print(PrintType.Source, printer);
             //printer.Write($" {((Class)Context.Element).Name}::{_function.Name}");
-            printer.WriteLine(string.Join(", ", _function.Parameter.Select(i => $"{i.Type.ToCpp()} {i.Name}")));
+            printer.WriteLine(string.Join(", ", Parameter.Select(i => $"{i.Type.ToCpp()} {i.Name}")));
             printer.WriteLine("{ }");
         }
 
-        public void Check(Context upperContext)
+        public override void Check(Context upperContext)
         {
             var context = upperContext.StackNewContext(this);
 
@@ -55,9 +56,12 @@ namespace Nexus.gen
 
             foreach (var i in Parameter)
                 i.Check(context);
+
+            foreach (var i in Statements)
+                i.Check(context);
         }
 
-        public IGenerationElement Generate(Context upperContext)
+        public override IGenerationElement Generate(Context upperContext)
         {
             var context = upperContext.StackNewContext(this);
 
@@ -67,6 +71,11 @@ namespace Nexus.gen
                 i.Generate(context);
 
             return this;
+        }
+
+        public override void Print(PrintType type, Printer printer)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
