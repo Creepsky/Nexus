@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Nexus.gen;
 using Nexus.ir;
 
 namespace Nexus.common
