@@ -41,8 +41,8 @@ namespace Nexus
         {
             var headerPath = Path.Combine(outputFolder, compilationUnit.Name + ".hpp");
             var sourcePath = Path.Combine(outputFolder, compilationUnit.Name + ".cpp");
-            File.AppendAllLines(headerPath, new []{compilationUnit.Header});
-            File.AppendAllLines(sourcePath, new []{compilationUnit.Source});
+            File.WriteAllText(headerPath, compilationUnit.Header);
+            File.WriteAllText(sourcePath, compilationUnit.Source);
         }
     }
 }
