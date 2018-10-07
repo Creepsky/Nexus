@@ -10,6 +10,8 @@ namespace Nexus.ir.stmt
         public readonly IList<Variable> Variables = new List<Variable>();
         public readonly IList<Function> Functions = new List<Function>();
         public readonly IList<IType> Types = new List<IType>();
+        public int Line { get; set; }
+        public int Column { get; set; }
 
         public void Check(Context context)
         {
@@ -23,9 +25,21 @@ namespace Nexus.ir.stmt
                 i.Check(context);
         }
 
-        public IGenerationElement Generate(Context context)
+        public IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            throw new System.NotImplementedException();
+            if (phase == GenerationPhase.Definition)
+            {
+                foreach (var i in Variables)
+                    i.Generate(context, phase);
+
+                foreach (var i in Functions)
+                    i.Generate(context, phase);
+
+                foreach (var i in Types)
+                    i.Generate(context, phase);
+            }
+
+            return this;
         }
 
         public void Print(PrintType type, Printer printer)
@@ -36,13 +50,31 @@ namespace Nexus.ir.stmt
 
     public class Class : Statement
     {
-        public string Name;
-        public IList<Variable> Variables;
-        public IList<Function> Functions;
+        public string Name { get; }
+        public IList<Variable> Variables { get; }
+        public IList<Function> Functions { get; }
 
-        public SimpleType Type;
-        public ClassSection Public;
-        public ClassSection Private;
+        public readonly SimpleType Type;
+        public readonly ClassSection Public;
+        public readonly ClassSection Private;
+        private Context _context;
+
+        public Class(string name, IList<Variable> variables, IList<Function> functions)
+        {
+            Name = name;
+            Variables = variables;
+            Functions = functions;
+
+            Type = new SimpleType
+            {
+                Line = Line,
+                Column = Column,
+                Name = Name
+            };
+
+            Public = new ClassSection();
+            Private = new ClassSection();
+        }
 
         public override string ToString()
         {
@@ -102,36 +134,44 @@ namespace Nexus.ir.stmt
             //    i.ToSource(printer);
         }
 
-        public override IGenerationElement Generate(Context upperContext)
+        public override IGenerationElement Generate(Context upperContext, GenerationPhase phase)
         {
-            var context = upperContext.StackNewContext(this);
-
-            Type = new SimpleType
+            if (phase == GenerationPhase.ForwardDeclaration)
             {
-                Line = Line,
-                Column = Column,
-                Name = Name
-            };
+                upperContext.Add(Name, this);
 
-            Private = new ClassSection();
-            Public = new ClassSection();
+                _context = upperContext.StackNewContext(this);
 
-            foreach (var i in Variables)
-                Private.Variables.Add(i.Generate<Variable>(context));
+                foreach (var i in Variables)
+                    i.Generate<Variable>(_context, phase);
 
-            foreach (var i in Functions)
-                Public.Functions.Add(i.Generate<Function>(context));
+                foreach (var i in Functions)
+                    i.Generate<Function>(_context, phase);
+            }
+            else if (phase == GenerationPhase.Declaration)
+            {
+                foreach (var i in Variables)
+                    Private.Variables.Add(i.Generate<Variable>(_context, phase));
 
-            //foreach (var i in _extensionFunctions)
-            //{
-            //    Public.Functions.Add(new Function
-            //    {
-            //        Name = i.Name,
-            //        Type = i.ReturnType,
-            //        Parameter = i.Parameter,
-            //        Statements = i.Body
-            //    }.Generate<Function>(context));
-            //}
+                foreach (var i in Functions)
+                    Public.Functions.Add(i.Generate<Function>(_context, phase));
+
+                //foreach (var i in _extensionFunctions)
+                //{
+                //    Public.Functions.Add(new Function
+                //    {
+                //        Name = i.Name,
+                //        Type = i.ReturnType,
+                //        Parameter = i.Parameter,
+                //        Statements = i.Body
+                //    }.Generate<Function>(context));
+                //}
+            }
+            else if (phase == GenerationPhase.Definition)
+            {
+                Private.Generate(_context, phase);
+                Public.Generate(_context, phase);
+            }
 
             return this;
         }

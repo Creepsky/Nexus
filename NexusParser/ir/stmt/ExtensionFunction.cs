@@ -22,7 +22,7 @@ namespace Nexus.ir.stmt
             throw new System.NotImplementedException();
         }
 
-        public override IGenerationElement Generate(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
             throw new System.NotImplementedException();
         }

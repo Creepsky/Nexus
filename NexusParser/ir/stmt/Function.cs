@@ -11,6 +11,7 @@ namespace Nexus.ir.stmt
         public string Name;
         public IList<Variable> Parameter;
         public IList<IStatement> Statements;
+        private Context _context;
 
         public override string ToString()
         {
@@ -50,25 +51,33 @@ namespace Nexus.ir.stmt
 
         public override void Check(Context upperContext)
         {
-            var context = upperContext.StackNewContext(this);
-
-            Type.Check(context);
+            Type.Check(_context);
 
             foreach (var i in Parameter)
-                i.Check(context);
+                i.Check(_context);
 
             foreach (var i in Statements)
-                i.Check(context);
+                i.Check(_context);
         }
 
-        public override IGenerationElement Generate(Context upperContext)
+        public override IGenerationElement Generate(Context upperContext, GenerationPhase phase)
         {
-            var context = upperContext.StackNewContext(this);
+            if (phase == GenerationPhase.ForwardDeclaration)
+            {
+                upperContext.Add(Name, this);
+            }
+            else if (phase == GenerationPhase.Definition)
+            {
+                _context = upperContext.StackNewContext(this);
 
-            Type.Generate(context);
+                Type.Generate(_context, phase);
 
-            foreach (var i in Parameter)
-                i.Generate(context);
+                foreach (var i in Parameter)
+                    i.Generate(_context, phase);
+
+                foreach (var i in Statements)
+                    i.Generate(_context, phase);
+            }
 
             return this;
         }

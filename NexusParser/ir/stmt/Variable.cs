@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
@@ -25,22 +26,39 @@ namespace Nexus.ir.stmt
 
         public override void Check(Context upperContext)
         {
-            throw new System.NotImplementedException();
+            if (Type.IsAuto())
+            {
+                //throw new Exception();
+            }
+
+            if (Initialization != null)
+            {
+                //throw new Exception();
+            }
         }
 
-        public override IGenerationElement Generate(Context upperContext)
+        public override IGenerationElement Generate(Context upperContext, GenerationPhase phase)
         {
             if (upperContext.Element == null)
                 throw new NoScopeException(this);
 
-            if (upperContext.Element.GetType() == typeof(Class))
-                return GenerateClassVariable((Class)upperContext.Element, upperContext);
+            if (phase == GenerationPhase.ForwardDeclaration)
+            {
+                upperContext.Add(Name, this);
+            }
+            if (phase == GenerationPhase.Declaration)
+            {
+                if (upperContext.Element.GetType() == typeof(Class))
+                    return GenerateClassVariable((Class)upperContext.Element, upperContext);
 
-            if (upperContext.Element.GetType() == typeof(Function))
-                return GenerateParameter((Function)upperContext.Element, upperContext);
+                if (upperContext.Element.GetType() == typeof(Function))
+                    return GenerateParameter((Function)upperContext.Element, upperContext);
 
-            throw new UnexpectedScopeException(this, upperContext.Element.GetType(),
-                new[] {typeof(Class), typeof(Function)});
+                throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
+                    new[] {nameof(Class), nameof(Function)});
+            }
+
+            return this;
         }
 
         private IGenerationElement GenerateClassVariable(Class c, Context context)
@@ -65,7 +83,7 @@ namespace Nexus.ir.stmt
                             Column = Column
                         }
                     }
-                }.Generate<Function>(context));
+                }.Generate<Function>(context, GenerationPhase.ForwardDeclaration));
 
             if (Setter)
                 c.Public.Functions.Add(new Function
@@ -110,9 +128,9 @@ namespace Nexus.ir.stmt
                     },
                     Line = Line,
                     Column = Column
-                }.Generate<Function>(context));
+                }.Generate<Function>(context, GenerationPhase.ForwardDeclaration));
 
-            c.Public.Types.Add(Type.Generate<IType>(context));
+            c.Public.Types.Add(Type.Generate<IType>(context, GenerationPhase.ForwardDeclaration));
 
             return this;
         }

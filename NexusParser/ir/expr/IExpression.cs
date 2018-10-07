@@ -2,10 +2,11 @@
 
 namespace Nexus.ir.expr
 {
-    public interface IExpression : ICheckable
-    { }
+    public interface IExpression : ICheckable, IPositioned
+    {
+    }
 
-    public abstract class Expression : IExpression, IPositioned
+    public abstract class Expression : IExpression
     {
         public int Line { get; set; }
         public int Column { get; set; }

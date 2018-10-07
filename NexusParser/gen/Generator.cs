@@ -15,18 +15,26 @@ namespace Nexus.gen
     public class Generator
     {
         private readonly Context _globalContext = new Context();
+        private readonly IList<ir.File> _files;
 
         public Generator(IList<ir.File> files)
         {
-            foreach (var file in files)
-                foreach (var c in file.Classes)
-                    _globalContext.Add(c.Name, c);
+            _files = files;
         }
 
         public void Generate()
         {
-            foreach (var i in _globalContext.GetElements())
-                i.Generate(_globalContext);
+            var phases = new[]
+            {
+                GenerationPhase.ForwardDeclaration,
+                GenerationPhase.Declaration,
+                GenerationPhase.Definition
+            };
+
+            foreach (var phase in phases)
+            foreach (var file in _files)
+            foreach (var c in file.Classes)
+                c.Generate(_globalContext, phase);
         }
 
         public void Check()

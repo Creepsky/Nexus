@@ -13,15 +13,13 @@ namespace Nexus.ir.stmt
             if (context.Element == null)
                 throw new PositionedException(this, "return statement without parent scope");
 
-            if (context.Element.GetType() == typeof(Function))
-            {
-
-            }
+            if (context.Element.GetType() != typeof(Function))
+                throw new UnexpectedScopeException(this, context.Element.GetType().Name, new []{nameof(Function)});
         }
 
-        public override IGenerationElement Generate(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            throw new System.NotImplementedException();
+            return this;
         }
 
         public override void Print(PrintType type, Printer printer)

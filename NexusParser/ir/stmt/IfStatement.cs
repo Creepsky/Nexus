@@ -23,9 +23,9 @@ namespace Nexus.ir.stmt
                 i.Check(elseContext);
         }
 
-        public override IGenerationElement Generate(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            throw new System.NotImplementedException();
+            return this;
         }
 
         public override void Print(PrintType type, Printer printer)

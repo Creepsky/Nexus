@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
 
@@ -11,12 +12,27 @@ namespace Nexus.ir.stmt
 
         public override void Check(Context context)
         {
-            throw new System.NotImplementedException();
+            if (Right.GetType() == typeof(TupleLiteral))
+            {
+            }
+            else if (Right.GetType() == typeof(FunctionCall))
+            {
+                var functionCall = (FunctionCall)Right;
+                var function = context.Get(functionCall.Name);
+
+                if (function == null)
+                    throw new FunctionNotFoundException(Right, functionCall.Name);
+            }
+            else
+            {
+                throw new TypeMismatchException(Right, new[] {nameof(TupleLiteral), nameof(FunctionCall)},
+                    Right.GetType().Name);
+            }
         }
 
-        public override IGenerationElement Generate(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            throw new System.NotImplementedException();
+            return this;
         }
 
         public override void Print(PrintType type, Printer printer)

@@ -1,15 +1,24 @@
-﻿namespace Nexus.gen
+﻿using Nexus.ir;
+
+namespace Nexus.gen
 {
-    public interface IGenerationElement : ICheckable, IPrintable
+    public enum GenerationPhase
     {
-        IGenerationElement Generate(Context context);
+        ForwardDeclaration,
+        Declaration,
+        Definition
+    }
+
+    public interface IGenerationElement : ICheckable, IPrintable, IPositioned
+    {
+        IGenerationElement Generate(Context context, GenerationPhase phase);
     }
 
     public static class GenerationElementExtensions
     {
-        public static T Generate<T>(this IGenerationElement element, Context context) where T : class
+        public static T Generate<T>(this IGenerationElement element, Context context, GenerationPhase phase) where T : class
         {
-            return (T)element.Generate(context);
+            return (T)element.Generate(context, phase);
         }
     }
 }

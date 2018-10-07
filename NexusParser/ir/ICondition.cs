@@ -25,7 +25,6 @@ namespace Nexus.ir
 
         public override void Check(Context context)
         {
-            throw new NotImplementedException();
         }
     }
 }

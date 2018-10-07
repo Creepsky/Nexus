@@ -10,7 +10,7 @@ namespace Nexus.ir.stmt
         public int Line { get; set; }
         public int Column { get; set; }
         public abstract void Check(Context context);
-        public abstract IGenerationElement Generate(Context context);
+        public abstract IGenerationElement Generate(Context context, GenerationPhase phase);
         public abstract void Print(PrintType type, Printer printer);
     }
 }

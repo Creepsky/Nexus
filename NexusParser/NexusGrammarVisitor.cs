@@ -23,11 +23,10 @@ namespace Nexus
         {
             var member = context.class_member().Select(Visit).ToList();
 
-            return new Class
+            return new Class(context.name.Text,
+                member.Where(i => i.GetType() == typeof(Variable)).Select(i => (Variable) i).ToList(),
+                member.Where(i => i.GetType() == typeof(Function)).Select(i => (Function) i).ToList())
             {
-                Name = context.name.Text,
-                Variables = member.Where(i => i.GetType() == typeof(Variable)).Select(i => (Variable) i).ToList(),
-                Functions = member.Where(i => i.GetType() == typeof(Function)).Select(i => (Function) i).ToList(),
                 Line = context.Start.Line,
                 Column = context.Start.Column
             };

@@ -13,12 +13,11 @@ namespace Nexus.ir.stmt
 
         public override void Check(Context context)
         {
-            throw new System.NotImplementedException();
         }
 
-        public override IGenerationElement Generate(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            throw new System.NotImplementedException();
+            return this;
         }
 
         public override void Print(PrintType type, Printer printer)

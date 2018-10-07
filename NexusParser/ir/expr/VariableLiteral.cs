@@ -1,5 +1,7 @@
-﻿using System;
+﻿using System.Linq;
+using Nexus.common;
 using Nexus.gen;
+using Nexus.ir.stmt;
 
 namespace Nexus.ir.expr
 {
@@ -11,7 +13,14 @@ namespace Nexus.ir.expr
        
         public override void Check(Context context)
         {
-            throw new NotImplementedException();
+            // does the variable exist in this or some higher context?
+            var i = context.Get(Name);
+
+            if (i == null)
+                throw new VariableNotFoundException(this, Name);
+
+            if (i.GetType() != typeof(Variable))
+                throw new  TypeMismatchException(this, nameof(Variable), i.GetType().Name);
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
@@ -95,7 +95,7 @@ namespace Nexus.ir.expr
             }
         }
 
-        public IGenerationElement Generate(Context context)
+        public IGenerationElement Generate(Context context, GenerationPhase phase)
         {
             return this;
         }
@@ -131,7 +131,7 @@ namespace Nexus.ir.expr
                 i.Check(context);
         }
 
-        public IGenerationElement Generate(Context context)
+        public IGenerationElement Generate(Context context, GenerationPhase phase)
         {
             return this;
         }
@@ -168,7 +168,7 @@ namespace Nexus.ir.expr
             ValueType.Check(context);
         }
 
-        public IGenerationElement Generate(Context context)
+        public IGenerationElement Generate(Context context, GenerationPhase phase)
         {
             return this;
         }
