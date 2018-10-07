@@ -2,17 +2,24 @@
 
 A simple yet powerful system programming language.
 
-```
-(i32, string) create_tuple() {
-    return (123, "abc");
+```c
+class A {
+    (int, string) create_tuple() {
+        return (123, "abc");
+    }
+
+    auto number, text = create_tuple();
+
+    string [] values;
+    auto upper_bound = 10;
+
+    for (auto i : 0..upper_bound) {
+        values.add(text);
+    }
 }
 
-auto number, text = create_tuple();
-
-string [] values;
-
-for (auto i : [0 .. 10]) {
-    values.add(text);
+int A.extension_function() {
+    return 123;
 }
 ```
 
