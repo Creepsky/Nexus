@@ -193,15 +193,12 @@ namespace Nexus
             Column = context.Start.Column
         };
 
-        public override object VisitTuple(NexusParser.TupleContext context)
+        public override object VisitTuple(NexusParser.TupleContext context) => new TupleLiteral
         {
-            return new TupleLiteral
-            {
-                Values = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
-                Line = context.Start.Line,
-                Column = context.Start.Column
-            };
-        }
+            Values = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
+            Line = context.Start.Line,
+            Column = context.Start.Column
+        };
 
         public override object VisitSub(NexusParser.SubContext context) => new BinaryOperation
         {
@@ -234,6 +231,8 @@ namespace Nexus
         {
             Start = (IExpression) Visit(context.expression(0)),
             End = (IExpression) Visit(context.expression(1)),
+            Line = context.Start.Line,
+            Column = context.Start.Column
         };
 
         public override object VisitMap(NexusParser.MapContext context) => new MapLiteral
@@ -302,10 +301,20 @@ namespace Nexus
                 return NumberLiteral.ParseHex(context.HEX().GetText().Substring(2), context.Start.Line, context.Start.Column);
 
             if (context.quoted_text() != null)
-                return new Text { Value = context.quoted_text().text == null ? string.Empty : context.quoted_text().text.Text };
+                return new Text
+                {
+                    Value = context.quoted_text().text == null ? string.Empty : context.quoted_text().text.Text,
+                    Line = context.Start.Line,
+                    Column = context.Start.Column
+                };
 
             if (context.IDENTIFIER() != null)
-                return new VariableLiteral { Name = context.IDENTIFIER().GetText() };
+                return new VariableLiteral
+                {
+                    Name = context.IDENTIFIER().GetText(),
+                    Line = context.Start.Line,
+                    Column = context.Start.Column
+                };
 
             return base.VisitFactor(context);
         }
