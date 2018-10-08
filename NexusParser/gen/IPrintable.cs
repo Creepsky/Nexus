@@ -4,7 +4,9 @@
     {
         Header,
         Source,
-        Parameter
+        Parameter,
+        ParameterRef,
+        ParameterConstRef
     }
 
     public interface IPrintable

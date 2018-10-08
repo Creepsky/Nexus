@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
@@ -152,9 +151,11 @@ namespace Nexus.ir.stmt
             {
                 printer.Write($"{Name}{{{Initialization}}}");
             }
-            else if (type == PrintType.Parameter)
+            else if (type == PrintType.Parameter ||
+                     type == PrintType.ParameterRef ||
+                     type == PrintType.ParameterConstRef)
             {
-                Type.Print(PrintType.Parameter, printer);
+                Type.Print(type, printer);
                 printer.Write(' ' + Name);
             }
         }

@@ -72,7 +72,7 @@ namespace Nexus.ir.expr
 
         public void Print(PrintType type, Printer printer)
         {
-            printer.Write(IsPrimitive() ? ToCpp() : $"const {ToCpp()}&");
+            printer.PrintWithModifiers(ToCpp(), type);
         }
 
         public override void Check(Context context)
@@ -113,10 +113,7 @@ namespace Nexus.ir.expr
 
         public void Print(PrintType type, Printer printer)
         {
-            if (type == PrintType.Header)
-            {
-                printer.Write(ToCpp());
-            }
+            printer.PrintWithModifiers(ToCpp(), type);
         }
 
         public bool IsPrimitive() => false;
@@ -153,14 +150,7 @@ namespace Nexus.ir.expr
 
         public void Print(PrintType type, Printer printer)
         {
-            if (type == PrintType.Header)
-            {
-                printer.Write(ToCpp());
-            }
-            else if (type == PrintType.Parameter)
-            {
-                printer.Write(ToCpp());
-            }
+            printer.PrintWithModifiers(ToCpp(), type);
         }
 
         public bool IsPrimitive() => false;
@@ -266,6 +256,26 @@ namespace Nexus.ir.expr
             return string.Concat(Enumerable.Repeat("std::vector<", array)) +
                    cppString +
                    string.Concat(Enumerable.Repeat('>', array));
+        }
+
+        public static void PrintWithModifiers(this Printer printer, string toPrint, PrintType printType)
+        {
+            switch (printType)
+            {
+                case PrintType.Header:
+                case PrintType.Source:
+                case PrintType.Parameter:
+                    printer.Write(toPrint);
+                    break;
+                case PrintType.ParameterRef:
+                    printer.Write($"{toPrint}&");
+                    break;
+                case PrintType.ParameterConstRef:
+                    printer.Write($"const {toPrint}&");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(printType), printType, null);
+            }
         }
     }
 }
