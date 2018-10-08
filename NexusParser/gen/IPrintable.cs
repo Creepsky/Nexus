@@ -4,9 +4,11 @@
     {
         Header,
         Source,
+        FunctionSource,
         Parameter,
         ParameterRef,
-        ParameterConstRef
+        ParameterConstRef,
+        ForSource
     }
 
     public interface IPrintable
