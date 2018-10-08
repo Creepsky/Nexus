@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
@@ -93,79 +93,6 @@ namespace Nexus.ir.expr
                     throw new Exception($"unknown type {Name} at line {Line}, column {Column}");
                 }
             }
-        }
-
-        public IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
-    }
-
-    public class TupleType : Expression, IType
-    {
-        public IList<IType> Types;
-        public int Array { get; set; }
-
-        public override string ToString()
-        {
-            return $"({string.Join(',', Types)}) {string.Concat(Enumerable.Repeat("[]", Array))}";
-        }
-
-        public void Print(PrintType type, Printer printer)
-        {
-            printer.PrintWithModifiers(ToCpp(), type);
-        }
-
-        public bool IsPrimitive() => false;
-
-        public bool IsAuto() => false;
-
-        public string ToCpp()
-        {
-            return $"std::tuple<{string.Join(", ", Types.Select(i => i.ToCpp().ToArray(Array)))}>";
-        }
-
-        public override void Check(Context context)
-        {
-            foreach (var i in Types)
-                i.Check(context);
-        }
-
-        public IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
-    }
-
-    public class MapType : Expression, IType
-    {
-        public IType KeyType;
-        public IType ValueType;
-        public int Array { get; set; }
-
-        public override string ToString()
-        {
-            return $"[{KeyType} -> {ValueType}] {string.Concat(Enumerable.Repeat("[]", Array))}";
-        }
-
-        public void Print(PrintType type, Printer printer)
-        {
-            printer.PrintWithModifiers(ToCpp(), type);
-        }
-
-        public bool IsPrimitive() => false;
-
-        public bool IsAuto() => false;
-
-        public string ToCpp()
-        {
-            return $"std::map<{KeyType.ToCpp().ToArray(Array)}, {ValueType.ToCpp().ToArray(Array)}>";
-        }
-
-        public override void Check(Context context)
-        {
-            KeyType.Check(context);
-            ValueType.Check(context);
         }
 
         public IGenerationElement Generate(Context context, GenerationPhase phase)
