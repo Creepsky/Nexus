@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Nexus.common;
 using Nexus.gen;
@@ -12,6 +13,8 @@ namespace Nexus.ir.stmt
         public bool Setter;
         public bool Getter;
         public IExpression Initialization;
+        public bool Reference;
+        public bool Const;
 
         public override string ToString()
         {
@@ -41,20 +44,21 @@ namespace Nexus.ir.stmt
             if (upperContext.Element == null)
                 throw new NoScopeException(this);
 
-            if (phase == GenerationPhase.ForwardDeclaration)
+            switch (phase)
             {
-                upperContext.Add(Name, this);
-            }
-            if (phase == GenerationPhase.Declaration)
-            {
-                if (upperContext.Element.GetType() == typeof(Class))
+                case GenerationPhase.ForwardDeclaration:
+                    upperContext.Add(Name, this);
+                    break;
+                case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(Class):
                     return GenerateClassVariable((Class)upperContext.Element, upperContext);
-
-                if (upperContext.Element.GetType() == typeof(Function))
+                case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(Function):
                     return GenerateParameter((Function)upperContext.Element, upperContext);
-
-                throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
-                    new[] {nameof(Class), nameof(Function)});
+                case GenerationPhase.Declaration:
+                    throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
+                        new[] {nameof(Class), nameof(Function)});
+                case GenerationPhase.Definition:
+                default:
+                    break;
             }
 
             return this;
@@ -81,7 +85,8 @@ namespace Nexus.ir.stmt
                             Line = Line,
                             Column = Column
                         }
-                    }
+                    },
+                    Const = true
                 }.Generate<Function>(context, GenerationPhase.ForwardDeclaration));
 
             if (Setter)
