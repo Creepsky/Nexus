@@ -9,7 +9,12 @@ namespace Nexus.ir.expr
         public string Name;
 
         public override string ToString() => Name;
-       
+
+        public override IType GetResultType(Context context)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override void Check(Context context)
         {
             // does the variable exist in this or some higher context?

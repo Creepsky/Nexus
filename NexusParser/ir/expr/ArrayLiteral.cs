@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Nexus.gen;
 
 namespace Nexus.ir.expr
@@ -8,7 +8,12 @@ namespace Nexus.ir.expr
         public IList<IExpression> Values;
 
         public override string ToString() => '{' + string.Join(", ", Values) + '}';
-        
+
+        public override IType GetResultType(Context context)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override void Check(Context context)
         { }
     }

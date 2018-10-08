@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Nexus.gen;
 
 namespace Nexus.ir.expr
@@ -19,6 +19,13 @@ namespace Nexus.ir.expr
 
         public override string ToString()
         {
+            var op = GetOperator();
+
+            return $"{Left} {op} {Right}";
+        }
+
+        private char GetOperator()
+        {
             char op;
 
             if (Type == BinaryOperatorType.Add)
@@ -31,8 +38,12 @@ namespace Nexus.ir.expr
                 op = '*';
             else
                 throw new ArgumentOutOfRangeException(nameof(Type), Type, "unknown binary type");
+            return op;
+        }
 
-            return $"{Left} {op} {Right}";
+        public override IType GetResultType(Context context)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Check(Context context)

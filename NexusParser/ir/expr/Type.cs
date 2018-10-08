@@ -75,6 +75,11 @@ namespace Nexus.ir.expr
             printer.PrintWithModifiers(ToCpp(), type);
         }
 
+        public override IType GetResultType(Context context)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Check(Context context)
         {
             try

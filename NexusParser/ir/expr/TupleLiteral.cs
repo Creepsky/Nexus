@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Nexus.gen;
 
@@ -9,7 +9,12 @@ namespace Nexus.ir.expr
         public IList<IExpression> Values;
 
         public override string ToString() => $"std::make_tuple({string.Join(", ", Values)})";
-        
+
+        public override IType GetResultType(Context context)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Check(Context context)
         {
             throw new NotImplementedException();

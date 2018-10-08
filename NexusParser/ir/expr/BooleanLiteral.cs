@@ -1,4 +1,4 @@
-﻿using Nexus.gen;
+using Nexus.gen;
 
 namespace Nexus.ir.expr
 {
@@ -7,6 +7,11 @@ namespace Nexus.ir.expr
         public bool Value;
 
         public override string ToString() => Value ? "true" : "false";
+
+        public override IType GetResultType(Context context)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public override void Check(Context context)
         { }

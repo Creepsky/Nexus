@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Linq;
 using Nexus.gen;
@@ -212,6 +212,11 @@ namespace Nexus.ir.expr
                 result = default(T);
                 return false;
             }
+        }
+
+        public override IType GetResultType(Context context)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Check(Context context)

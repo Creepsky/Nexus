@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Nexus.gen;
 
 namespace Nexus.ir.expr
@@ -11,6 +11,11 @@ namespace Nexus.ir.expr
         public override string ToString()
         {
             return base.ToString();
+        }
+
+        public override IType GetResultType(Context context)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Check(Context context)

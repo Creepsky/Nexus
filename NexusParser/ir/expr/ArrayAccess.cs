@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Nexus.gen;
 
 namespace Nexus.ir.expr
@@ -9,7 +9,12 @@ namespace Nexus.ir.expr
         public IExpression Index;
 
         public override string ToString() => $"{Name}[{Index}]";
-        
+
+        public override IType GetResultType(Context context)
+        {
+            throw new Exception();
+        }
+
         public override void Check(Context context)
         {
             var symbol = context.Get(Name);
