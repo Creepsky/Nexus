@@ -1,4 +1,4 @@
-using Nexus.common;
+﻿using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.stmt;
 
@@ -25,6 +25,11 @@ namespace Nexus.ir.expr
 
             if (i.GetType() != typeof(Variable))
                 throw new  TypeMismatchException(this, nameof(Variable), i.GetType().Name);
+        }
+
+        public override void Print(PrintType type, Printer printer)
+        {
+            printer.Write(Name);
         }
     }
 }

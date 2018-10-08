@@ -11,6 +11,7 @@ namespace Nexus.ir.stmt
         public string Name;
         public IList<Variable> Parameter;
         public IList<IStatement> Statements;
+        public bool Const = false;
         private Context _context;
 
         public override string ToString()
@@ -78,22 +79,38 @@ namespace Nexus.ir.stmt
                     }
                 }
 
-                printer.WriteLine(");");
+                printer.Write(")");
+
+                if (Const)
+                    printer.Write(" const");
+
+                printer.WriteLine(";");
             }
             else if (type == PrintType.Source)
             {
-                Type.Print(PrintType.Source, printer);
-                printer.Write($" {((Class)_context.UpperContext.Element).Name}::{Name}(");
-                // i.Type.IsPrimitive() ? $"{i.Type.ToCpp()}" : $"const {i.Type.ToCpp()}&
-                foreach (var i in Parameter)
+                if (_context.UpperContext.Element.GetType() == typeof(Class))
                 {
-                    i.Print(PrintType.Parameter, printer);
+                    Type.Print(PrintType.Source, printer);
+                    printer.Write($" {((Class)_context.UpperContext.Element).Name}::{Name}(");
+                    // i.Type.IsPrimitive() ? $"{i.Type.ToCpp()}" : $"const {i.Type.ToCpp()}&
+                    foreach (var i in Parameter)
+                    {
+                        i.Print(PrintType.Parameter, printer);
 
-                    if (i != Parameter.Last())
-                        printer.Write(", ");
+                        if (i != Parameter.Last())
+                            printer.Write(", ");
+                    }
+                    printer.Write(")");
+                    if (Const)
+                        printer.Write(" const");
+                    printer.WriteLine();
+                    printer.WriteLine("{");
+                    printer.Push();
+                    foreach (var i in Statements)
+                        i.Print(PrintType.FunctionSource, printer);
+                    printer.Pop();
+                    printer.WriteLine("}");
                 }
-                printer.WriteLine(")");
-                printer.WriteLine("{ }");
             }
         }
     }

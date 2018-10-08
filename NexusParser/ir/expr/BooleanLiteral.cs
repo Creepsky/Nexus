@@ -1,4 +1,4 @@
-using Nexus.gen;
+﻿using Nexus.gen;
 
 namespace Nexus.ir.expr
 {
@@ -15,5 +15,10 @@ namespace Nexus.ir.expr
 
         public override void Check(Context context)
         { }
+
+        public override void Print(PrintType type, Printer printer)
+        {
+            printer.Write(Value ? "true" : "false");
+        }
     }
 }

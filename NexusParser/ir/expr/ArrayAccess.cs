@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using Nexus.gen;
+using Nexus.ir.stmt;
 
 namespace Nexus.ir.expr
 {
@@ -21,6 +22,13 @@ namespace Nexus.ir.expr
 
             if (symbol.GetType() != typeof(IType))
                 throw new Exception($"array access on a instance of type {symbol} at line {Line}, column {Column}");
+        }
+
+        public override void Print(PrintType type, Printer printer)
+        {
+            printer.Write($"{Name}[");
+            Index.Print(type, printer);
+            printer.Write("]");
         }
     }
 }

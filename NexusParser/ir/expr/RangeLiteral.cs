@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Nexus.gen;
 
 namespace Nexus.ir.expr
@@ -21,6 +21,11 @@ namespace Nexus.ir.expr
         public override void Check(Context context)
         {
             throw new NotImplementedException();
+        }
+
+        public override void Print(PrintType type, Printer printer)
+        {
+            printer.Write("TODO: RangeLiteral");
         }
     }
 }

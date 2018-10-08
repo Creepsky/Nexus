@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Nexus.gen;
 using Nexus.ir.expr;
 
@@ -30,6 +30,37 @@ namespace Nexus.ir
 
         public override void Check(Context context)
         {
+        }
+
+        public override void Print(PrintType type, Printer printer)
+        {
+            Left.Print(type, printer);
+
+            switch (Type)
+            {
+                case ComparisonType.Equals:
+                    printer.Write(" == ");
+                    break;
+                case ComparisonType.NotEquals:
+                    printer.Write(" != ");
+                    break;
+                case ComparisonType.Less:
+                    printer.Write(" < ");
+                    break;
+                case ComparisonType.Greater:
+                    printer.Write(" > ");
+                    break;
+                case ComparisonType.LessEquals:
+                    printer.Write(" <= ");
+                    break;
+                case ComparisonType.GreaterEquals:
+                    printer.Write(" >= ");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            Right.Print(type, printer);
         }
     }
 }

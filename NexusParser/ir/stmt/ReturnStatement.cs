@@ -24,7 +24,9 @@ namespace Nexus.ir.stmt
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            printer.Write("return ");
+            Value.Print(type, printer);
+            printer.WriteLine(";");
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
@@ -70,7 +70,7 @@ namespace Nexus.ir.expr
             return $"{Name}{string.Concat(Enumerable.Repeat("[]", Array))}";
         }
 
-        public void Print(PrintType type, Printer printer)
+        public override void Print(PrintType type, Printer printer)
         {
             printer.PrintWithModifiers(ToCpp(), type);
         }
@@ -197,6 +197,8 @@ namespace Nexus.ir.expr
                 case PrintType.Header:
                 case PrintType.Source:
                 case PrintType.Parameter:
+                case PrintType.FunctionSource:
+                case PrintType.ForSource:
                     printer.Write(toPrint);
                     break;
                 case PrintType.ParameterRef:

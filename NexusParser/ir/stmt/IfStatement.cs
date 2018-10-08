@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Nexus.gen;
 
 namespace Nexus.ir.stmt
@@ -30,7 +31,25 @@ namespace Nexus.ir.stmt
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            printer.Write("if (");
+            Condition.Print(type, printer);
+            printer.WriteLine(")");
+            printer.WriteLine("{");
+            printer.Push();
+            foreach (var i in Then)
+                i.Print(PrintType.FunctionSource, printer);
+            printer.Pop();
+            printer.WriteLine("}");
+            if (Else.Any())
+            {
+                printer.WriteLine("else");
+                printer.WriteLine("{");
+                printer.Push();
+                foreach (var i in Else)
+                    i.Print(PrintType.FunctionSource, printer);
+                printer.Pop();
+                printer.WriteLine("}");
+            }
         }
     }
 }

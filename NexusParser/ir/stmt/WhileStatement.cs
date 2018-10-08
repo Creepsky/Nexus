@@ -19,7 +19,15 @@ namespace Nexus.ir.stmt
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            printer.Write("while (");
+            Condition.Print(type, printer);
+            printer.WriteLine(")");
+            printer.WriteLine("{");
+            printer.Push();
+            foreach (var i in Body)
+                i.Print(PrintType.FunctionSource, printer);
+            printer.Pop();
+            printer.WriteLine("}");
         }
     }
 }

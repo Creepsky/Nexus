@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Nexus.gen;
+using Nexus.ir.stmt;
 
 namespace Nexus.ir.expr
 {
@@ -17,6 +18,11 @@ namespace Nexus.ir.expr
         }
 
         public override void Check(Context context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Print(PrintType type, Printer printer)
         {
             throw new NotImplementedException();
         }

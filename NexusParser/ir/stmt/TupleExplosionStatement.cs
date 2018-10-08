@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
@@ -37,7 +37,8 @@ namespace Nexus.ir.stmt
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            
+                
         }
     }
 }

@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Nexus.gen;
 
 namespace Nexus.ir.expr
@@ -16,5 +17,18 @@ namespace Nexus.ir.expr
 
         public override void Check(Context context)
         { }
+
+        public override void Print(PrintType type, Printer printer)
+        {
+            printer.Write("{");
+            foreach (var i in Values)
+            {
+                i.Print(type, printer);
+
+                if (i != Values.Last())
+                    printer.Write(", ");
+            }
+            printer.Write("}");
+        }
     }
 }

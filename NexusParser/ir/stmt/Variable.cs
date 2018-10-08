@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
@@ -149,7 +149,10 @@ namespace Nexus.ir.stmt
             }
             else if (type == PrintType.Source)
             {
-                printer.Write($"{Name}{{{Initialization}}}");
+                printer.Write($"{Name}");
+                printer.Write("{");
+                Initialization?.Print(type, printer);
+                printer.Write("}");
             }
             else if (type == PrintType.Parameter ||
                      type == PrintType.ParameterRef ||
@@ -157,6 +160,22 @@ namespace Nexus.ir.stmt
             {
                 Type.Print(type, printer);
                 printer.Write(' ' + Name);
+            }
+            else if (type == PrintType.FunctionSource ||
+                     type == PrintType.ForSource)
+            {
+                Type.Print(type, printer);
+                printer.Write(" ");
+                printer.Write(Name);
+                if (Initialization != null)
+                {
+                    printer.Write(" = ");
+                    Initialization.Print(type, printer);
+                }
+                if (type == PrintType.ForSource)
+                    printer.Write(";");
+                else
+                    printer.WriteLine(";");
             }
         }
     }

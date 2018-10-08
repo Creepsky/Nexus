@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using Nexus.gen;
 
 namespace Nexus.ir.expr
 {
-    public class NumberLiteral : Expression
+    public abstract class NumberLiteral : Expression
     {
         public static NumberLiteral Parse(string integerPart, string decimalPart, string suffix, int line, int column)
         {
@@ -223,6 +223,8 @@ namespace Nexus.ir.expr
         {
             throw new NotImplementedException();
         }
+
+        public abstract override void Print(PrintType type, Printer printer);
     }
 
     public class NumberLiteral<T> : NumberLiteral
@@ -232,6 +234,11 @@ namespace Nexus.ir.expr
         public override string ToString()
         {
             return Value.ToString();
+        }
+
+        public override void Print(PrintType type, Printer printer)
+        {
+            printer.Write(Value.ToString());
         }
     }
 

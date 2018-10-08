@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Nexus.gen;
 
 namespace Nexus.ir.expr
@@ -49,6 +49,13 @@ namespace Nexus.ir.expr
         public override void Check(Context context)
         {
             throw new NotImplementedException();
+        }
+
+        public override void Print(PrintType type, Printer printer)
+        {
+            Left.Print(type, printer);
+            printer.Write($" {GetOperator()} ");
+            Right.Print(type, printer);
         }
     }
 }

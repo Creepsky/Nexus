@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Nexus.gen;
 
 namespace Nexus.ir.expr
@@ -18,6 +19,18 @@ namespace Nexus.ir.expr
         public override void Check(Context context)
         {
             throw new NotImplementedException();
+        }
+
+        public override void Print(PrintType type, Printer printer)
+        {
+            printer.Write("std::make_tuple(");
+            foreach (var i in Values)
+            {
+                i.Print(type, printer);
+                if (i != Values.Last())
+                    printer.Write(", ");
+            }
+            printer.Write(")");
         }
     }
 }
