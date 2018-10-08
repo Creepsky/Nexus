@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
@@ -32,6 +33,13 @@ namespace Nexus.ir.stmt
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
+            foreach (var i in Names.Where(i => i != "_"))
+                context.Add(i, new Variable
+                {
+                    Type = Right.GetResultType(context),
+                    Name = i,
+                });
+
             return this;
         }
 
