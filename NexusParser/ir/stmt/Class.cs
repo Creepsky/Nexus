@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
 using Nexus.ir.expr;
@@ -20,9 +20,6 @@ namespace Nexus.ir.stmt
 
             foreach (var i in Functions)
                 i.Check(context);
-
-            foreach (var i in Types)
-                i.Check(context);
         }
 
         public IGenerationElement Generate(Context context, GenerationPhase phase)
@@ -33,9 +30,6 @@ namespace Nexus.ir.stmt
                     i.Generate(context, phase);
 
                 foreach (var i in Functions)
-                    i.Generate(context, phase);
-
-                foreach (var i in Types)
                     i.Generate(context, phase);
             }
 
@@ -57,6 +51,7 @@ namespace Nexus.ir.stmt
         public readonly SimpleType Type;
         public readonly ClassSection Public;
         public readonly ClassSection Private;
+        public readonly IList<IType> UsedTypes;
         private Context _context;
 
         public Class(string name, IList<Variable> variables, IList<Function> functions)
@@ -64,6 +59,7 @@ namespace Nexus.ir.stmt
             Name = name;
             Variables = variables;
             Functions = functions;
+            UsedTypes = new List<IType>();
 
             Type = new SimpleType
             {
