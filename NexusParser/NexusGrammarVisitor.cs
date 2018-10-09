@@ -210,7 +210,12 @@ namespace Nexus
             Column = context.Start.Column
         };
 
-        public override object VisitParen(NexusParser.ParenContext context) => Visit(context.expression());
+        public override object VisitParen(NexusParser.ParenContext context) => new ParenExpression
+        {
+            Expression = (IExpression)Visit(context.expression()),
+            Line = context.Start.Line,
+            Column = context.Start.Column
+        };
 
         public override object VisitArray(NexusParser.ArrayContext context) => new ArrayLiteral
         {
