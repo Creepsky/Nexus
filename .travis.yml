@@ -3,7 +3,7 @@ solution: NexusParser.sln
 dotnet: 2.1
 mono: none
 before_install:
-  - dotnet tool install --global coverlet.console
+  - dotnet tool install --tool-path="./coverlet/" coverlet.console
   - cd NexusParser
   - wget http://www.antlr.org/download/antlr-4.7.1-complete.jar
   - sh antlr.sh
@@ -13,5 +13,5 @@ script:
   - dotnet build
   - dotnet test NexusParserTest/NexusParserTest.csproj
 after_success:
-  - coverlet NexusParserTest/bin/Debug/netcoreapp2.1/NexusParserTest.dll --target "dotnet" --targetargs "test NexusParserTest/NexusParserTest.csproj --no-build" --format opencover
+  - ./coverlet/coverlet NexusParserTest/bin/Debug/netcoreapp2.1/NexusParserTest.dll --target "dotnet" --targetargs "test NexusParserTest/NexusParserTest.csproj --no-build" --format opencover
   - bash <(curl -s https://codecov.io/bash)
