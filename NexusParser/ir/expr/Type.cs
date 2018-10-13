@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
@@ -84,21 +84,15 @@ namespace Nexus.ir.expr
         {
             try
             {
+                // first check if its a primitive type
                 TypesExtension.ToType(Name);
             }
             catch (Exception)
             {
-                try
-                {
-                    context.GetClass(Name);
-
-                }
-                catch (Exception)
-                {
-                    throw new Exception($"unknown type {Name} at line {Line}, column {Column}");
+                // if not, it could also be a class
+                context.Get<Class>(Name, this);
                 }
             }
-        }
 
         public IGenerationElement Generate(Context context, GenerationPhase phase)
         {

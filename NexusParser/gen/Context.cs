@@ -66,11 +66,6 @@ namespace Nexus.gen
             return null;
         }
 
-        public Class GetClass(string name)
-        {
-            return (Class)Get(name);
-        }
-
         public Context StackNewContext(IGenerationElement element) => new Context(this, element);
 
         public IEnumerable<IGenerationElement> GetElements()
