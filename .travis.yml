@@ -11,3 +11,5 @@ script:
   - dotnet restore
   - dotnet build
   - dotnet test NexusParserTest/NexusParserTest.csproj
+after_success:
+  - coveralls
