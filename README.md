@@ -1,6 +1,6 @@
 # The Nexus Programming language
 
-[![Managed with Taiga.io](https://img.shields.io/badge/managed%20with-TAIGA.io-709f14.svg)](https://tree.taiga.io/project/creepsky-nexus/ "Managed with Taiga.io")
+[![Managed with Taiga.io](https://img.shields.io/badge/managed%20with-TAIGA.io-709f14.svg)](https://tree.taiga.io/project/creepsky-nexus/ "Managed with Taiga.io") [![Build Status](https://travis-ci.org/Creepsky/Nexus.svg?branch=master)](https://travis-ci.org/Creepsky/Nexus)
 
 A simple yet powerful system programming language.
 
