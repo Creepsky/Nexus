@@ -1,9 +1,10 @@
 language: csharp
 solution: NexusParser.sln
 dotnet: 2.1
+mono: none
 install:
-  - nuget restore NexusParser.sln
   - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
 script:
+  - dotnet restore
   - dotnet build
   - dotnet test
