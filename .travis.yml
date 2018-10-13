@@ -3,8 +3,8 @@ solution: NexusParser.sln
 dotnet: 2.1
 mono: none
 before_install:
-  - wget http://www.antlr.org/download/antlr-4.7.1-complete.jar
   - cd NexusParser
+  - wget http://www.antlr.org/download/antlr-4.7.1-complete.jar
   - sh antlr.sh
   - cd ..
 script:
