@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Nexus.common;
+using Nexus.ir;
 using Nexus.ir.stmt;
 
 namespace Nexus.gen
@@ -39,6 +40,19 @@ namespace Nexus.gen
                 throw new RedeclarationException(element, Get(name), name);
 
             _symbols.Add(name, element);
+        }
+
+        public T Get<T>(string name, IPositioned caller) where T : IGenerationElement
+        {
+            var element = Get(name);
+            
+            if (element == null)
+                throw new NotFoundException(caller, nameof(T), name);
+            
+            if (element.GetType() != typeof(T))
+                throw new TypeMismatchException(caller, nameof(T), element.GetType().Name);
+
+            return (T) element;
         }
 
         public IGenerationElement Get(string name)

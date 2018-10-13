@@ -19,10 +19,7 @@ namespace Nexus.ir.stmt
             else if (Right.GetType() == typeof(FunctionCall))
             {
                 var functionCall = (FunctionCall)Right;
-                var function = context.Get(functionCall.Name);
-
-                if (function == null)
-                    throw new FunctionNotFoundException(Right, functionCall.Name);
+                context.Get<Function>(functionCall.Name, Right);
             }
             else
             {

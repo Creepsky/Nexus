@@ -18,13 +18,7 @@ namespace Nexus.ir.expr
         public override void Check(Context context)
         {
             // does the variable exist in this or some higher context?
-            var i = context.Get(Name);
-
-            if (i == null)
-                throw new VariableNotFoundException(this, Name);
-
-            if (i.GetType() != typeof(Variable))
-                throw new  TypeMismatchException(this, nameof(Variable), i.GetType().Name);
+            context.Get<Variable>(Name, this);
         }
 
         public override void Print(PrintType type, Printer printer)

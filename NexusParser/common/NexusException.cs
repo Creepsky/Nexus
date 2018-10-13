@@ -32,17 +32,10 @@ namespace Nexus.common
         { }
     }
 
-    public class VariableNotFoundException : PositionedException
+    public class NotFoundException : PositionedException
     {
-        public VariableNotFoundException(IPositioned element, string name)
-            : base(element, $"could not find variable {name}")
-        { }
-    }
-
-    public class FunctionNotFoundException : PositionedException
-    {
-        public FunctionNotFoundException(IPositioned element, string name)
-            : base(element, $"could not find function {name}")
+        public NotFoundException(IPositioned element, string type, string name)
+            : base(element, $"could not find the {type} with the name {name}")
         { }
     }
 
