@@ -1,5 +1,6 @@
 # The Nexus Programming language
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c3d0c55fb20a4161a9aeb68705f8d831)](https://app.codacy.com/app/Creepsky/Nexus?utm_source=github.com&utm_medium=referral&utm_content=Creepsky/Nexus&utm_campaign=Badge_Grade_Dashboard)
 [![Managed with Taiga.io](https://img.shields.io/badge/managed%20with-TAIGA.io-709f14.svg)](https://tree.taiga.io/project/creepsky-nexus/ "Managed with Taiga.io") [![Build Status](https://travis-ci.org/Creepsky/Nexus.svg?branch=master)](https://travis-ci.org/Creepsky/Nexus) 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/Creepsky/Nexus.svg?columns=all)](https://waffle.io/Creepsky/Nexus) [![codecov](https://codecov.io/gh/Creepsky/Nexus/branch/master/graph/badge.svg)](https://codecov.io/gh/Creepsky/Nexus)
 
