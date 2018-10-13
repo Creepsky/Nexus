@@ -10,4 +10,4 @@ before_install:
 script:
   - dotnet restore
   - dotnet build
-  - dotnet test
+  - dotnet test NexusParserTest/NexusParserTest.csproj
