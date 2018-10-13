@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
+using Nexus.ir.stmt;
 
 namespace Nexus.ir.expr
 {
