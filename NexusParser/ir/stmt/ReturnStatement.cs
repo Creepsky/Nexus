@@ -1,4 +1,4 @@
-﻿using Nexus.common;
+using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
 
@@ -13,8 +13,7 @@ namespace Nexus.ir.stmt
             if (context.Element == null)
                 throw new PositionedException(this, "return statement without parent scope");
 
-            if (context.Element.GetType() != typeof(Function))
-                throw new UnexpectedScopeException(this, context.Element.GetType().Name, new []{nameof(Function)});
+            var function = context.GetElementAs<Function>(this);
         }
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)

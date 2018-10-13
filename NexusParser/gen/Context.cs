@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Nexus.common;
 using Nexus.ir;
 using Nexus.ir.stmt;
@@ -71,6 +71,13 @@ namespace Nexus.gen
         public IEnumerable<IGenerationElement> GetElements()
         {
             return _symbols.Values;
+        }
+
+        public T GetElementAs<T>(IPositioned element)
+        {
+            if (Element.GetType() != typeof(T))
+                throw new TypeMismatchException(element, nameof(T), Element.GetType().Name);
+            return (T)Element;
         }
     }
 }
