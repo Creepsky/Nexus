@@ -10,6 +10,39 @@ namespace Nexus.ir.expr
         public IList<IType> Types { get; set; }
         public int Array { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() == typeof(TupleType))
+            {
+                var rhs = (TupleType) obj;
+
+                if (Types.Count != rhs.Types.Count)
+                {
+                    return false;
+                }
+
+                for (var i = 0; i < Types.Count; ++i)
+                {
+                    if (!Types[i].Equals(rhs.Types[i]))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Types != null ? Types.GetHashCode() : 0) * 397) ^ Array;
+            }
+        }
+
         public override string ToString()
         {
             return $"({string.Join(',', Types)}) {string.Concat(Enumerable.Repeat("[]", Array))}";

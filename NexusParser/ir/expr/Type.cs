@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -78,6 +78,21 @@ namespace Nexus.ir.expr
         }
 
         public PrimitiveType ToPrimitiveType() => TypesExtension.ToType(Name);
+
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() == typeof(SimpleType))
+            {
+                return Name == ((SimpleType) obj).Name;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
 
         public override string ToString()
         {

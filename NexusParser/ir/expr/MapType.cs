@@ -10,6 +10,39 @@ namespace Nexus.ir.expr
         public IType ValueType { get; set; }
         public int Array { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() == typeof(MapType))
+            {
+                var rhs = (MapType) obj;
+
+                if (!KeyType.Equals(rhs.KeyType))
+                {
+                    return false;
+                }
+
+                if (!ValueType.Equals(rhs.ValueType))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (KeyType != null ? KeyType.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (ValueType != null ? ValueType.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ Array;
+                return hashCode;
+            }
+        }
+
         public override string ToString()
         {
             return $"[{KeyType} -> {ValueType}] {string.Concat(Enumerable.Repeat("[]", Array))}";
