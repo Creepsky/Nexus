@@ -123,11 +123,7 @@ namespace Nexus.ir.stmt
                         },
                         new ReturnStatement
                         {
-                            Value = new VariableLiteral
-                            {
-                                // TODO: implement this keyword
-                                Name = "this"
-                            },
+                            Value = new This(),
                             Line = Line,
                             Column = Column
                         }
