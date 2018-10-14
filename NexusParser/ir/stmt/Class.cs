@@ -38,10 +38,7 @@ namespace Nexus.ir.stmt
 
         public IType GetResultType(Context context)
         {
-            return new SimpleType
-            {
-                Name = PrimitiveType.Void.ToString()
-            };
+            return new SimpleType(PrimitiveType.Void.ToString(), 0, Line, Column);
         }
 
         public void Print(PrintType type, Printer printer)
@@ -69,13 +66,7 @@ namespace Nexus.ir.stmt
             Functions = functions;
             UsedTypes = new List<IType>();
 
-            Type = new SimpleType
-            {
-                Line = Line,
-                Column = Column,
-                Name = Name
-            };
-
+            Type = new SimpleType(Name, 0, Line, Column);
             Public = new ClassSection();
             Private = new ClassSection();
         }
@@ -114,12 +105,7 @@ namespace Nexus.ir.stmt
         }
 
         public override IType GetResultType(Context context) =>
-            new SimpleType
-            {
-                Line = Line,
-                Column = Column,
-                Name = PrimitiveType.Void.ToString()
-            };
+            new SimpleType(PrimitiveType.Void.ToString(), 0, Line, Column);
 
         public override void Print(PrintType type, Printer printer)
         {

@@ -32,13 +32,11 @@ namespace Nexus
             };
         }
 
-        public override object VisitNamedType(NexusParser.NamedTypeContext context) => new SimpleType
-        {
-            Name = context.IDENTIFIER().GetText(),
-            Array = context.ARRAY_DECLARATION().Length,
-            Line = context.Start.Line,
-            Column = context.Start.Column
-        };
+        public override object VisitNamedType(NexusParser.NamedTypeContext context) => new SimpleType(
+            context.IDENTIFIER().GetText(),
+            context.ARRAY_DECLARATION().Length,
+            context.Start.Line,
+            context.Start.Column);
 
         public override object VisitTupleType(NexusParser.TupleTypeContext context) => new TupleType
         {

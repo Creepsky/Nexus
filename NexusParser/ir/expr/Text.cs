@@ -15,12 +15,7 @@ namespace Nexus.ir.expr
         }
 
         public override IType GetResultType(Context context) =>
-            new SimpleType
-            {
-                Line = Line,
-                Column = Column,
-                Name = "string"
-            };
+            new SimpleType("string", 0, Line, Column);
 
         public override void Check(Context context)
         {

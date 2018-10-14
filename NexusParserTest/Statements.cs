@@ -15,7 +15,7 @@ namespace NexusParserTest
             // int a = 0;
             context.Add("a", new Variable
             {
-                Type = new SimpleType{Name = "int"},
+                Type = new SimpleType(TypesExtension.Int, 0),
                 Name = "a",
                 Initialization = new I32(0)
             });

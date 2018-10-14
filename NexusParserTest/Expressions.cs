@@ -42,10 +42,11 @@ namespace NexusParserTest
         {
             var context = CreateContextWithPrimitives(1);
             
-            foreach (PrimitiveType i in Enum.GetValues(typeof(PrimitiveType)))
+            foreach (var generationElement in context.GetElements())
             {
-                new ArrayAccess {Name = $"my{i.ToString()}", Index = new I32(0)}.Check(context);
-                new ArrayAccess{Name = $"my{i}", Index = new VariableLiteral{Name = "a"}}.Check(context);
+                var i = (Variable) generationElement;
+                new ArrayAccess {Name = i.Name, Index = new I32(0)}.Check(context);
+                new ArrayAccess{Name = i.Name, Index = new VariableLiteral{Name = "a"}}.Check(context);
             }
         }
 
@@ -53,21 +54,26 @@ namespace NexusParserTest
         {
             var context = new Context();
 
-            foreach (var i in Enum.GetValues(typeof(PrimitiveType)))
-                AddNewPrimitiveVariable(context, (PrimitiveType)i, $"my{i}", array);
+            foreach (var i in TypesExtension.Primitives)
+            {
+                try
+                {
+                    AddNewPrimitiveVariable(context, $"my{i}", i, array);
+                }
+                catch (Exception)
+                {
+                    // skip alias
+                }
+            }
 
             return context;
         }
 
-        private static void AddNewPrimitiveVariable(Context context, PrimitiveType type, string name, int array)
+        private static void AddNewPrimitiveVariable(Context context, string variableName, string name, int array)
         {
-            context.Add(name, new Variable{
-                Type = new SimpleType
-                {
-                    Name = type.ToString(),
-                    Array = array
-                },
-                Name = name
+            context.Add(variableName, new Variable{
+                Type = new SimpleType(name, array),
+                Name = variableName
             });
         }
     }

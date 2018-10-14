@@ -15,12 +15,7 @@ namespace Nexus.ir.expr
 
         public override IType GetResultType(Context context)
         {
-            return new SimpleType
-            {
-                Line = Line,
-                Column = Column,
-                Name = PrimitiveType.Bool.ToString()
-            };
+            return new SimpleType(TypesExtension.Bool, 0, Line, Column);
         }
 
         public override void Check(Context context)

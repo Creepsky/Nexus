@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -30,8 +30,21 @@ namespace Nexus.ir.expr
 
     public class SimpleType : Expression, IType
     {
-        public string Name { get; set; }
-        public int Array { get; set; }
+        public string Name { get; }
+        public int Array { get; }
+
+        public SimpleType(string name, int array, int line = 0, int column = 0)
+        {
+            Name = name;
+            Array = array;
+            Line = line;
+            Column = column;
+
+            if (TypesExtension.Aliases.ContainsKey(name))
+            {
+                Name = TypesExtension.Aliases[Name];
+            }
+        }
 
         public bool IsPrimitive()
         {
