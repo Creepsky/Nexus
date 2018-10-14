@@ -23,9 +23,17 @@ namespace Nexus.ir
         public IExpression Left { get; set; }
         public IExpression Right { get; set; }
 
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        {
+            return this;
+        }
+
         public override IType GetResultType(Context context)
         {
-            throw new NotImplementedException();
+            return new SimpleType
+            {
+                Name = PrimitiveType.Bool.ToString() 
+            };
         }
 
         public override void Check(Context context)

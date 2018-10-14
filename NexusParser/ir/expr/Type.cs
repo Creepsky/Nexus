@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
@@ -34,9 +34,6 @@ namespace Nexus.ir.expr
 
         public bool IsPrimitive()
         {
-            if (Name.ToLower() == "string")
-                return false;
-
             try
             {
                 TypesExtension.ToType(Name);
@@ -66,6 +63,8 @@ namespace Nexus.ir.expr
             }
         }
 
+        public PrimitiveType ToPrimitiveType() => TypesExtension.ToType(Name);
+
         public override string ToString()
         {
             return $"{Name}{string.Concat(Enumerable.Repeat("[]", Array))}";
@@ -78,7 +77,7 @@ namespace Nexus.ir.expr
 
         public override IType GetResultType(Context context)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public override void Check(Context context)
@@ -86,16 +85,16 @@ namespace Nexus.ir.expr
             try
             {
                 // first check if its a primitive type
-                TypesExtension.ToType(Name);
+                ToPrimitiveType();
             }
             catch (Exception)
             {
                 // if not, it could also be a class
                 context.Get<Class>(Name, this);
-                }
             }
+        }
 
-        public IGenerationElement Generate(Context context, GenerationPhase phase)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
             return this;
         }

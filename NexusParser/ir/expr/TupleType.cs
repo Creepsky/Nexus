@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
@@ -31,7 +31,7 @@ namespace Nexus.ir.expr
 
         public override IType GetResultType(Context context)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public override void Check(Context context)
@@ -40,7 +40,7 @@ namespace Nexus.ir.expr
                 i.Check(context);
         }
 
-        public IGenerationElement Generate(Context context, GenerationPhase phase)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
             return this;
         }

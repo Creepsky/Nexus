@@ -1,4 +1,4 @@
-using Nexus.common;
+﻿using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
 
@@ -14,12 +14,23 @@ namespace Nexus.ir.stmt
                 throw new PositionedException(this, "return statement without parent scope");
 
             var function = context.GetElementAs<Function>(this);
+            var resultType = Value.GetResultType(context);
+
+            // TODO: check compatiblity of types
         }
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
             return this;
         }
+
+        public override IType GetResultType(Context context) =>
+            new SimpleType
+            {
+                Line = Line,
+                Column = Column,
+                Name = PrimitiveType.Void.ToString()
+            };
 
         public override void Print(PrintType type, Printer printer)
         {

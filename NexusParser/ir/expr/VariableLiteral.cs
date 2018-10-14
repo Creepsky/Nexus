@@ -10,9 +10,14 @@ namespace Nexus.ir.expr
 
         public override string ToString() => Name;
 
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        {
+            return this;
+        }
+
         public override IType GetResultType(Context context)
         {
-            throw new System.NotImplementedException();
+            return context.Get(Name, this).GetResultType(context);
         }
 
         public override void Check(Context context)

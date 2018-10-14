@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.stmt;
 
@@ -8,13 +9,16 @@ namespace Nexus.ir.expr
     {
         public string Name { get; set; }
         public IExpression Index { get; set; }
-
+        
         public override string ToString() => $"{Name}[{Index}]";
 
-        public override IType GetResultType(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            throw new NotImplementedException();
+            return this;
         }
+
+        public override IType GetResultType(Context context) =>
+            context.Get(Name).GetResultType(context);
 
         public override void Check(Context context)
         {

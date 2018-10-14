@@ -12,10 +12,13 @@ namespace Nexus.ir.expr
 
         public override string ToString() => $"{Name}({string.Join(", ", Parameter)})";
 
-        public override IType GetResultType(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            return ((Function) context.Get(Name)).Type;
+            return this;
         }
+
+        public override IType GetResultType(Context context) =>
+            ((Function) context.Get(Name)).Type;
 
         public override void Check(Context context)
         {

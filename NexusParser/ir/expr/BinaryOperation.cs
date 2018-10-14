@@ -41,6 +41,11 @@ namespace Nexus.ir.expr
             return op;
         }
 
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        {
+            return this;
+        }
+
         public override IType GetResultType(Context context)
         {
             throw new NotImplementedException();

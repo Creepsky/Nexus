@@ -14,10 +14,19 @@ namespace Nexus.ir.expr
             return '{' + string.Join(", ", Values.Select(i => '{' + i.Key.ToString() + ", " + i.Value.ToString() + '}')) + '}';
         }
 
-        public override IType GetResultType(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            throw new NotImplementedException();
+            return this;
         }
+
+        public override IType GetResultType(Context context) =>
+            new MapType
+            {
+                Line = Line,
+                Column = Column,
+                KeyType = Values.First().Key.GetResultType(context),
+                ValueType = Values.First().Value.GetResultType(context)
+            };
 
         public override void Check(Context context)
         {

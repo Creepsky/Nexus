@@ -8,9 +8,19 @@ namespace Nexus.ir.expr
 
         public override string ToString() => Value ? "true" : "false";
 
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        {
+            return this;
+        }
+
         public override IType GetResultType(Context context)
         {
-            throw new System.NotImplementedException();
+            return new SimpleType
+            {
+                Line = Line,
+                Column = Column,
+                Name = PrimitiveType.Bool.ToString()
+            };
         }
 
         public override void Check(Context context)

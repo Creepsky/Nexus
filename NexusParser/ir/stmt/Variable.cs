@@ -64,6 +64,8 @@ namespace Nexus.ir.stmt
             return this;
         }
 
+        public override IType GetResultType(Context context) => Type;
+
         private IGenerationElement GenerateClassVariable(Class c, Context context)
         {
             c.Private.Variables.Add(this);

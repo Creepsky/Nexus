@@ -36,6 +36,14 @@ namespace Nexus.ir.stmt
             return this;
         }
 
+        public IType GetResultType(Context context)
+        {
+            return new SimpleType
+            {
+                Name = PrimitiveType.Void.ToString()
+            };
+        }
+
         public void Print(PrintType type, Printer printer)
         {
             throw new System.NotImplementedException();
@@ -104,6 +112,14 @@ namespace Nexus.ir.stmt
 
             return this;
         }
+
+        public override IType GetResultType(Context context) =>
+            new SimpleType
+            {
+                Line = Line,
+                Column = Column,
+                Name = PrimitiveType.Void.ToString()
+            };
 
         public override void Print(PrintType type, Printer printer)
         {

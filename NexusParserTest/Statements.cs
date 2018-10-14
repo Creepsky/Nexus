@@ -15,15 +15,9 @@ namespace NexusParserTest
             // int a = 0;
             context.Add("a", new Variable
             {
+                Type = new SimpleType{Name = "int"},
                 Name = "a",
-                Type = new SimpleType
-                {
-                    Name = "int"
-                },
-                Initialization = new I32
-                {
-                    Value = 0
-                }
+                Initialization = new I32(0)
             });
             
             // a = 1;
@@ -33,10 +27,7 @@ namespace NexusParserTest
                 {
                     Name = "a"
                 },
-                Right = new I32
-                {
-                    Value = 1
-                }
+                Right = new I32(1)
             };
             
             i.Check(context);

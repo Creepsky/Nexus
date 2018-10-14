@@ -58,6 +58,8 @@ namespace Nexus.ir.stmt
             return this;
         }
 
+        public override IType GetResultType(Context context) => Type;
+
         public override void Print(PrintType type, Printer printer)
         {
             if (type == PrintType.Header)

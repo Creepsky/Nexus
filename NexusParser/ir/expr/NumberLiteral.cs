@@ -80,9 +80,9 @@ namespace Nexus.ir.expr
                     switch (type)
                     {
                         case PrimitiveType.F32:
-                            return new F32 {Value = ParseFloat(real), Line = line, Column = column};
+                            return new F32(ParseFloat(real)) {Line = line, Column = column};
                         case PrimitiveType.F64:
-                            return new F64 {Value = ParseDouble(real)};
+                            return new F64(ParseDouble(real)) {Line = line, Column = column};
                         default:
                             throw new ArgumentOutOfRangeException(nameof(type), type, "invalid type");
                     }
@@ -91,18 +91,18 @@ namespace Nexus.ir.expr
                 if (UIntPtr.Size == 4)
                 {
                     if (Try(ParseFloat, real, out var f32))
-                        return new F32 {Value = f32, Line = line, Column = column};
+                        return new F32(f32) {Line = line, Column = column};
 
                     if (Try(ParseDouble, real, out var f64))
-                        return new F64 {Value = f64, Line = line, Column = column};
+                        return new F64(f64) {Line = line, Column = column};
                 }
                 else if (UIntPtr.Size == 8)
                 {
                     if (Try(ParseDouble, real, out var f64))
-                        return new F64 {Value = f64, Line = line, Column = column};
+                        return new F64(f64) {Line = line, Column = column};
 
                     if (Try(ParseFloat, real, out var f32))
-                        return new F32 {Value = f32, Line = line, Column = column};
+                        return new F32(f32) {Line = line, Column = column};
                 }
                 else
                 {
@@ -116,44 +116,44 @@ namespace Nexus.ir.expr
                 {
                     switch (type)
                     {
-                        case PrimitiveType.I8: return new I8 { Value = sbyte.Parse(integerPart), Line = line, Column = column  };
-                        case PrimitiveType.I16: return new I16 { Value = short.Parse(integerPart), Line = line, Column = column };
-                        case PrimitiveType.I32: return new I32 { Value = int.Parse(integerPart), Line = line, Column = column };
-                        case PrimitiveType.I64: return new I64 { Value = long.Parse(integerPart), Line = line, Column = column };
-                        case PrimitiveType.U8: return new U8 { Value = byte.Parse(integerPart), Line = line, Column = column };
-                        case PrimitiveType.U16: return new U16 { Value = ushort.Parse(integerPart), Line = line, Column = column };
-                        case PrimitiveType.U32: return new U32 { Value = uint.Parse(integerPart), Line = line, Column = column };
-                        case PrimitiveType.U64: return new U64 { Value = ulong.Parse(integerPart), Line = line, Column = column };
+                        case PrimitiveType.I8: return new I8(sbyte.Parse(integerPart)) { Line = line, Column = column  };
+                        case PrimitiveType.I16: return new I16(short.Parse(integerPart)) { Line = line, Column = column };
+                        case PrimitiveType.I32: return new I32(int.Parse(integerPart)) { Line = line, Column = column };
+                        case PrimitiveType.I64: return new I64(long.Parse(integerPart)) { Line = line, Column = column };
+                        case PrimitiveType.U8: return new U8(byte.Parse(integerPart)) { Line = line, Column = column };
+                        case PrimitiveType.U16: return new U16(ushort.Parse(integerPart)) { Line = line, Column = column };
+                        case PrimitiveType.U32: return new U32(uint.Parse(integerPart)) { Line = line, Column = column };
+                        case PrimitiveType.U64: return new U64(ulong.Parse(integerPart)) { Line = line, Column = column };
                         // TODO: ulong to bit size
-                        case PrimitiveType.USize: return new USize { Value = ulong.Parse(integerPart), Line = line, Column = column };
+                        case PrimitiveType.USize: return new USize(ulong.Parse(integerPart)) { Line = line, Column = column };
                         default:
                             throw new ArgumentOutOfRangeException(nameof(type), type, "invalid type");
                     }
                 }
 
                 if (long.TryParse(integerPart, out var i64))
-                    return new I64 {Value = i64, Line = line, Column = column };
+                    return new I64(i64) {Line = line, Column = column };
 
                 if (ulong.TryParse(integerPart, out var u64))
-                    return new U64 {Value = u64, Line = line, Column = column};
+                    return new U64(u64) {Line = line, Column = column};
 
                 if (sbyte.TryParse(integerPart, out var i8))
-                    return new I8 {Value = i8, Line = line, Column = column};
+                    return new I8(i8) {Line = line, Column = column};
 
                 if (short.TryParse(integerPart, out var i16))
-                    return new I16 {Value = i16, Line = line, Column = column};
+                    return new I16(i16) {Line = line, Column = column};
 
                 if (int.TryParse(integerPart, out var i32))
-                    return new I32 {Value = i32, Line = line, Column = column};
+                    return new I32(i32) {Line = line, Column = column};
 
                 if (byte.TryParse(integerPart, out var u8))
-                    return new U8 {Value = u8, Line = line, Column = column};
+                    return new U8(u8) {Line = line, Column = column};
 
                 if (ushort.TryParse(integerPart, out var u16))
-                    return new U16 {Value = u16, Line = line, Column = column};
+                    return new U16(u16) {Line = line, Column = column};
 
                 if (uint.TryParse(integerPart, out var u32))
-                    return new U32 {Value = u32, Line = line, Column = column};
+                    return new U32(u32) {Line = line, Column = column};
             }
 
             return null;
@@ -163,9 +163,8 @@ namespace Nexus.ir.expr
         {
             try
             {
-                return new I64
+                return new I64(Convert.ToInt64(number, fromBase))
                 {
-                    Value = Convert.ToInt64(number, fromBase),
                     Line = line,
                     Column = column
                 };
@@ -175,9 +174,8 @@ namespace Nexus.ir.expr
             {
                 try
                 {
-                    return new U64
+                    return new U64(Convert.ToUInt64(number, fromBase))
                     {
-                        Value = Convert.ToUInt64(number, fromBase),
                         Line = line,
                         Column = column
                     };
@@ -214,26 +212,47 @@ namespace Nexus.ir.expr
             }
         }
 
-        public override IType GetResultType(Context context)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract override IType GetResultType(Context context);
 
-        public override void Check(Context context)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract override void Check(Context context);
 
         public abstract override void Print(PrintType type, Printer printer);
     }
 
     public class NumberLiteral<T> : NumberLiteral
     {
-        public T Value { get; set; }
+        public T Value { get; private set; }
+        public PrimitiveType Type { get; private set; }
 
+        public NumberLiteral(T value, PrimitiveType type)
+        {
+            Value = value;
+            Type = type;
+        }
+        
         public override string ToString()
         {
             return Value.ToString();
+        }
+
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        {
+            return this;
+        }
+
+        public override IType GetResultType(Context context)
+        {
+            return new SimpleType
+            {
+                Line = Line,
+                Column = Column,
+                Name = Type.ToString()
+            };
+        }
+
+        public override void Check(Context context)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Print(PrintType type, Printer printer)
@@ -242,16 +261,16 @@ namespace Nexus.ir.expr
         }
     }
 
-    public class I8 : NumberLiteral<sbyte> { }
-    public class I16 : NumberLiteral<short> { }
-    public class I32 : NumberLiteral<int> { }
-    public class I64 : NumberLiteral<long> { }
-    public class U8 : NumberLiteral<byte> { }
-    public class U16 : NumberLiteral<ushort> { }
-    public class U32 : NumberLiteral<uint> { }
-    public class U64 : NumberLiteral<ulong> { }
-    public class Byte : NumberLiteral<byte> { }
-    public class USize : NumberLiteral<ulong> { }
-    public class F32 : NumberLiteral<float> { }
-    public class F64 : NumberLiteral<double> { }
+    public class I8 : NumberLiteral<sbyte> { public I8(sbyte value) : base(value, PrimitiveType.I8) { } }
+    public class I16 : NumberLiteral<short> { public I16(short value) : base(value, PrimitiveType.I16) { } }
+    public class I32 : NumberLiteral<int> { public I32(int value) : base(value, PrimitiveType.I32) { } }
+    public class I64 : NumberLiteral<long> { public I64(long value) : base(value, PrimitiveType.I64) { } }
+    public class U8 : NumberLiteral<byte> { public U8(byte value) : base(value, PrimitiveType.U8) { } }
+    public class U16 : NumberLiteral<ushort> { public U16(ushort value) : base(value, PrimitiveType.U16) { } }
+    public class U32 : NumberLiteral<uint> { public U32(uint value) : base(value, PrimitiveType.U32) { } }
+    public class U64 : NumberLiteral<ulong> { public U64(ulong value) : base(value, PrimitiveType.U64) { } }
+    public class Byte : NumberLiteral<byte> { public Byte(byte value) : base(value, PrimitiveType.U8) { } }
+    public class USize : NumberLiteral<ulong> { public USize(ulong value) : base(value, PrimitiveType.USize) { } }
+    public class F32 : NumberLiteral<float> { public F32(float value) : base(value, PrimitiveType.F32) { } }
+    public class F64 : NumberLiteral<double> { public F64(double value) : base(value, PrimitiveType.F64) { } }
 }

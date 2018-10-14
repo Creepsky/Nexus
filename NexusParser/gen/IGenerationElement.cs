@@ -1,4 +1,5 @@
 ﻿using Nexus.ir;
+using Nexus.ir.expr;
 
 namespace Nexus.gen
 {
@@ -12,6 +13,7 @@ namespace Nexus.gen
     public interface IGenerationElement : ICheckable, IPrintable, IPositioned
     {
         IGenerationElement Generate(Context context, GenerationPhase phase);
+        IType GetResultType(Context context);
     }
 
     public static class GenerationElementExtensions

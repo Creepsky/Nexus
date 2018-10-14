@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Nexus.gen;
+using Nexus.ir.expr;
 
 namespace Nexus.ir.stmt
 {
@@ -16,6 +17,14 @@ namespace Nexus.ir.stmt
         {
             return this;
         }
+
+        public override IType GetResultType(Context context) =>
+            new SimpleType
+            {
+                Line = Line,
+                Column = Column,
+                Name = PrimitiveType.Void.ToString()
+            };
 
         public override void Print(PrintType type, Printer printer)
         {

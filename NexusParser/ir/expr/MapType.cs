@@ -40,7 +40,7 @@ namespace Nexus.ir.expr
             ValueType.Check(context);
         }
 
-        public IGenerationElement Generate(Context context, GenerationPhase phase)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
             return this;
         }

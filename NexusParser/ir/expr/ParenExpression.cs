@@ -6,10 +6,12 @@ namespace Nexus.ir.expr
     {
         public IExpression Expression { get; set; }
 
-        public override IType GetResultType(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            return Expression.GetResultType(context);
+            return this;
         }
+
+        public override IType GetResultType(Context context) => Expression.GetResultType(context);
 
         public override void Check(Context context)
         {

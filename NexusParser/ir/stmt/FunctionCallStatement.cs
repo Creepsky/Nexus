@@ -17,6 +17,14 @@ namespace Nexus.ir.stmt
             return this;
         }
 
+        public override IType GetResultType(Context context) =>
+            new SimpleType
+            {
+                Line = Line,
+                Column = Column,
+                Name = PrimitiveType.Void.ToString()
+            };
+
         public override void Print(PrintType type, Printer printer)
         {
             printer.Write($"{FunctionCall.Name}(");

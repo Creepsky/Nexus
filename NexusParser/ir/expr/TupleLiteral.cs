@@ -11,14 +11,23 @@ namespace Nexus.ir.expr
 
         public override string ToString() => $"std::make_tuple({string.Join(", ", Values)})";
 
-        public override IType GetResultType(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            throw new NotImplementedException();
+            return this;
         }
+
+        public override IType GetResultType(Context context) =>
+            new TupleType
+            {
+                Line = Line,
+                Column = Column,
+                Types = Values.Select(i => GetResultType(context)).ToList()
+            };
 
         public override void Check(Context context)
         {
-            throw new NotImplementedException();
+            foreach (var i in Values)
+                i.Check(context);
         }
 
         public override void Print(PrintType type, Printer printer)

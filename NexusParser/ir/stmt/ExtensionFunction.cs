@@ -27,6 +27,14 @@ namespace Nexus.ir.stmt
             throw new System.NotImplementedException();
         }
 
+        public override IType GetResultType(Context context) =>
+            new SimpleType
+            {
+                Line = Line,
+                Column = Column,
+                Name = PrimitiveType.Void.ToString()
+            };
+
         public override void Print(PrintType type, Printer printer)
         {
             throw new System.NotImplementedException();

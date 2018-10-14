@@ -7,10 +7,19 @@ namespace Nexus.ir.expr
         public string Value { get; set; }
 
         public override string ToString() => '"' + Value + '"';
-        public override IType GetResultType(Context context)
+
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            throw new System.NotImplementedException();
+            return this;
         }
+
+        public override IType GetResultType(Context context) =>
+            new SimpleType
+            {
+                Line = Line,
+                Column = Column,
+                Name = "string"
+            };
 
         public override void Check(Context context)
         { }

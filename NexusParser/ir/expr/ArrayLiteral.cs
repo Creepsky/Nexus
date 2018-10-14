@@ -10,11 +10,14 @@ namespace Nexus.ir.expr
 
         public override string ToString() => '{' + string.Join(", ", Values) + '}';
 
-        public override IType GetResultType(Context context)
+        public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            throw new System.NotImplementedException();
+            return this;
         }
 
+        public override IType GetResultType(Context context) =>
+            Values.First().GetResultType(context);
+        
         public override void Check(Context context)
         { }
 
