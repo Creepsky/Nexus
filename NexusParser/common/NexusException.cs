@@ -14,8 +14,14 @@ namespace Nexus.common
     public class PositionedException : NexusException
     {
         public PositionedException(IPositioned element, string message)
-            : base($"{message} at line {element.Line}, col {element.Column}")
-        { }
+            : this(element.Line, element.Column, message)
+        {
+        }
+
+        public PositionedException(int line, int column, string message)
+            : base($"{message} at line {line}, col {column}")
+        {
+        }
     }
 
     public class NoScopeException : PositionedException
