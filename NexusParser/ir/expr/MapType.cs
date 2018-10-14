@@ -31,7 +31,7 @@ namespace Nexus.ir.expr
 
         public override IType GetResultType(Context context)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public override void Check(Context context)
