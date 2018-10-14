@@ -6,8 +6,8 @@ namespace Nexus.ir.expr
 {
     public class MapType : Expression, IType
     {
-        public IType KeyType;
-        public IType ValueType;
+        public IType KeyType { get; set; }
+        public IType ValueType { get; set; }
         public int Array { get; set; }
 
         public override string ToString()

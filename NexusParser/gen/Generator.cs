@@ -7,9 +7,9 @@ namespace Nexus.gen
 {
     public struct CompilationUnit
     {
-        public string Name;
-        public string Header;
-        public string Source;
+        public string Name { get; set; }
+        public string Header { get; set; }
+        public string Source { get; set; }
     }
 
     public class Generator

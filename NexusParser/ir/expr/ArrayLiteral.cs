@@ -6,7 +6,7 @@ namespace Nexus.ir.expr
 {
     public class ArrayLiteral : Expression
     {
-        public IList<IExpression> Values;
+        public IList<IExpression> Values { get; set; }
 
         public override string ToString() => '{' + string.Join(", ", Values) + '}';
 

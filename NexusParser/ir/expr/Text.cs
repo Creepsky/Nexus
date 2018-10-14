@@ -4,7 +4,7 @@ namespace Nexus.ir.expr
 {
     public class Text : Expression
     {
-        public string Value;
+        public string Value { get; set; }
 
         public override string ToString() => '"' + Value + '"';
         public override IType GetResultType(Context context)

@@ -7,7 +7,7 @@ namespace Nexus.ir.expr
 {
     public class TupleType : Expression, IType
     {
-        public IList<IType> Types;
+        public IList<IType> Types { get; set; }
         public int Array { get; set; }
 
         public override string ToString()

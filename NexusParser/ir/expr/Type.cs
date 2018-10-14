@@ -29,7 +29,7 @@ namespace Nexus.ir.expr
 
     public class SimpleType : Expression, IType
     {
-        public string Name;
+        public string Name { get; set; }
         public int Array { get; set; }
 
         public bool IsPrimitive()
@@ -154,23 +154,23 @@ namespace Nexus.ir.expr
             }
         }
 
-        public static readonly IList<PrimitiveType> Integer = new List<PrimitiveType>
+        public static readonly IReadOnlyCollection<PrimitiveType> Integer = new List<PrimitiveType>
         {
             PrimitiveType.I8, PrimitiveType.I16, PrimitiveType.I32, PrimitiveType.I64,
             PrimitiveType.U8, PrimitiveType.U16, PrimitiveType.U32, PrimitiveType.U64
         };
 
-        public static readonly IList<PrimitiveType> Signed = new List<PrimitiveType>
+        public static readonly IReadOnlyCollection<PrimitiveType> Signed = new List<PrimitiveType>
         {
             PrimitiveType.I8, PrimitiveType.I16, PrimitiveType.I32, PrimitiveType.I64
         };
 
-        public static readonly IList<PrimitiveType> Unsigned = new List<PrimitiveType>
+        public static readonly IReadOnlyCollection<PrimitiveType> Unsigned = new List<PrimitiveType>
         {
             PrimitiveType.U8, PrimitiveType.U16, PrimitiveType.U32, PrimitiveType.U64, PrimitiveType.USize
         };
 
-        public static readonly IList<PrimitiveType> Real = new List<PrimitiveType>
+        public static readonly IReadOnlyCollection<PrimitiveType> Real = new List<PrimitiveType>
         {
             PrimitiveType.F32, PrimitiveType.F64
         };

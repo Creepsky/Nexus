@@ -6,9 +6,9 @@ namespace Nexus.ir.stmt
 {
     public class IfStatement : Statement
     {
-        public ICondition Condition;
-        public IList<IStatement> Then;
-        public IList<IStatement> Else;
+        public ICondition Condition { get; set; }
+        public IList<IStatement> Then { get; set; }
+        public IList<IStatement> Else { get; set; }
 
         public override void Check(Context context)
         {

@@ -5,8 +5,8 @@ namespace Nexus.ir.stmt
 {
     public class AssignmentStatement : Statement
     {
-        public IExpression Left;
-        public IExpression Right;
+        public IExpression Left { private get; set; }
+        public IExpression Right { private get; set; }
 
         public override void Check(Context context)
         {

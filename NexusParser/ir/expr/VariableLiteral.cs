@@ -6,7 +6,7 @@ namespace Nexus.ir.expr
 {
     public class VariableLiteral : Expression
     {
-        public string Name;
+        public string Name { get; set; }
 
         public override string ToString() => Name;
 

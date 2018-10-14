@@ -6,7 +6,7 @@ namespace Nexus.ir.stmt
 {
     public class FunctionCallStatement : Statement
     {
-        public FunctionCall FunctionCall;
+        public FunctionCall FunctionCall { get; set; }
 
         public override void Check(Context context)
         {

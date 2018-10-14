@@ -5,8 +5,8 @@ namespace Nexus.ir.expr
 {
     public class RangeLiteral : Expression
     {
-        public IExpression Start;
-        public IExpression End;
+        public IExpression Start { get; set; }
+        public IExpression End { get; set; }
 
         public override string ToString()
         {

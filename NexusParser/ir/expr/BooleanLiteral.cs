@@ -4,7 +4,7 @@ namespace Nexus.ir.expr
 {
     public class BooleanLiteral : Expression
     {
-        public bool Value;
+        public bool Value { get; set; }
 
         public override string ToString() => Value ? "true" : "false";
 

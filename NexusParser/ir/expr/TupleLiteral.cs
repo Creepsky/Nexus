@@ -7,7 +7,7 @@ namespace Nexus.ir.expr
 {
     public class TupleLiteral : Expression
     {
-        public IList<IExpression> Values;
+        public IList<IExpression> Values { get; set; }
 
         public override string ToString() => $"std::make_tuple({string.Join(", ", Values)})";
 

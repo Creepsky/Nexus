@@ -5,7 +5,7 @@ namespace Nexus.ir
 {
     public class File
     {
-        public IList<Class> Classes;
-        public IList<ExtensionFunction> ExtensionFunctions;
+        public IList<Class> Classes { get; set; }
+        public IList<ExtensionFunction> ExtensionFunctions { get; set; }
     }
 }

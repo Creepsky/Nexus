@@ -229,7 +229,7 @@ namespace Nexus.ir.expr
 
     public class NumberLiteral<T> : NumberLiteral
     {
-        public T Value;
+        public T Value { get; set; }
 
         public override string ToString()
         {

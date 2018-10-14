@@ -13,9 +13,9 @@ namespace Nexus.ir.expr
 
     public class BinaryOperation : Expression
     {
-        public IExpression Left;
-        public BinaryOperatorType Type;
-        public IExpression Right;
+        public IExpression Left { get; set; }
+        public BinaryOperatorType Type { get; set; }
+        public IExpression Right { get; set; }
 
         public override string ToString()
         {

@@ -8,8 +8,8 @@ namespace Nexus.ir.stmt
 {
     public class TupleExplosionStatement : Statement
     {
-        public IList<string> Names;
-        public IExpression Right;
+        public IList<string> Names { get; set; }
+        public IExpression Right { get; set; }
 
         public override void Check(Context context)
         {

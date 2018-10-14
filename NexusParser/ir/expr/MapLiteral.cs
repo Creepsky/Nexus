@@ -7,7 +7,7 @@ namespace Nexus.ir.expr
 {
     public class MapLiteral : Expression
     {
-        public IDictionary<IExpression, IExpression> Values;
+        public IDictionary<IExpression, IExpression> Values { get; set; }
 
         public override string ToString()
         {

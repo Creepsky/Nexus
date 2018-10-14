@@ -5,8 +5,8 @@ namespace Nexus.ir.stmt
 {
     public class WhileStatement : Statement
     {
-        public ICondition Condition;
-        public IList<IStatement> Body;
+        public ICondition Condition { get; set; }
+        public IList<IStatement> Body { get; set; }
 
         public override void Check(Context context)
         {

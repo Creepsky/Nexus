@@ -6,7 +6,7 @@ namespace Nexus.ir.stmt
 {
     public class ReturnStatement : Statement
     {
-        public IExpression Value;
+        public IExpression Value { get; set; }
 
         public override void Check(Context context)
         {

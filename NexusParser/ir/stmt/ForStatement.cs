@@ -6,10 +6,10 @@ namespace Nexus.ir.stmt
 {
     public class ForStatement : Statement
     {
-        public IStatement Start;
-        public ICondition Stop;
-        public IExpression Step;
-        public IList<IStatement> Body;
+        public IStatement Start { get; set; }
+        public ICondition Stop { get; set; }
+        public IExpression Step { get; set; }
+        public IList<IStatement> Body { get; set; }
 
         public override void Check(Context context)
         {

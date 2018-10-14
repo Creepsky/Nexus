@@ -19,9 +19,9 @@ namespace Nexus.ir
 
     public class Comparison : Expression, ICondition
     {
-        public ComparisonType Type;
-        public IExpression Left;
-        public IExpression Right;
+        public ComparisonType Type { get; set; }
+        public IExpression Left { get; set; }
+        public IExpression Right { get; set; }
 
         public override IType GetResultType(Context context)
         {

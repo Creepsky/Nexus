@@ -4,7 +4,7 @@ namespace Nexus.ir.expr
 {
     public class ParenExpression : Expression
     {
-        public IExpression Expression;
+        public IExpression Expression { get; set; }
 
         public override IType GetResultType(Context context)
         {

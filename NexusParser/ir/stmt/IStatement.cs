@@ -2,7 +2,7 @@
 
 namespace Nexus.ir.stmt
 {
-    public interface IStatement : IPositioned, IGenerationElement
+    public interface IStatement : IGenerationElement
     { }
 
     public abstract class Statement : IStatement

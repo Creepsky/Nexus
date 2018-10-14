@@ -7,12 +7,12 @@ namespace Nexus.ir.stmt
 {
     public class Function : Statement
     {
-        public IType Type;
-        public string Name;
-        public IList<Variable> Parameter;
-        public IList<IStatement> Statements;
-        public bool Const = false;
-        private Context _context;
+        public IType Type { get; set; }
+        public string Name { get; set; }
+        public IList<Variable> Parameter { get; set; }
+        public IList<IStatement> Statements { get; set; }
+        public bool Const { get; set; } = false;
+        private Context _context { get; set; }
 
         public override string ToString()
         {
