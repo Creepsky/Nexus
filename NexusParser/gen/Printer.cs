@@ -9,7 +9,11 @@ namespace Nexus.gen
         private bool _needIndent;
         private readonly TextWriter _stream;
 
-        public Printer(TextWriter stream, int indent = 0)
+        public Printer(TextWriter stream)
+            : this(stream, 0)
+        { }
+        
+        public Printer(TextWriter stream, int indent)
         {
             _indentSize = indent;
             _stream = stream;
@@ -20,7 +24,9 @@ namespace Nexus.gen
         public void Write(string input)
         {
             if (_needIndent)
+            {
                 _stream.Write(_indent);
+            }
             _stream.Write(input);
             _needIndent = false;
         }
@@ -28,7 +34,9 @@ namespace Nexus.gen
         public void WriteLine(string input = "")
         {
             if (_needIndent)
+            {
                 _stream.Write(_indent);
+            }
             _stream.WriteLine(input);
             _needIndent = true;
         }

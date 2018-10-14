@@ -11,7 +11,7 @@ namespace Nexus.ir.stmt
         public string Name { get; set; }
         public IList<Variable> Parameter { get; set; }
         public IList<IStatement> Statements { get; set; }
-        public bool Const { get; set; } = false;
+        public bool Const { get; set; }
         private Context _context { get; set; }
 
         public override string ToString()
@@ -77,14 +77,18 @@ namespace Nexus.ir.stmt
                         i.Print(PrintType.Parameter, printer);
 
                         if (last != i)
+                        {
                             printer.Write(", ");
+                        }
                     }
                 }
 
                 printer.Write(")");
 
                 if (Const)
+                {
                     printer.Write(" const");
+                }
 
                 printer.WriteLine(";");
             }
@@ -100,16 +104,22 @@ namespace Nexus.ir.stmt
                         i.Print(PrintType.Parameter, printer);
 
                         if (i != Parameter.Last())
+                        {
                             printer.Write(", ");
+                        }
                     }
                     printer.Write(")");
                     if (Const)
+                    {
                         printer.Write(" const");
+                    }
                     printer.WriteLine();
                     printer.WriteLine("{");
                     printer.Push();
                     foreach (var i in Statements)
+                    {
                         i.Print(PrintType.FunctionSource, printer);
+                    }
                     printer.Pop();
                     printer.WriteLine("}");
                 }

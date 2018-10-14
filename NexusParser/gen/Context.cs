@@ -36,7 +36,9 @@ namespace Nexus.gen
         public void Add(string name, IGenerationElement element)
         {
             if (Contains(name))
+            {
                 throw new RedeclarationException(element, Get(name), name);
+            }
 
             _symbols.Add(name, element);
         }
@@ -44,9 +46,11 @@ namespace Nexus.gen
         public T Get<T>(string name, IPositioned caller) where T : IGenerationElement
         {
             var element = Get(name, caller);
-            
+
             if (element.GetType() != typeof(T))
+            {
                 throw new TypeMismatchException(caller, nameof(T), element.GetType().Name);
+            }
 
             return (T) element;
         }
@@ -54,9 +58,11 @@ namespace Nexus.gen
         public IGenerationElement Get(string name, IPositioned caller)
         {
             var element = Get(name);
-            
+
             if (element == null)
+            {
                 throw new NotFoundException(caller, "element", name);
+            }
 
             return element;
         }
@@ -76,7 +82,9 @@ namespace Nexus.gen
         public T GetElementAs<T>(IPositioned element)
         {
             if (Element.GetType() != typeof(T))
+            {
                 throw new TypeMismatchException(element, typeof(T).Name, Element.GetType().Name);
+            }
             
             return (T)Element;
         }

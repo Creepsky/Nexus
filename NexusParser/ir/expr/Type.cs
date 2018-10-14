@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Nexus.gen;
 using Nexus.ir.stmt;
@@ -126,28 +127,28 @@ namespace Nexus.ir.expr
 
         public static PrimitiveType ToType(string type)
         {
-            switch (type.ToLower())
+            switch (type.ToLowerInvariant())
             {
                 case "i8": return PrimitiveType.I8;
+                case "short":
                 case "i16": return PrimitiveType.I16;
+                case "int":
                 case "i32": return PrimitiveType.I32;
+                case "long":
                 case "i64": return PrimitiveType.I64;
                 case "u8": return PrimitiveType.U8;
+                case "ushort":
                 case "u16": return PrimitiveType.U16;
+                case "uint":
                 case "u32": return PrimitiveType.U32;
+                case "ulong":
                 case "u64": return PrimitiveType.U64;
                 case "usize": return PrimitiveType.USize;
                 case "f32": return PrimitiveType.F32;
                 case "f64": return PrimitiveType.F64;
                 case "string": return PrimitiveType.String;
-                case "short": return PrimitiveType.I16;
-                case "int": return PrimitiveType.I32;
-                case "long": return PrimitiveType.I64;
-                case "ushort": return PrimitiveType.U16;
-                case "uint": return PrimitiveType.U32;
-                case "ulong": return PrimitiveType.U64;
                 case "void": return PrimitiveType.Void;
-                case "bool": return PrimitiveType.Bool;
+                case "bool":
                 case "boolean": return PrimitiveType.Bool;
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }

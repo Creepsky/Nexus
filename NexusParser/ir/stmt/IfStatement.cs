@@ -19,10 +19,14 @@ namespace Nexus.ir.stmt
             var elseContext = context.StackNewContext(this);
 
             foreach (var i in Then)
+            {
                 i.Check(thenContext);
+            }
 
             foreach (var i in Else)
+            {
                 i.Check(elseContext);
+            }
         }
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)

@@ -3,10 +3,10 @@ using Xunit;
 
 namespace NexusParserTest
 {
-    public class CompilerUnitTest
+    public static class CompilerUnitTest
     {
         [Fact]
-        public void TestExampleProject()
+        public static void TestExampleProject()
         {
             const string examplePath = "../../../../example";
             var files = Nexus.FileParser.ParseDirectory(examplePath);

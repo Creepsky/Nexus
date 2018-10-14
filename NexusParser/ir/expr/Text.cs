@@ -1,4 +1,5 @@
-﻿using Nexus.gen;
+﻿using System;
+using Nexus.gen;
 
 namespace Nexus.ir.expr
 {
@@ -22,7 +23,9 @@ namespace Nexus.ir.expr
             };
 
         public override void Check(Context context)
-        { }
+        {
+            // nothing to check yet
+        }
 
         public override void Print(PrintType type, Printer printer)
         {

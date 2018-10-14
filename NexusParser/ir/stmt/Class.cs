@@ -138,13 +138,17 @@ namespace Nexus.ir.stmt
                 printer.WriteLine("public:");
                 printer.Push();
                 foreach (var i in Public.Functions)
+                {
                     i.Print(type, printer);
+                }
                 printer.Pop();
                 printer.WriteLine();
                 printer.WriteLine("private:");
                 printer.Push();
                 foreach (var i in Private.Variables)
+                {
                     i.Print(PrintType.Header, printer);
+                }
                 printer.Pop();
                 printer.WriteLine("};");
             }

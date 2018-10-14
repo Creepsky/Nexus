@@ -32,9 +32,15 @@ namespace Nexus.gen
             };
 
             foreach (var phase in phases)
-            foreach (var file in _files)
-            foreach (var c in file.Classes)
-                c.Generate(_globalContext, phase);
+            {
+                foreach (var file in _files)
+                {
+                    foreach (var c in file.Classes)
+                    {
+                        c.Generate(_globalContext, phase);
+                    }
+                }
+            }
         }
 
         public void Check()

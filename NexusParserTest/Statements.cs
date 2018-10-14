@@ -5,10 +5,10 @@ using Nexus.ir.stmt;
 
 namespace NexusParserTest
 {
-    public class UnitTest1
+    public static class StatementUnitTests
     {
         [Fact]
-        public void TestAssignment()
+        public static void TestAssignment()
         {
             var context = new Context();
             

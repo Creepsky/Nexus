@@ -37,7 +37,9 @@ namespace Nexus
         {
             Directory.CreateDirectory(outputPath);
             foreach (var unit in compilationUnits)
+            {
                 SaveCompilationUnit(outputPath, unit);
+            }
         }
     }
 }

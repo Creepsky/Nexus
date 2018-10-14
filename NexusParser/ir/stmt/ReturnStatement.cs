@@ -11,7 +11,9 @@ namespace Nexus.ir.stmt
         public override void Check(Context context)
         {
             if (context.Element == null)
+            {
                 throw new PositionedException(this, "return statement without parent scope");
+            }
 
             var function = context.GetElementAs<Function>(this);
             var resultType = Value.GetResultType(context);

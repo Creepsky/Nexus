@@ -166,12 +166,14 @@ namespace Nexus
         public override object VisitFunction_body_statement(NexusParser.Function_body_statementContext context)
         {
             if (context.function_call() != null)
+            {
                 return new FunctionCallStatement
                 {
                     FunctionCall = (FunctionCall) VisitFunction_call(context.function_call()),
                     Line = context.Start.Line,
                     Column = context.Start.Column
                 };
+            }
 
             return base.VisitFunction_body_statement(context);
         }
@@ -269,6 +271,7 @@ namespace Nexus
         public override object VisitNumber(NexusParser.NumberContext context)
         {
             if (context.INTEGER() != null)
+            {
                 return NumberLiteral.Parse(
                     context.INTEGER().GetText(),
                     null,
@@ -276,6 +279,7 @@ namespace Nexus
                     context.Start.Line,
                     context.Start.Column
                 );
+            }
 
             if (context.REAL() != null)
             {
@@ -295,32 +299,44 @@ namespace Nexus
         public override object VisitFactor(NexusParser.FactorContext context)
         {
             if (context.number() != null)
+            {
                 return VisitNumber(context.number());
+            }
 
             if (context.boolean() != null)
+            {
                 return VisitBoolean(context.boolean());
+            }
 
             if (context.BINARY() != null)
+            {
                 return NumberLiteral.ParseBinary(context.BINARY().GetText().Substring(2), context.Start.Line, context.Start.Column);
+            }
 
             if (context.HEX() != null)
+            {
                 return NumberLiteral.ParseHex(context.HEX().GetText().Substring(2), context.Start.Line, context.Start.Column);
+            }
 
             if (context.quoted_text() != null)
+            {
                 return new Text
                 {
                     Value = context.quoted_text().text == null ? string.Empty : context.quoted_text().text.Text,
                     Line = context.Start.Line,
                     Column = context.Start.Column
                 };
+            }
 
             if (context.IDENTIFIER() != null)
+            {
                 return new VariableLiteral
                 {
                     Name = context.IDENTIFIER().GetText(),
                     Line = context.Start.Line,
                     Column = context.Start.Column
                 };
+            }
 
             return base.VisitFactor(context);
         }
@@ -330,17 +346,29 @@ namespace Nexus
             ComparisonType type;
 
             if (context.EQUAL() != null)
+            {
                 type = ComparisonType.Equals;
+            }
             else if (context.GREATER() != null)
+            {
                 type = ComparisonType.Greater;
+            }
             else if (context.LESS() != null)
+            {
                 type = ComparisonType.Less;
+            }
             else if (context.GREATER_EQUAL() != null)
+            {
                 type = ComparisonType.GreaterEquals;
+            }
             else if (context.LESS_EQUAL() != null)
+            {
                 type = ComparisonType.LessEquals;
+            }
             else
+            {
                 throw new ArgumentOutOfRangeException("unknown comparison", null as Exception);
+            }
 
             return new Comparison
             {

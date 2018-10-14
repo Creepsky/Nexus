@@ -64,14 +64,20 @@ namespace Nexus.ir.expr
 
             // check sign
             if (type.HasValue && sign == '-')
+            {
                 if (!TypesExtension.Signed.Contains(type.Value))
+                {
                     throw new ArgumentOutOfRangeException(nameof(sign), sign, "");
+                }
+            }
 
             // f32/f64 with decimal part
             if (!string.IsNullOrEmpty(decimalPart))
             {
                 if (type.HasValue && !TypesExtension.Real.Contains(type.Value))
+                {
                     throw new ArgumentOutOfRangeException(nameof(suffix), suffix, "number has decimal part, but is not a real");
+                }
 
                 var real = $"{sign}{integerPart}.{decimalPart}";
 
@@ -91,18 +97,26 @@ namespace Nexus.ir.expr
                 if (UIntPtr.Size == 4)
                 {
                     if (Try(ParseFloat, real, out var f32))
+                    {
                         return new F32(f32) {Line = line, Column = column};
+                    }
 
                     if (Try(ParseDouble, real, out var f64))
+                    {
                         return new F64(f64) {Line = line, Column = column};
+                    }
                 }
                 else if (UIntPtr.Size == 8)
                 {
                     if (Try(ParseDouble, real, out var f64))
+                    {
                         return new F64(f64) {Line = line, Column = column};
+                    }
 
                     if (Try(ParseFloat, real, out var f32))
+                    {
                         return new F32(f32) {Line = line, Column = column};
+                    }
                 }
                 else
                 {
@@ -132,28 +146,44 @@ namespace Nexus.ir.expr
                 }
 
                 if (long.TryParse(integerPart, out var i64))
+                {
                     return new I64(i64) {Line = line, Column = column };
+                }
 
                 if (ulong.TryParse(integerPart, out var u64))
+                {
                     return new U64(u64) {Line = line, Column = column};
+                }
 
                 if (sbyte.TryParse(integerPart, out var i8))
+                {
                     return new I8(i8) {Line = line, Column = column};
+                }
 
                 if (short.TryParse(integerPart, out var i16))
+                {
                     return new I16(i16) {Line = line, Column = column};
+                }
 
                 if (int.TryParse(integerPart, out var i32))
+                {
                     return new I32(i32) {Line = line, Column = column};
+                }
 
                 if (byte.TryParse(integerPart, out var u8))
+                {
                     return new U8(u8) {Line = line, Column = column};
+                }
 
                 if (ushort.TryParse(integerPart, out var u16))
+                {
                     return new U16(u16) {Line = line, Column = column};
+                }
 
                 if (uint.TryParse(integerPart, out var u32))
+                {
                     return new U32(u32) {Line = line, Column = column};
+                }
             }
 
             return null;

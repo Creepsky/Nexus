@@ -11,6 +11,7 @@ namespace Nexus.ir.stmt
 
         public override void Check(Context context)
         {
+            // TODO
         }
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)
@@ -34,7 +35,9 @@ namespace Nexus.ir.stmt
             printer.WriteLine("{");
             printer.Push();
             foreach (var i in Body)
+            {
                 i.Print(PrintType.FunctionSource, printer);
+            }
             printer.Pop();
             printer.WriteLine("}");
         }

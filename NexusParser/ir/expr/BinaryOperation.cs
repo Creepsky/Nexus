@@ -29,15 +29,26 @@ namespace Nexus.ir.expr
             char op;
 
             if (Type == BinaryOperatorType.Add)
+            {
                 op = '+';
+            }
             else if (Type == BinaryOperatorType.Div)
+            {
                 op = '/';
+            }
             else if (Type == BinaryOperatorType.Sub)
+            {
                 op = '-';
+            }
             else if (Type == BinaryOperatorType.Mul)
+            {
                 op = '*';
+            }
             else
+            {
                 throw new ArgumentOutOfRangeException(nameof(Type), Type, "unknown binary type");
+            }
+            
             return op;
         }
 

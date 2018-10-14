@@ -27,7 +27,9 @@ namespace Nexus.ir.expr
         public override void Check(Context context)
         {
             foreach (var i in Values)
+            {
                 i.Check(context);
+            }
         }
 
         public override void Print(PrintType type, Printer printer)
@@ -37,7 +39,9 @@ namespace Nexus.ir.expr
             {
                 i.Print(type, printer);
                 if (i != Values.Last())
+                {
                     printer.Write(", ");
+                }
             }
             printer.Write(")");
         }

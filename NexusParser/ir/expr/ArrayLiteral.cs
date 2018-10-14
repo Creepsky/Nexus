@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
 
@@ -17,9 +18,11 @@ namespace Nexus.ir.expr
 
         public override IType GetResultType(Context context) =>
             Values.First().GetResultType(context);
-        
+
         public override void Check(Context context)
-        { }
+        {
+            // TODO: check if all values has the same value or are compatible
+        }
 
         public override void Print(PrintType type, Printer printer)
         {
@@ -29,7 +32,9 @@ namespace Nexus.ir.expr
                 i.Print(type, printer);
 
                 if (i != Values.Last())
+                {
                     printer.Write(", ");
+                }
             }
             printer.Write("}");
         }

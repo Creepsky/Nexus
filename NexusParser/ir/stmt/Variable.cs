@@ -42,7 +42,9 @@ namespace Nexus.ir.stmt
         public override IGenerationElement Generate(Context upperContext, GenerationPhase phase)
         {
             if (upperContext.Element == null)
+            {
                 throw new NoScopeException(this);
+            }
 
             switch (phase)
             {
@@ -56,7 +58,6 @@ namespace Nexus.ir.stmt
                 case GenerationPhase.Declaration:
                     throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
                         new[] {nameof(Class), nameof(Function)});
-                case GenerationPhase.Definition:
                 default:
                     break;
             }
@@ -71,6 +72,7 @@ namespace Nexus.ir.stmt
             c.Private.Variables.Add(this);
 
             if (Getter)
+            {
                 c.Functions.Add(new Function
                 {
                     Name = $"get_{Name}",
@@ -90,8 +92,10 @@ namespace Nexus.ir.stmt
                     },
                     Const = true
                 }.Generate<Function>(context, GenerationPhase.ForwardDeclaration));
+            }
 
             if (Setter)
+            {
                 c.Functions.Add(new Function
                 {
                     Name = $"set_{Name}",
@@ -131,6 +135,7 @@ namespace Nexus.ir.stmt
                     Line = Line,
                     Column = Column
                 }.Generate<Function>(context, GenerationPhase.ForwardDeclaration));
+            }
 
             c.Public.Types.Add(Type.Generate<IType>(context, GenerationPhase.ForwardDeclaration));
 
@@ -175,10 +180,15 @@ namespace Nexus.ir.stmt
                     printer.Write(" = ");
                     Initialization.Print(type, printer);
                 }
+
                 if (type == PrintType.ForSource)
+                {
                     printer.Write(";");
+                }
                 else
+                {
                     printer.WriteLine(";");
+                }
             }
         }
     }
