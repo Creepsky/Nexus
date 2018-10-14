@@ -9,8 +9,9 @@ file : file_declaration* ;
 
 class : CLASS name=IDENTIFIER LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
 
-class_member :    variable_declaration
-                | function_declaration ;
+class_member :    CPP_BLOCK
+                | variable_declaration
+                ;
 
 type :    IDENTIFIER ARRAY_DECLARATION* #namedType
         | LEFT_BRACE type (COMMA type)*  RIGHT_BRACE ARRAY_DECLARATION* #tupleType
@@ -77,6 +78,7 @@ expression :	  expression STAR expression #mul
                 | LEFT_BRACKET key_value_pair (COMMA key_value_pair)* RIGHT_BRACKET #map
                 | expression RANGE expression #range
                 | expression EQUAL expression #test
+                | CPP_BLOCK #cppBlock
                 | factor #fact ;
 
 boolean : TRUE | FALSE ;
@@ -102,13 +104,18 @@ comparison :      expression EQUAL expression
                 | expression GREATER expression
                 | expression GREATER_EQUAL expression ;
 
-extension_function : type className=IDENTIFIER DOT name=IDENTIFIER LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
+extension_type :  IDENTIFIER
+                | type
+                ;
+
+extension_function : returnType=type extensionType=type DOT name=IDENTIFIER LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
                      LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
 /* Lexer */
 
 COMMENT : '//' ~('\r'|'\n')* -> skip ;
 MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;
+CPP_BLOCK : 'c++' WHITESPACE* LEFT_CURLY_BRACE WHITESPACE* .*? WHITESPACE* RIGHT_CURLY_BRACE ;
 CLASS : 'class' ;
 LEFT_CURLY_BRACE : '{' ;
 RIGHT_CURLY_BRACE : '}' ;
@@ -146,6 +153,7 @@ COMMA : ',' ;
 RETURN : 'return' ;
 RANGE : '..' ;
 DOT : '.' ;
+CPP : 'c++' ;
 INTEGER_SUFFIX : '_' ('i'|'u') ('8'|'16'|'32'|'64') ;
 REAL_SUFFIX : '_f' ('32'|'64') | 'f' | 'd' ;
 IDENTIFIER : [a-zA-Z_-][a-zA-Z0-9_-]* ;

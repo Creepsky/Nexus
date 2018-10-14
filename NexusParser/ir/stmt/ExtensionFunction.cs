@@ -7,14 +7,14 @@ namespace Nexus.ir.stmt
     public class ExtensionFunction : Statement
     {
         public IType ReturnType { get; set; }
-        public string Class { get; set; }
+        public IType ExtensionBase { get; set; }
         public string Name { get; set; }
         public IList<Variable> Parameter { get; set; }
         public IList<IStatement> Body { get; set; }
 
         public override string ToString()
         {
-            return $"{ReturnType} {Class}.{Name}()";
+            return $"{ReturnType} {ExtensionBase}.{Name}()";
         }
 
         public override void Check(Context context)

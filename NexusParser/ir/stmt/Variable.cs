@@ -73,7 +73,7 @@ namespace Nexus.ir.stmt
 
             if (Getter)
             {
-                c.Functions.Add(new Function
+                c.Public.Functions.Add(new Function
                 {
                     Name = $"get_{Name}",
                     Type = Type,
@@ -96,7 +96,7 @@ namespace Nexus.ir.stmt
 
             if (Setter)
             {
-                c.Functions.Add(new Function
+                c.Public.Functions.Add(new Function
                 {
                     Name = $"set_{Name}",
                     Type = c.Type,

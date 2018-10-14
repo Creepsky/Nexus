@@ -51,7 +51,7 @@ namespace Nexus.ir.stmt
     {
         public string Name { get; }
         public IList<Variable> Variables { get; }
-        public IList<Function> Functions { get; }
+        public IList<CppBlock> CppBlocks { get; }
 
         public readonly SimpleType Type;
         public readonly ClassSection Public;
@@ -59,11 +59,11 @@ namespace Nexus.ir.stmt
         public readonly IList<IType> UsedTypes;
         private Context _context;
 
-        public Class(string name, IList<Variable> variables, IList<Function> functions)
+        public Class(string name, IList<Variable> variables, IList<CppBlock> cppBlocks)
         {
             Name = name;
             Variables = variables;
-            Functions = functions;
+            CppBlocks = cppBlocks;
             UsedTypes = new List<IType>();
 
             Type = new SimpleType(Name, 0, Line, Column);
@@ -85,10 +85,14 @@ namespace Nexus.ir.stmt
             }
 
             foreach (var i in Variables)
-                i.Generate<Variable>(_context, phase);
+            {
+                i.Generate(_context, phase);
+            }
 
-            foreach (var i in Functions)
-                i.Generate<Function>(_context, phase);
+            foreach (var i in CppBlocks)
+            {
+                i.Generate(_context, phase);
+            }
 
             //foreach (var i in _extensionFunctions)
             //{

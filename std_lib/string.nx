@@ -1,0 +1,20 @@
+class String
+{
+    c++ {
+        std::string value;
+    }
+}
+
+usize String.size()
+{
+    return c++ {
+        value.size()
+    };
+}
+
+bool String.empty()
+{
+    return c++ {
+        value.empty()
+    };
+}

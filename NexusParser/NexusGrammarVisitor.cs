@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Antlr4.Runtime;
 using Nexus.ir;
 using Nexus.ir.expr;
 using Nexus.ir.stmt;
@@ -25,11 +26,21 @@ namespace Nexus
 
             return new Class(context.name.Text,
                 member.Where(i => i.GetType() == typeof(Variable)).Select(i => (Variable) i).ToList(),
-                member.Where(i => i.GetType() == typeof(Function)).Select(i => (Function) i).ToList())
+                member.Where(i => i.GetType() == typeof(CppBlock)).Select(i => (CppBlock) i).ToList())
             {
                 Line = context.Start.Line,
                 Column = context.Start.Column
             };
+        }
+
+        public override object VisitClass_member(NexusParser.Class_memberContext context)
+        {
+            if (context.CPP_BLOCK() != null)
+            {
+                return ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start);
+            }
+
+            return Visit(context.variable_declaration());
         }
 
         public override object VisitNamedType(NexusParser.NamedTypeContext context) => new SimpleType(
@@ -241,6 +252,11 @@ namespace Nexus
             Column = context.Start.Column
         };
 
+        public override object VisitCppBlock(NexusParser.CppBlockContext context)
+        {
+            return ExtractCppBlock(context.GetText(), context.Start);
+        }
+
         public override object VisitMap(NexusParser.MapContext context) => new MapLiteral
         {
             Values = context.key_value_pair().ToDictionary(
@@ -380,13 +396,26 @@ namespace Nexus
 
         public override object VisitExtension_function(NexusParser.Extension_functionContext context) => new ExtensionFunction
         {
-            ReturnType = (IType) Visit(context.type()),
-            Class = context.className.Text,
+            ReturnType = (IType) Visit(context.returnType),
+            ExtensionBase = (IType) Visit(context.extensionType),
             Name = context.name.Text,
             Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList(),
             Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
             Line = context.Start.Line,
             Column = context.Start.Column
         };
+
+        private CppBlock ExtractCppBlock(string wholeCppBlock, IToken token)
+        {
+            var block = wholeCppBlock
+                .Replace(" ", "")
+                .Replace("\r", "")
+                .Replace("\n", "");
+
+            block = block.Remove(0, "c++{".Length);
+            block = block.Remove(block.Length - 1);
+
+            return new CppBlock(block, token.Line, token.Column);
+        }
     }
 }
