@@ -219,5 +219,81 @@ namespace Nexus.ir.expr
                     throw new ArgumentOutOfRangeException(nameof(printType), printType, null);
             }
         }
+
+        public const string I8 = "i8";
+        public const string I16 = "i16";
+        public const string I32 = "i32";
+        public const string I64 = "i64";
+
+        public const string Short = "short";
+        public const string Int = "int";
+        public const string Long = "long";
+
+        public const string U8 = "u8";
+        public const string U16 = "u16";
+        public const string U32 = "u32";
+        public const string U64 = "u64";
+
+        public const string Byte = "byte";
+        public const string UShort = "ushort";
+        public const string UInt = "uint";
+        public const string ULong = "ulong";
+        public const string USize = "usize";
+
+        public const string F32 = "f32";
+        public const string F64 = "f64";
+
+        public const string Float = "float";
+        public const string Double = "double";
+
+        public const string Bool = "bool";
+        public const string Boolean = Bool;
+
+        public const string String = "string";
+
+        public const string Void = "void";
+
+        public static readonly IReadOnlyCollection<string> Primitives = new[]
+        {
+            I8,
+            I16,
+            I32,
+            I64,
+            Short,
+            Int,
+            Long,
+            U8,
+            U16,
+            U32,
+            U64,
+            Byte,
+            UShort,
+            UInt,
+            ULong,
+            F32,
+            F64,
+            Float,
+            Double,
+            Bool,
+            Boolean,
+            String,
+            Void,
+            USize,
+        };
+
+        public static readonly IDictionary<string, string> Aliases = new Dictionary<string, string>
+        {
+            {Short, I16},
+            {Int, I32},
+            {Long, I64},
+            {Byte, U8},
+            {UShort, U16},
+            {UInt, U32},
+            {ULong, U64},
+            {USize, U64},
+            {Bool, Boolean},
+            {Float, F32},
+            {Double, F64},
+        };
     }
 }
