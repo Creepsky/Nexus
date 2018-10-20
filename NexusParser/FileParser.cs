@@ -9,6 +9,11 @@ namespace Nexus
 {
     public static class FileParser
     {
+        public static IList<ir.File> ParseProject(Configuration configuration)
+        {
+            return ParseDirectory(configuration.InputPath);
+        }
+
         public static IList<ir.File> ParseDirectory(string path) =>
             Directory.EnumerateFiles(path, "*.nx").Select(ParseFile).ToList();
 
