@@ -10,11 +10,7 @@ namespace Nexus.ir.stmt
     {
         public IType Type { get; set; }
         public string Name { get; set; }
-        public bool Setter { get; set; }
-        public bool Getter { get; set; }
         public IExpression Initialization { get; set; }
-        public bool Reference { get; set; }
-        public bool Const { get; set; }
 
         public override string ToString()
         {

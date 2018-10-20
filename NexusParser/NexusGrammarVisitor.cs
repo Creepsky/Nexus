@@ -96,8 +96,6 @@ namespace Nexus
         {
             Type = (IType) Visit(context.type()),
             Name = context.IDENTIFIER().GetText(),
-            Getter = context.GET() != null,
-            Setter = context.SET() != null,
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column
@@ -107,8 +105,6 @@ namespace Nexus
         {
             Type = (IType) Visit(context.type()),
             Name = context.IDENTIFIER().GetText(),
-            Setter = false,
-            Getter = false,
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column
@@ -144,8 +140,6 @@ namespace Nexus
         {
             Type = (IType) Visit(context.type()),
             Name = context.IDENTIFIER().GetText(),
-            Setter = false,
-            Getter = false,
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column

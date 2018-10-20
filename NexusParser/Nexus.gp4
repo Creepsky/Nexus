@@ -24,7 +24,7 @@ type :    IDENTIFIER ARRAY_DECLARATION* #namedType
         | LEFT_BRACKET key=type ARROW_RIGHT value=type RIGHT_BRACKET ARRAY_DECLARATION* #mapType
 	;
 
-variable_declaration : type IDENTIFIER SET? GET? (EQUAL expression)? COLON ;
+variable_declaration : type IDENTIFIER (EQUAL expression)? COLON ;
 
 function_parameter : type IDENTIFIER (EQUAL expression)?;
 
@@ -153,8 +153,6 @@ PLUS : '+' ;
 MINUS : '-' ;
 STAR: '*' ;
 SLASH: '/' ;
-SET : 'set' ;
-GET : 'get' ;
 COMMA : ',' ;
 RETURN : 'return' ;
 INCLUDE : 'include' ;
