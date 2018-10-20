@@ -8,18 +8,13 @@ namespace Nexus.ir.stmt
     public class ClassSection : IGenerationElement
     {
         public readonly IList<Variable> Variables = new List<Variable>();
-        public readonly IList<Function> Functions = new List<Function>();
         public readonly IList<CppBlock> CppBlocks = new List<CppBlock>();
-        public readonly IList<IType> Types = new List<IType>();
         public int Line { get; set; }
         public int Column { get; set; }
 
         public void Check(Context context)
         {
             foreach (var i in Variables)
-                i.Check(context);
-
-            foreach (var i in Functions)
                 i.Check(context);
         }
 
@@ -28,9 +23,6 @@ namespace Nexus.ir.stmt
             if (phase == GenerationPhase.Definition)
             {
                 foreach (var i in Variables)
-                    i.Generate(context, phase);
-
-                foreach (var i in Functions)
                     i.Generate(context, phase);
             }
 
@@ -44,10 +36,6 @@ namespace Nexus.ir.stmt
 
         public void Print(PrintType type, Printer printer)
         {
-            foreach (var i in Functions)
-            {
-                i.Print(type, printer);
-            }
             foreach (var i in Variables)
             {
                 i.Print(PrintType.Header, printer);
@@ -67,7 +55,6 @@ namespace Nexus.ir.stmt
 
         public readonly SimpleType Type;
         public readonly ClassSection Public;
-        public readonly ClassSection Private;
         private Context _context;
 
         public Class(string name, IList<Variable> variables, IList<CppBlock> cppBlocks)
@@ -77,7 +64,6 @@ namespace Nexus.ir.stmt
             CppBlocks = cppBlocks;
             Type = new SimpleType(Name, 0, Line, Column);
             Public = new ClassSection();
-            Private = new ClassSection();
         }
 
         public override string ToString()
@@ -138,11 +124,6 @@ namespace Nexus.ir.stmt
                 printer.Push();
                 Public.Print(type, printer);
                 printer.Pop();
-                printer.WriteLine();
-                printer.WriteLine("private:");
-                printer.Push();
-                Private.Print(type, printer);
-                printer.Pop();
                 printer.WriteLine("};");
             }
             else if (type == PrintType.Source)
@@ -153,27 +134,9 @@ namespace Nexus.ir.stmt
                 // constructor
                 printer.WriteLine($"{Name}::{Name}()");
                 printer.Push();
-                if (Private.Variables.Any())
-                {
-                    printer.WriteLine(":");
-                    foreach (var i in Private.Variables)
-                    {
-                        i.Print(PrintType.Source, printer);
-                        if (i != Private.Variables.Last())
-                            printer.WriteLine(",");
-                    }
-                    printer.Pop();
-                    printer.WriteLine();
-                }
                 printer.WriteLine("{ }");
+                printer.Pop();
                 printer.WriteLine();
-
-                // functions
-                foreach (var i in Public.Functions)
-                {
-                    i.Print(type, printer);
-                    printer.WriteLine();
-                }
             }
         }
 

@@ -18,7 +18,6 @@ namespace Nexus.ir.expr
         {
             if (phase == GenerationPhase.Declaration)
             {
-                ((Class)context.Element).Private.CppBlocks.Add(this);
             }
 
             return this;
