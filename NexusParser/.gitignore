@@ -333,4 +333,5 @@ ASALocalRun/
 .localhistory/
 
 antlr/
+.antlr/
 antlr-*.jar
