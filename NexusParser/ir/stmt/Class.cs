@@ -9,6 +9,7 @@ namespace Nexus.ir.stmt
     {
         public readonly IList<Variable> Variables = new List<Variable>();
         public readonly IList<Function> Functions = new List<Function>();
+        public readonly IList<CppBlock> CppBlocks = new List<CppBlock>();
         public readonly IList<IType> Types = new List<IType>();
         public int Line { get; set; }
         public int Column { get; set; }
@@ -43,7 +44,18 @@ namespace Nexus.ir.stmt
 
         public void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            foreach (var i in Functions)
+            {
+                i.Print(type, printer);
+            }
+            foreach (var i in Variables)
+            {
+                i.Print(PrintType.Header, printer);
+            }
+            foreach (var i in CppBlocks)
+            {
+                i.Print(PrintType.Header, printer);
+            }
         }
     }
 
@@ -56,7 +68,6 @@ namespace Nexus.ir.stmt
         public readonly SimpleType Type;
         public readonly ClassSection Public;
         public readonly ClassSection Private;
-        public readonly IList<IType> UsedTypes;
         private Context _context;
 
         public Class(string name, IList<Variable> variables, IList<CppBlock> cppBlocks)
@@ -64,8 +75,6 @@ namespace Nexus.ir.stmt
             Name = name;
             Variables = variables;
             CppBlocks = cppBlocks;
-            UsedTypes = new List<IType>();
-
             Type = new SimpleType(Name, 0, Line, Column);
             Public = new ClassSection();
             Private = new ClassSection();
@@ -127,18 +136,12 @@ namespace Nexus.ir.stmt
                 printer.WriteLine("{");
                 printer.WriteLine("public:");
                 printer.Push();
-                foreach (var i in Public.Functions)
-                {
-                    i.Print(type, printer);
-                }
+                Public.Print(type, printer);
                 printer.Pop();
                 printer.WriteLine();
                 printer.WriteLine("private:");
                 printer.Push();
-                foreach (var i in Private.Variables)
-                {
-                    i.Print(PrintType.Header, printer);
-                }
+                Private.Print(type, printer);
                 printer.Pop();
                 printer.WriteLine("};");
             }

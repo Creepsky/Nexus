@@ -407,15 +407,26 @@ namespace Nexus
 
         private CppBlock ExtractCppBlock(string wholeCppBlock, IToken token)
         {
-            var block = wholeCppBlock
-                .Replace(" ", "")
-                .Replace("\r", "")
-                .Replace("\n", "");
+            wholeCppBlock = wholeCppBlock.Trim();
 
-            block = block.Remove(0, "c++{".Length);
-            block = block.Remove(block.Length - 1);
+            if (!wholeCppBlock.StartsWith("c++") ||
+                !wholeCppBlock.EndsWith("}"))
+            {
+                throw new PositionedException(token.Line, token.Column, "invalid c++ block");
+            }
 
-            return new CppBlock(block, token.Line, token.Column);
+            wholeCppBlock = wholeCppBlock.Substring("c++".Length).TrimStart();
+
+            if (!wholeCppBlock.StartsWith("{"))
+            {
+                throw new PositionedException(token.Line, token.Column, "invalid c++ block");
+            }
+
+            wholeCppBlock = wholeCppBlock.Substring("{".Length);
+            wholeCppBlock = wholeCppBlock.Substring(0, wholeCppBlock.Length - "}".Length);
+            wholeCppBlock = wholeCppBlock.Trim();
+
+            return new CppBlock(wholeCppBlock, token.Line, token.Column);
         }
     }
 }

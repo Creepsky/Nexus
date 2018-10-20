@@ -1,4 +1,5 @@
 ﻿using Nexus.gen;
+using Nexus.ir.stmt;
 
 namespace Nexus.ir.expr
 {
@@ -15,6 +16,11 @@ namespace Nexus.ir.expr
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
+            if (phase == GenerationPhase.Declaration)
+            {
+                ((Class)context.Element).Private.CppBlocks.Add(this);
+            }
+
             return this;
         }
 
@@ -30,7 +36,7 @@ namespace Nexus.ir.expr
 
         public override void Print(PrintType type, Printer printer)
         {
-            printer.Write(Block);
+            printer.WriteLine(Block);
         }
     }
 }
