@@ -1,0 +1,9 @@
+/**
+  * @brief Clears the string, leaving it empty.
+  */
+void string.bytes()
+{
+    return c++ {
+        $(value).size();
+    };
+}

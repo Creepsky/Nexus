@@ -1,0 +1,10 @@
+/**
+  * @brief Returns, if the string has the size of 0.
+  * @returns true, if the string is empty, false if not.
+  */
+void string.empty()
+{
+    return c++ {
+        $(value).empty();
+    };
+}

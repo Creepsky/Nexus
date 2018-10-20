@@ -1,0 +1,9 @@
+/**
+  * @brief Clears the string, leaving it empty.
+  */
+void string.clear()
+{
+    c++ {
+        $(value).clear();
+    };
+}
