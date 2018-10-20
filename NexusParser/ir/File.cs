@@ -7,6 +7,5 @@ namespace Nexus.ir
     {
         public IList<Class> Classes { get; set; }
         public IList<ExtensionFunction> ExtensionFunctions { get; set; }
-        public IList<string> Includes { get; set; }
     }
 }

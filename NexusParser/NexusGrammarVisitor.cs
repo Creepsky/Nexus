@@ -5,7 +5,6 @@ using Nexus.ir.expr;
 using Nexus.ir.stmt;
 using System;
 using System.Linq;
-using System.Text;
 
 namespace Nexus
 {
@@ -14,37 +13,12 @@ namespace Nexus
         public override object VisitFile(NexusParser.FileContext context)
         {
             var list = context.file_declaration().Select(Visit).ToList();
-            var includes = context.include().Select(Visit).ToList();
 
             return new File
             {
                 Classes = list.OfType<Class>().ToList(),
-                ExtensionFunctions = list.OfType<ExtensionFunction>().ToList(),
-                Includes = includes.OfType<string>().ToList()
+                ExtensionFunctions = list.OfType<ExtensionFunction>().ToList()
             };
-        }
-
-        public override object VisitInclude(NexusParser.IncludeContext context)
-        {
-            return Visit(context.include_path());
-        }
-
-        public override object VisitNestedInclude(NexusParser.NestedIncludeContext context)
-        {
-            var sb = new StringBuilder();
-
-            foreach (var i in context.IDENTIFIER())
-            {
-                sb.Append('/');
-                sb.Append(i.GetText());
-            }
-
-            return sb.ToString();
-        }
-
-        public override object VisitSingleInclude(NexusParser.SingleIncludeContext context)
-        {
-            return context.IDENTIFIER().GetText();
         }
 
         public override object VisitClass(NexusParser.ClassContext context)

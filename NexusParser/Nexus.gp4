@@ -5,13 +5,7 @@ grammar Nexus;
 file_declaration :   class
                    | extension_function ;
 
-file : include* file_declaration* ;
-
-include : INCLUDE include_path COLON ;
-
-include_path :    (SLASH IDENTIFIER)* #nestedInclude
-                | IDENTIFIER #singleInclude
-                ;
+file : file_declaration* ;
 
 class : CLASS name=IDENTIFIER LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
 
@@ -156,7 +150,6 @@ STAR: '*' ;
 SLASH: '/' ;
 COMMA : ',' ;
 RETURN : 'return' ;
-INCLUDE : 'include' ;
 RANGE : '..' ;
 DOT : '.' ;
 CPP : 'c++' ;
