@@ -1,9 +1,11 @@
-using System;
-using System.Linq;
 using Antlr4.Runtime;
+using Nexus.common;
 using Nexus.ir;
 using Nexus.ir.expr;
 using Nexus.ir.stmt;
+using System;
+using System.Linq;
+using System.Text;
 
 namespace Nexus
 {
@@ -15,9 +17,33 @@ namespace Nexus
 
             return new File
             {
-                Classes = list.Where(i => i.GetType() == typeof(Class)).Select(i => (Class) i).ToList(),
-                ExtensionFunctions = list.Where(i => i.GetType() == typeof(ExtensionFunction)).Select(i => (ExtensionFunction) i).ToList()
+                Classes = list.OfType<Class>().ToList(),
+                ExtensionFunctions = list.OfType<ExtensionFunction>().ToList(),
+                Includes = list.OfType<string>().ToList()
             };
+        }
+
+        public override object VisitInclude(NexusParser.IncludeContext context)
+        {
+            return context.include_path().ToString();
+        }
+
+        public override object VisitNestedInclude(NexusParser.NestedIncludeContext context)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var i in context.IDENTIFIER())
+            {
+                sb.Append('/');
+                sb.Append(i.GetText());
+            }
+
+            return sb.ToString();
+        }
+
+        public override object VisitSingleInclude(NexusParser.SingleIncludeContext context)
+        {
+            return context.IDENTIFIER().GetText();
         }
 
         public override object VisitClass(NexusParser.ClassContext context)

@@ -2,10 +2,16 @@ grammar Nexus;
 
 /* Parser */
 
-file_declaration :        class
-                        | extension_function ;
+file_declaration :   class
+                   | extension_function ;
 
-file : file_declaration* ;
+file : include* file_declaration* ;
+
+include : INCLUDE include_path COLON ;
+
+include_path :    (SLASH IDENTIFIER)* #nestedInclude
+                | IDENTIFIER #singleInclude
+                ;
 
 class : CLASS name=IDENTIFIER LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
 
@@ -151,6 +157,7 @@ SET : 'set' ;
 GET : 'get' ;
 COMMA : ',' ;
 RETURN : 'return' ;
+INCLUDE : 'include' ;
 RANGE : '..' ;
 DOT : '.' ;
 CPP : 'c++' ;
