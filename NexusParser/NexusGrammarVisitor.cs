@@ -14,18 +14,19 @@ namespace Nexus
         public override object VisitFile(NexusParser.FileContext context)
         {
             var list = context.file_declaration().Select(Visit).ToList();
+            var includes = context.include().Select(Visit).ToList();
 
             return new File
             {
                 Classes = list.OfType<Class>().ToList(),
                 ExtensionFunctions = list.OfType<ExtensionFunction>().ToList(),
-                Includes = list.OfType<string>().ToList()
+                Includes = includes.OfType<string>().ToList()
             };
         }
 
         public override object VisitInclude(NexusParser.IncludeContext context)
         {
-            return context.include_path().ToString();
+            return Visit(context.include_path());
         }
 
         public override object VisitNestedInclude(NexusParser.NestedIncludeContext context)
