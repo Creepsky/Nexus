@@ -61,9 +61,9 @@ namespace Nexus
 
         public override object VisitClass_member(NexusParser.Class_memberContext context)
         {
-            if (context.CPP_BLOCK() != null)
+            if (context.cpp_block() != null)
             {
-                return ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start);
+                return ExtractCppBlock(context.cpp_block().GetText(), context.Start);
             }
 
             return Visit(context.variable_declaration());
