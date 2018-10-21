@@ -9,8 +9,8 @@ namespace Nexus.ir.expr
         public IType KeyType { get; set; }
         public IType ValueType { get; set; }
         public int Array { get; set; }
-        public bool Primitive { get; } = false;
-        public bool Auto { get; } = false;
+        public bool Primitive { get; }
+        public bool Auto { get; }
 
         public bool Equals(MapType other)
         {
