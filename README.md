@@ -32,12 +32,12 @@ Nexus translates directly to C++ code, which makes interoperabilty with librarie
 
 ## Main Goals
 
--  write less, do more
--  simple and readable code
--  high level constructs and syntactic sugar
--  built-in asynchronicity through thread pools and channels
--  easy to use library manager
--  type safety
+  -   write less, do more
+  -   simple and readable code
+  -   high level constructs and syntactic sugar
+  -   built-in asynchronicity through thread pools and channels
+  -   easy to use library manager
+  -   type safety
 
 ## How to use the compiler
 
