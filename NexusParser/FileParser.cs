@@ -16,7 +16,7 @@ namespace Nexus
             return ParseDirectory("/", configuration).ToList();
         }
 
-        public static IEnumerable<ir.File> ParseDirectory(string path, Configuration configuration)
+        private static IEnumerable<ir.File> ParseDirectory(string path, Configuration configuration)
         {
             var files = configuration.EnumerateSourceFiles(path)
                 .Select(i => ParseFile(i, configuration));
@@ -29,7 +29,7 @@ namespace Nexus
             return files;
         }
 
-        public static ir.File ParseFile(string path, Configuration configuration)
+        private static ir.File ParseFile(string path, Configuration configuration)
         {
             Console.WriteLine($"Parsing '{path}'");
             var file = configuration.OpenFile(path);
@@ -42,17 +42,13 @@ namespace Nexus
             var visitor = new NexusGrammarVisitor();
             var ir = (ir.File) visitor.Visit(ast);
             ir.Path = path;
-            foreach (var i in ir.Classes)
-            {
-                i.Path = path;
-            }
-            foreach (var i in ir.ExtensionFunctions)
+            foreach (var i in ir.Elements)
             {
                 i.Path = path;
             }
             return ir;
         }
-        
+
         public static void WriteFiles(Configuration configuration, IEnumerable<CompilationUnit> compilationUnits)
         {
             var physicalFileSystem = new PhysicalFileSystem();
@@ -74,9 +70,16 @@ namespace Nexus
                 {
                     fileSystem.CreateDirectory(dir);
                 }
-                
-                fileSystem.WriteAllText(dir / unit.Name + ".hpp", unit.Header);
-                fileSystem.WriteAllText(dir / unit.Name + ".cpp", unit.Source);
+
+                if (!string.IsNullOrWhiteSpace(unit.Header))
+                {
+                    fileSystem.WriteAllText(dir / unit.Name + ".hpp", unit.Header);
+                }
+
+                if (!string.IsNullOrWhiteSpace(unit.Source))
+                {
+                    fileSystem.WriteAllText(dir / unit.Name + ".cpp", unit.Source);
+                }
             }
         }
     }

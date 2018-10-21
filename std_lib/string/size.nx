@@ -5,6 +5,6 @@
 usize string.size()
 {
     return c++ {
-        $(value).size() / 4;
+        __this.value.size() / 4
     };
 }

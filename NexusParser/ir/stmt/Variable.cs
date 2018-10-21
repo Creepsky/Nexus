@@ -9,7 +9,6 @@ namespace Nexus.ir.stmt
     public class Variable : Statement
     {
         public IType Type { get; set; }
-        public string Name { get; set; }
         public IExpression Initialization { get; set; }
 
         public override string ToString()
@@ -44,13 +43,11 @@ namespace Nexus.ir.stmt
 
             switch (phase)
             {
-                case GenerationPhase.ForwardDeclaration:
-                    upperContext.Add(Name, this);
-                    break;
                 case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(Class):
                     return GenerateClassVariable((Class)upperContext.Element, upperContext);
                 case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(Function):
-                    return GenerateParameter((Function)upperContext.Element, upperContext);
+                case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(ExtensionFunction):
+                    return GenerateParameter(upperContext);
                 case GenerationPhase.Declaration:
                     throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
                         new[] {nameof(Class), nameof(Function)});
@@ -68,7 +65,7 @@ namespace Nexus.ir.stmt
             return this;
         }
 
-        private IGenerationElement GenerateParameter(Function f, Context context)
+        private IGenerationElement GenerateParameter(Context context)
         {
             context.Add(Name, this);
             return this;

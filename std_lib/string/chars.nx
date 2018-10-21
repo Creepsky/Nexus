@@ -4,6 +4,6 @@
 void string.bytes()
 {
     return c++ {
-        $(value).size();
+        __this.value.size()
     };
 }

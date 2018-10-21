@@ -7,7 +7,6 @@ namespace Nexus.ir.expr
 {
     public class FunctionCall : Expression
     {
-        public string Name { get; set; }
         public IList<IExpression> Parameter { get; set; }
 
         public override string ToString() => $"{Name}({string.Join(", ", Parameter)})";

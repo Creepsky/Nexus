@@ -6,7 +6,6 @@ namespace Nexus.ir.expr
 {
     public class ArrayAccess : Expression
     {
-        public string Name { get; set; }
         public IExpression Index { get; set; }
         
         public override string ToString() => $"{Name}[{Index}]";

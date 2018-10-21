@@ -6,15 +6,13 @@ namespace Nexus.ir.stmt
 {
     public class Class : Statement
     {
-        public string Name { get; }
-        public string Path { get; set; }
         public IList<Variable> Variables { get; }
-        public IList<CppBlock> CppBlocks { get; }
+        public IList<CppBlockStatement> CppBlocks { get; }
 
         public readonly SimpleType Type;
         private Context _context;
 
-        public Class(string name, IList<Variable> variables, IList<CppBlock> cppBlocks)
+        public Class(string name, IList<Variable> variables, IList<CppBlockStatement> cppBlocks)
         {
             Name = name;
             Variables = variables;
@@ -76,18 +74,6 @@ namespace Nexus.ir.stmt
                 }
                 printer.Pop();
                 printer.WriteLine("};");
-            }
-            else if (type == PrintType.Source)
-            {
-                printer.WriteLine($"#include \"{Name}.hpp\"");
-                printer.WriteLine();
-            
-                // constructor
-                printer.WriteLine($"{Name}::{Name}()");
-                printer.Push();
-                printer.WriteLine("{ }");
-                printer.Pop();
-                printer.WriteLine();
             }
         }
 

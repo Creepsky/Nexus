@@ -26,8 +26,8 @@ namespace Nexus
             var member = context.class_member().Select(Visit).ToList();
 
             return new Class(context.name.Text,
-                member.Where(i => i.GetType() == typeof(Variable)).Select(i => (Variable) i).ToList(),
-                member.Where(i => i.GetType() == typeof(CppBlock)).Select(i => (CppBlock) i).ToList())
+                member.OfType<Variable>().ToList(),
+                member.OfType<CppBlockStatement>().ToList())
             {
                 Line = context.Start.Line,
                 Column = context.Start.Column
@@ -38,7 +38,7 @@ namespace Nexus
         {
             if (context.CPP_BLOCK() != null)
             {
-                return ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start);
+                return new CppBlockStatement(ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start));
             }
 
             return Visit(context.variable_declaration());
@@ -177,6 +177,11 @@ namespace Nexus
                     Line = context.Start.Line,
                     Column = context.Start.Column
                 };
+            }
+
+            if (context.CPP_BLOCK() != null)
+            {
+                return new CppBlockStatement(ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start));
             }
 
             return base.VisitFunction_body_statement(context);

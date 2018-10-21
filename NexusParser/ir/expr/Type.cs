@@ -30,7 +30,6 @@ namespace Nexus.ir.expr
 
     public class SimpleType : Expression, IType
     {
-        public string Name { get; }
         public int Array { get; }
 
         public SimpleType(string name, int array, int line = 0, int column = 0)

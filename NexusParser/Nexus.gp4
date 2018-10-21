@@ -9,7 +9,7 @@ file : file_declaration* ;
 
 class : CLASS name=IDENTIFIER LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
 
-class_member :    CPP_BLOCK
+class_member :    CPP_BLOCK COLON
                 | variable_declaration
                 ;
 
@@ -56,7 +56,7 @@ function_call : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BR
 function_body : function_body_statement * ;
 
 function_body_statement :
-                  CPP_BLOCK
+                  CPP_BLOCK COLON
                 | assignment_statement
                 | return_statement
                 | function_declaration

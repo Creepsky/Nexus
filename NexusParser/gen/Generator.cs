@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Nexus.ir.stmt;
 
 namespace Nexus.gen
@@ -34,11 +34,12 @@ namespace Nexus.gen
 
             foreach (var phase in phases)
             {
+                Console.WriteLine($"Generating data, phase {phase.ToString()}");
                 foreach (var file in _files)
                 {
-                    foreach (var c in file.Classes)
+                    foreach (var i in file.Elements)
                     {
-                        c.Generate(_globalContext, phase);
+                        i.Generate(_globalContext, phase);
                     }
                 }
             }
@@ -60,9 +61,7 @@ namespace Nexus.gen
             var headerPrinter = new Printer(headerStringWriter);
             var sourcePrinter = new Printer(sourceStringWriter);
 
-            foreach (var i in _globalContext.GetElements()
-                .Where(i => i.GetType() == typeof(Class))
-                .Select(i => (Class)i))
+            foreach (var i in _globalContext.GetElements())
             {
                 headerStringWriter.GetStringBuilder().Clear();
                 sourceStringWriter.GetStringBuilder().Clear();
@@ -70,12 +69,20 @@ namespace Nexus.gen
                 i.Print(PrintType.Header, headerPrinter);
                 i.Print(PrintType.Source, sourcePrinter);
 
-                compilationUnits.Add(new CompilationUnit{
-                    Name = i.Name,
-                    Path = i.Path,
-                    Header = headerStringWriter.ToString(),
-                    Source = sourceStringWriter.ToString()
-                });
+                if (i.GetType() == typeof(Class) ||
+                    i.GetType() == typeof(ExtensionFunction))
+                {
+                    compilationUnits.Add(new CompilationUnit{
+                        Name = i.GetType() == typeof(Class) ? ((Class) i).Name : ((ExtensionFunction) i).Name,
+                        Path = i.GetType() == typeof(Class) ? ((Class) i).Path : ((ExtensionFunction) i).Path,
+                        Header = headerStringWriter.ToString(),
+                        Source = sourceStringWriter.ToString()
+                    });
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(nameof(i), $"Invalid generation element type: {i.GetType().Name}");
+                }
             }
 
             return compilationUnits;

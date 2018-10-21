@@ -1,6 +1,6 @@
 class string
 {
     c++ {
-        std::string value;
+        std::string value
     };
 }

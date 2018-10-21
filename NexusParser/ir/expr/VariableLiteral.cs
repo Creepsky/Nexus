@@ -6,8 +6,6 @@ namespace Nexus.ir.expr
 {
     public class VariableLiteral : Expression
     {
-        public string Name { get; set; }
-
         public override string ToString() => Name;
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)

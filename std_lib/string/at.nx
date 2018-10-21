@@ -4,6 +4,6 @@
 char string.at(usize index)
 {
     return c++ {
-        $(value)[$(index)];
+        __this.value[index]
     };
 }

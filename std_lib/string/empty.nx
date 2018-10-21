@@ -5,6 +5,6 @@
 void string.empty()
 {
     return c++ {
-        $(value).empty();
+        __this.value.empty()
     };
 }

@@ -15,8 +15,8 @@ namespace Nexus.ir.stmt
                 throw new PositionedException(this, "return statement without parent scope");
             }
 
-            var function = context.GetElementAs<Function>(this);
-            var resultType = Value.GetResultType(context);
+            //var function = context.GetElementAs<Function>(this);
+            //var resultType = Value.GetResultType(context);
 
             // TODO: check compatiblity of types
         }
