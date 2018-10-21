@@ -7,6 +7,7 @@ namespace Nexus.ir.stmt
     public class Class : Statement
     {
         public string Name { get; }
+        public string Path { get; set; }
         public IList<Variable> Variables { get; }
         public IList<CppBlock> CppBlocks { get; }
 

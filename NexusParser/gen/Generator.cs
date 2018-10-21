@@ -8,6 +8,7 @@ namespace Nexus.gen
     public struct CompilationUnit
     {
         public string Name { get; set; }
+        public string Path { get; set; }
         public string Header { get; set; }
         public string Source { get; set; }
     }
@@ -46,7 +47,9 @@ namespace Nexus.gen
         public void Check()
         {
             foreach (var i in _globalContext.GetElements())
+            {
                 i.Check(_globalContext);
+            }
         }
 
         public IEnumerable<CompilationUnit> Compile()
@@ -69,6 +72,7 @@ namespace Nexus.gen
 
                 compilationUnits.Add(new CompilationUnit{
                     Name = i.Name,
+                    Path = i.Path,
                     Header = headerStringWriter.ToString(),
                     Source = sourceStringWriter.ToString()
                 });

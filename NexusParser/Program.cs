@@ -43,7 +43,7 @@ namespace Nexus
 
                 var files = FileParser.ParseProject(configuration);
                 var units = Compiler.Compile(files);
-                FileParser.WriteFiles(configuration.OutputPath, units);
+                FileParser.WriteFiles(configuration, units);
                 return 0;
             });
             app.OnValidationError(result => { app.ShowHelp(); });

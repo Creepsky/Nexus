@@ -36,12 +36,6 @@ namespace Nexus
             // change the (probably) relative path to an absolute one
             InputPath = Path.GetFullPath(InputPath);
 
-            // check the outputPath
-            if (!Directory.Exists(OutputPath))
-            {
-                throw new DirectoryNotFoundException("The output path is not a valid directory");
-            }
-
             // again.. change the (probably) relative path to an absolute one
             OutputPath = Path.GetFullPath(OutputPath);
 
@@ -88,7 +82,7 @@ namespace Nexus
             Console.WriteLine(ProjectData);
         }
 
-        public IEnumerable<string> EnumeratePath(string path)
+        public IEnumerable<string> EnumerateSourceFiles(string path)
         {
             if (_fileSystem.DirectoryExists(path))
             {
@@ -104,7 +98,23 @@ namespace Nexus
             }
         }
 
-        private static UPath OsPathToUPath(string path)
+        public IEnumerable<string> EnumerateDirectories(string path)
+        {
+            if (_fileSystem.DirectoryExists(path))
+            {
+                foreach (var i in _fileSystem.EnumerateDirectories(path))
+                {
+                    yield return i.ToString();
+                }
+            }
+        }
+
+        public Stream OpenFile(string path)
+        {
+            return _fileSystem.OpenFile(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        }
+
+        public static UPath OsPathToUPath(string path)
         {
             // relative path
             if (!Path.IsPathFullyQualified(path))

@@ -1,5 +1,7 @@
 using System.IO;
+using Nexus;
 using Xunit;
+using Zio;
 
 namespace NexusParserTest
 {
@@ -9,8 +11,9 @@ namespace NexusParserTest
         public static void TestExampleProject()
         {
             const string examplePath = "../../../../example";
-            var files = Nexus.FileParser.ParseDirectory(examplePath);
-            Nexus.Compiler.Compile(files);
+            var config = new Configuration(examplePath, Path.Combine(examplePath, "bin"));
+            var files = FileParser.ParseProject(config);
+            Compiler.Compile(files);
         }
     }
 }
