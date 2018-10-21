@@ -6,8 +6,8 @@ namespace Nexus.gen
 {
     public class Context
     {
-        public readonly Context UpperContext;
-        public readonly IGenerationElement Element;
+        public Context UpperContext { get; }
+        public IGenerationElement Element { get; }
         private readonly IDictionary<string, IGenerationElement> _symbols;
 
         /// <summary>
