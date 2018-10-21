@@ -1,0 +1,12 @@
+Name: Nexus example project
+Version: 1.0.0.0
+Description:
+  This is an example project written entirely in Nexus.
+  It shows the syntax of the programming language.
+Authors:
+  - Creepsky
+Date: 2018-10-20 09:53
+Includes:
+  - Mount: /std
+    Path: ../std_lib
+Main: /main.nx

@@ -12,6 +12,8 @@ namespace Nexus.gen
 
     public interface IGenerationElement : ICheckable, IPrintable, IPositioned
     {
+        string Name { get; set; }
+        string Path { get; set; }
         IGenerationElement Generate(Context context, GenerationPhase phase);
         IType GetResultType(Context context);
     }

@@ -8,7 +8,6 @@ namespace Nexus.ir.stmt
     public class Function : Statement
     {
         public IType Type { get; set; }
-        public string Name { get; set; }
         public IList<Variable> Parameter { get; set; }
         public IList<IStatement> Statements { get; set; }
         public bool Const { get; set; }
@@ -47,12 +46,6 @@ namespace Nexus.ir.stmt
 
                 foreach (var i in Statements)
                     i.Generate(_context, phase);
-
-                if (upperContext.Element.GetType() == typeof(Class))
-                {
-                    var c = (Class) upperContext.Element;
-                    c.Public.Functions.Add(this);
-                }
             }
 
             return this;

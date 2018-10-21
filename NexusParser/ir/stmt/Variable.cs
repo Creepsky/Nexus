@@ -9,12 +9,7 @@ namespace Nexus.ir.stmt
     public class Variable : Statement
     {
         public IType Type { get; set; }
-        public string Name { get; set; }
-        public bool Setter { get; set; }
-        public bool Getter { get; set; }
         public IExpression Initialization { get; set; }
-        public bool Reference { get; set; }
-        public bool Const { get; set; }
 
         public override string ToString()
         {
@@ -46,20 +41,16 @@ namespace Nexus.ir.stmt
                 throw new NoScopeException(this);
             }
 
-            switch (phase)
+            if (phase == GenerationPhase.Declaration)
             {
-                case GenerationPhase.ForwardDeclaration:
-                    upperContext.Add(Name, this);
-                    break;
-                case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(Class):
-                    return GenerateClassVariable((Class)upperContext.Element, upperContext);
-                case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(Function):
-                    return GenerateParameter((Function)upperContext.Element, upperContext);
-                case GenerationPhase.Declaration:
-                    throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
-                        new[] {nameof(Class), nameof(Function)});
-                default:
-                    break;
+                if (upperContext.Element.GetType() == typeof(Function) ||
+                    upperContext.Element.GetType() == typeof(ExtensionFunction))
+                {
+                    return GenerateParameter(upperContext);
+                }
+
+                throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
+                    new[] {nameof(Class), nameof(Function)});
             }
 
             return this;
@@ -67,82 +58,7 @@ namespace Nexus.ir.stmt
 
         public override IType GetResultType(Context context) => Type;
 
-        private IGenerationElement GenerateClassVariable(Class c, Context context)
-        {
-            c.Private.Variables.Add(this);
-
-            if (Getter)
-            {
-                c.Functions.Add(new Function
-                {
-                    Name = $"get_{Name}",
-                    Type = Type,
-                    Parameter = new List<Variable>(),
-                    Statements = new List<IStatement>
-                    {
-                        new ReturnStatement
-                        {
-                            Value = new VariableLiteral
-                            {
-                                Name = Name
-                            },
-                            Line = Line,
-                            Column = Column
-                        }
-                    },
-                    Const = true
-                }.Generate<Function>(context, GenerationPhase.ForwardDeclaration));
-            }
-
-            if (Setter)
-            {
-                c.Functions.Add(new Function
-                {
-                    Name = $"set_{Name}",
-                    Type = c.Type,
-                    Parameter = new List<Variable>(new [] { new Variable
-                    {
-                        Getter = false,
-                        Setter = false,
-                        Type = Type,
-                        Name = "newValue",
-                        Initialization = null,
-                        Line = Line,
-                        Column = Column
-                    }}),
-                    Statements = new List<IStatement>
-                    {
-                        new AssignmentStatement
-                        {
-                            Left = new VariableLiteral
-                            {
-                                Name = Name
-                            },
-                            Right = new VariableLiteral
-                            {
-                                Name = "newValue"
-                            },
-                            Line = Line,
-                            Column = Column
-                        },
-                        new ReturnStatement
-                        {
-                            Value = new This(),
-                            Line = Line,
-                            Column = Column
-                        }
-                    },
-                    Line = Line,
-                    Column = Column
-                }.Generate<Function>(context, GenerationPhase.ForwardDeclaration));
-            }
-
-            c.Public.Types.Add(Type.Generate<IType>(context, GenerationPhase.ForwardDeclaration));
-
-            return this;
-        }
-
-        private IGenerationElement GenerateParameter(Function f, Context context)
+        private IGenerationElement GenerateParameter(Context context)
         {
             context.Add(Name, this);
             return this;

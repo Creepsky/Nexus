@@ -30,10 +30,7 @@ namespace Nexus.ir
 
         public override IType GetResultType(Context context)
         {
-            return new SimpleType
-            {
-                Name = PrimitiveType.Bool.ToString() 
-            };
+            return new SimpleType(PrimitiveType.Bool.ToString(), 0, Line, Column);
         }
 
         public override void Check(Context context)

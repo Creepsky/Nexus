@@ -1,0 +1,10 @@
+/**
+  * @brief Returns the length of the string.
+  * @returns the number of characters.
+  */
+usize string.size()
+{
+    return c++ {
+        __this.value.size() / 4
+    };
+}

@@ -2,22 +2,23 @@ grammar Nexus;
 
 /* Parser */
 
-file_declaration :        class
-                        | extension_function ;
+file_declaration :   class
+                   | extension_function ;
 
 file : file_declaration* ;
 
 class : CLASS name=IDENTIFIER LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
 
-class_member :    variable_declaration
-                | function_declaration ;
+class_member :    CPP_BLOCK COLON
+                | variable_declaration
+                ;
 
 type :    IDENTIFIER ARRAY_DECLARATION* #namedType
         | LEFT_BRACE type (COMMA type)*  RIGHT_BRACE ARRAY_DECLARATION* #tupleType
         | LEFT_BRACKET key=type ARROW_RIGHT value=type RIGHT_BRACKET ARRAY_DECLARATION* #mapType
 	;
 
-variable_declaration : type IDENTIFIER SET? GET? (EQUAL expression)? COLON ;
+variable_declaration : type IDENTIFIER (EQUAL expression)? COLON ;
 
 function_parameter : type IDENTIFIER (EQUAL expression)?;
 
@@ -55,7 +56,8 @@ function_call : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BR
 function_body : function_body_statement * ;
 
 function_body_statement :
-                  assignment_statement
+                  CPP_BLOCK COLON
+                | assignment_statement
                 | return_statement
                 | function_declaration
                 | variable_statement
@@ -77,6 +79,7 @@ expression :	  expression STAR expression #mul
                 | LEFT_BRACKET key_value_pair (COMMA key_value_pair)* RIGHT_BRACKET #map
                 | expression RANGE expression #range
                 | expression EQUAL expression #test
+                | CPP_BLOCK #cppBlock
                 | factor #fact ;
 
 boolean : TRUE | FALSE ;
@@ -102,13 +105,18 @@ comparison :      expression EQUAL expression
                 | expression GREATER expression
                 | expression GREATER_EQUAL expression ;
 
-extension_function : type className=IDENTIFIER DOT name=IDENTIFIER LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
+extension_type :  IDENTIFIER
+                | type
+                ;
+
+extension_function : returnType=type extensionType=type DOT name=IDENTIFIER LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
                      LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
 /* Lexer */
 
 COMMENT : '//' ~('\r'|'\n')* -> skip ;
 MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;
+CPP_BLOCK : 'c++' WHITESPACE* LEFT_CURLY_BRACE WHITESPACE* .*? WHITESPACE* RIGHT_CURLY_BRACE ;
 CLASS : 'class' ;
 LEFT_CURLY_BRACE : '{' ;
 RIGHT_CURLY_BRACE : '}' ;
@@ -140,12 +148,11 @@ PLUS : '+' ;
 MINUS : '-' ;
 STAR: '*' ;
 SLASH: '/' ;
-SET : 'set' ;
-GET : 'get' ;
 COMMA : ',' ;
 RETURN : 'return' ;
 RANGE : '..' ;
 DOT : '.' ;
+CPP : 'c++' ;
 INTEGER_SUFFIX : '_' ('i'|'u') ('8'|'16'|'32'|'64') ;
 REAL_SUFFIX : '_f' ('32'|'64') | 'f' | 'd' ;
 IDENTIFIER : [a-zA-Z_-][a-zA-Z0-9_-]* ;

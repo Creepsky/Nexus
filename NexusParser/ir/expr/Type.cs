@@ -28,10 +28,32 @@ namespace Nexus.ir.expr
         Bool
     }
 
-    public class SimpleType : Expression, IType
+    public class SimpleType : Expression, IType, IEquatable<SimpleType>
     {
-        public string Name { get; set; }
-        public int Array { get; set; }
+        public int Array { get; }
+
+        public SimpleType(string name)
+            : this(name, 0)
+        {
+        }
+
+        public SimpleType(string name, int array)
+            : this(name, array, 0, 0)
+        {
+        }
+
+        public SimpleType(string name, int array, int line, int column)
+        {
+            Name = name;
+            Array = array;
+            Line = line;
+            Column = column;
+
+            if (TypesExtension.Aliases.ContainsKey(name))
+            {
+                Name = TypesExtension.Aliases[Name];
+            }
+        }
 
         public bool IsPrimitive()
         {
@@ -65,6 +87,31 @@ namespace Nexus.ir.expr
         }
 
         public PrimitiveType ToPrimitiveType() => TypesExtension.ToType(Name);
+
+        public bool Equals(SimpleType other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Name == other.Name;
+        }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as SimpleType);
+        }
+
+        public override int GetHashCode()
+        {
+            return Array;
+        }
 
         public override string ToString()
         {
@@ -206,5 +253,81 @@ namespace Nexus.ir.expr
                     throw new ArgumentOutOfRangeException(nameof(printType), printType, null);
             }
         }
+
+        public static readonly string I8 = "i8";
+        public static readonly string I16 = "i16";
+        public static readonly string I32 = "i32";
+        public static readonly string I64 = "i64";
+
+        public static readonly string Short = "short";
+        public static readonly string Int = "int";
+        public static readonly string Long = "long";
+
+        public static readonly string U8 = "u8";
+        public static readonly string U16 = "u16";
+        public static readonly string U32 = "u32";
+        public static readonly string U64 = "u64";
+
+        public static readonly string Byte = "byte";
+        public static readonly string UShort = "ushort";
+        public static readonly string UInt = "uint";
+        public static readonly string ULong = "ulong";
+        public static readonly string USize = "usize";
+
+        public static readonly string F32 = "f32";
+        public static readonly string F64 = "f64";
+
+        public static readonly string Float = "float";
+        public static readonly string Double = "double";
+
+        public static readonly string Bool = "bool";
+        public static readonly string Boolean = Bool;
+
+        public static readonly string String = "string";
+
+        public static readonly string Void = "void";
+
+        public static readonly IReadOnlyCollection<string> Primitives = new[]
+        {
+            I8,
+            I16,
+            I32,
+            I64,
+            Short,
+            Int,
+            Long,
+            U8,
+            U16,
+            U32,
+            U64,
+            Byte,
+            UShort,
+            UInt,
+            ULong,
+            F32,
+            F64,
+            Float,
+            Double,
+            Bool,
+            Boolean,
+            String,
+            Void,
+            USize,
+        };
+
+        public static readonly IReadOnlyDictionary<string, string> Aliases = new Dictionary<string, string>
+        {
+            {Short, I16},
+            {Int, I32},
+            {Long, I64},
+            {Byte, U8},
+            {UShort, U16},
+            {UInt, U32},
+            {ULong, U64},
+            {USize, U64},
+            {Bool, Boolean},
+            {Float, F32},
+            {Double, F64},
+        };
     }
 }

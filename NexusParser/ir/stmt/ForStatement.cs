@@ -22,12 +22,7 @@ namespace Nexus.ir.stmt
         }
 
         public override IType GetResultType(Context context) =>
-            new SimpleType
-            {
-                Line = Line,
-                Column = Column,
-                Name = PrimitiveType.Void.ToString()
-            };
+            new SimpleType(TypesExtension.Void, 0, Line, Column);
 
         public override void Print(PrintType type, Printer printer)
         {

@@ -4,17 +4,37 @@ using System.IO;
 using System.Linq;
 using Antlr4.Runtime;
 using Nexus.gen;
+using NLog;
+using Zio;
+using Zio.FileSystems;
 
 namespace Nexus
 {
     public static class FileParser
     {
-        public static IList<ir.File> ParseDirectory(string path) =>
-            Directory.EnumerateFiles(path, "*.nx").Select(ParseFile).ToList();
-
-        public static ir.File ParseFile(string path)
+        public static IList<ir.File> ParseProject(Configuration configuration)
         {
-            var file = File.OpenRead(path);
+            return ParseDirectory("/", configuration).ToList();
+        }
+
+        private static IEnumerable<ir.File> ParseDirectory(string path, Configuration configuration)
+        {
+            var files = configuration.EnumerateSourceFiles(path)
+                .Select(i => ParseFile(i, configuration));
+
+            foreach (var i in configuration.EnumerateDirectories(path))
+            {
+                files = files.Concat(ParseDirectory(i, configuration));
+            }
+
+            return files;
+        }
+
+        private static ir.File ParseFile(string path, Configuration configuration)
+        {
+            var logger = LogManager.GetCurrentClassLogger();
+            logger.Info($"Parsing '{path}'");
+            var file = configuration.OpenFile(path);
             var textReader = new StreamReader(file);
             var input = new AntlrInputStream(textReader);
             var lexer = new NexusLexer(input, Console.Out, Console.Error);
@@ -22,23 +42,46 @@ namespace Nexus
             var parser = new NexusParser(tokenStream);
             var ast = parser.file();
             var visitor = new NexusGrammarVisitor();
-            return (ir.File) visitor.Visit(ast);
-        }
-        
-        public static void SaveCompilationUnit(string outputFolder, CompilationUnit compilationUnit)
-        {
-            var headerPath = Path.Combine(outputFolder, compilationUnit.Name + ".hpp");
-            var sourcePath = Path.Combine(outputFolder, compilationUnit.Name + ".cpp");
-            File.WriteAllText(headerPath, compilationUnit.Header);
-            File.WriteAllText(sourcePath, compilationUnit.Source);
+            var ir = (ir.File) visitor.Visit(ast);
+            ir.Path = path;
+            foreach (var i in ir.Elements)
+            {
+                i.Path = path;
+            }
+            return ir;
         }
 
-        public static void WriteFiles(string outputPath, IEnumerable<CompilationUnit> compilationUnits)
+        public static void WriteFiles(Configuration configuration, IEnumerable<CompilationUnit> compilationUnits)
         {
-            Directory.CreateDirectory(outputPath);
+            var physicalFileSystem = new PhysicalFileSystem();
+            var outputPath = Configuration.OsPathToUPath(configuration.OutputPath);
+
+            if (!physicalFileSystem.DirectoryExists(outputPath))
+            {
+                physicalFileSystem.CreateDirectory(outputPath);
+            }
+
+            var fileSystem = new SubFileSystem(physicalFileSystem, outputPath);
+
             foreach (var unit in compilationUnits)
             {
-                SaveCompilationUnit(outputPath, unit);
+                var path = (UPath) unit.Path;
+                var dir = path.GetDirectory();
+
+                if (!fileSystem.DirectoryExists(dir))
+                {
+                    fileSystem.CreateDirectory(dir);
+                }
+
+                if (!string.IsNullOrWhiteSpace(unit.Header))
+                {
+                    fileSystem.WriteAllText(dir / unit.Name + ".hpp", unit.Header);
+                }
+
+                if (!string.IsNullOrWhiteSpace(unit.Source))
+                {
+                    fileSystem.WriteAllText(dir / unit.Name + ".cpp", unit.Source);
+                }
             }
         }
     }

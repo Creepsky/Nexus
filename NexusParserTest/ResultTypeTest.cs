@@ -17,25 +17,18 @@ namespace NexusParserTest
             {
                 Types = new List<IType>
                 {
-                    new SimpleType{Name = "i32"},
-                    new SimpleType{Name = "usize"}
+                    new SimpleType(TypesExtension.I32, 0),
+                    new SimpleType(TypesExtension.USize, 0)
                 }
             };
             
             var parameter1 = new Variable{
-                Type = new SimpleType
-                {
-                    Name = "i32",
-                },
+                Type = new SimpleType(TypesExtension.I32, 0),
                 Name = "param1"
             };
             
             var parameter2 = new Variable{
-                Type = new SimpleType
-                {
-                    Name = "string",
-                    Array = 1
-                },
+                Type = new SimpleType(TypesExtension.String, 1),
                 Name = "param2"
             };
             

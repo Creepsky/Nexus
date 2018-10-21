@@ -1,8 +1,10 @@
-using System;
-using System.Linq;
+using Antlr4.Runtime;
+using Nexus.common;
 using Nexus.ir;
 using Nexus.ir.expr;
 using Nexus.ir.stmt;
+using System;
+using System.Linq;
 
 namespace Nexus
 {
@@ -14,8 +16,8 @@ namespace Nexus
 
             return new File
             {
-                Classes = list.Where(i => i.GetType() == typeof(Class)).Select(i => (Class) i).ToList(),
-                ExtensionFunctions = list.Where(i => i.GetType() == typeof(ExtensionFunction)).Select(i => (ExtensionFunction) i).ToList()
+                Classes = list.OfType<Class>().ToList(),
+                ExtensionFunctions = list.OfType<ExtensionFunction>().ToList()
             };
         }
 
@@ -24,21 +26,29 @@ namespace Nexus
             var member = context.class_member().Select(Visit).ToList();
 
             return new Class(context.name.Text,
-                member.Where(i => i.GetType() == typeof(Variable)).Select(i => (Variable) i).ToList(),
-                member.Where(i => i.GetType() == typeof(Function)).Select(i => (Function) i).ToList())
+                member.OfType<Variable>().ToList(),
+                member.OfType<CppBlockStatement>().ToList())
             {
                 Line = context.Start.Line,
                 Column = context.Start.Column
             };
         }
 
-        public override object VisitNamedType(NexusParser.NamedTypeContext context) => new SimpleType
+        public override object VisitClass_member(NexusParser.Class_memberContext context)
         {
-            Name = context.IDENTIFIER().GetText(),
-            Array = context.ARRAY_DECLARATION().Length,
-            Line = context.Start.Line,
-            Column = context.Start.Column
-        };
+            if (context.CPP_BLOCK() != null)
+            {
+                return new CppBlockStatement(ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start));
+            }
+
+            return Visit(context.variable_declaration());
+        }
+
+        public override object VisitNamedType(NexusParser.NamedTypeContext context) => new SimpleType(
+            context.IDENTIFIER().GetText(),
+            context.ARRAY_DECLARATION().Length,
+            context.Start.Line,
+            context.Start.Column);
 
         public override object VisitTupleType(NexusParser.TupleTypeContext context) => new TupleType
         {
@@ -61,8 +71,6 @@ namespace Nexus
         {
             Type = (IType) Visit(context.type()),
             Name = context.IDENTIFIER().GetText(),
-            Getter = context.GET() != null,
-            Setter = context.SET() != null,
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column
@@ -72,8 +80,6 @@ namespace Nexus
         {
             Type = (IType) Visit(context.type()),
             Name = context.IDENTIFIER().GetText(),
-            Setter = false,
-            Getter = false,
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column
@@ -109,8 +115,6 @@ namespace Nexus
         {
             Type = (IType) Visit(context.type()),
             Name = context.IDENTIFIER().GetText(),
-            Setter = false,
-            Getter = false,
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column
@@ -173,6 +177,11 @@ namespace Nexus
                     Line = context.Start.Line,
                     Column = context.Start.Column
                 };
+            }
+
+            if (context.CPP_BLOCK() != null)
+            {
+                return new CppBlockStatement(ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start));
             }
 
             return base.VisitFunction_body_statement(context);
@@ -242,6 +251,11 @@ namespace Nexus
             Line = context.Start.Line,
             Column = context.Start.Column
         };
+
+        public override object VisitCppBlock(NexusParser.CppBlockContext context)
+        {
+            return ExtractCppBlock(context.GetText(), context.Start);
+        }
 
         public override object VisitMap(NexusParser.MapContext context) => new MapLiteral
         {
@@ -382,13 +396,37 @@ namespace Nexus
 
         public override object VisitExtension_function(NexusParser.Extension_functionContext context) => new ExtensionFunction
         {
-            ReturnType = (IType) Visit(context.type()),
-            Class = context.className.Text,
+            ReturnType = (IType) Visit(context.returnType),
+            ExtensionBase = (IType) Visit(context.extensionType),
             Name = context.name.Text,
             Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList(),
             Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
             Line = context.Start.Line,
             Column = context.Start.Column
         };
+
+        private static CppBlock ExtractCppBlock(string wholeCppBlock, IToken token)
+        {
+            var wholeBlockTrimmed = wholeCppBlock.Trim();
+
+            if (!wholeBlockTrimmed.StartsWith("c++") ||
+                !wholeBlockTrimmed.EndsWith("}"))
+            {
+                throw new PositionedException(token.Line, token.Column, "invalid c++ block");
+            }
+
+            var cppBlockWithoutCpp = wholeBlockTrimmed.Substring("c++".Length).TrimStart();
+
+            if (!cppBlockWithoutCpp.StartsWith("{"))
+            {
+                throw new PositionedException(token.Line, token.Column, "invalid c++ block");
+            }
+
+            var innerBlockStart = cppBlockWithoutCpp.Substring("{".Length);
+            var innerBlockNotTrimmed = innerBlockStart.Substring(0, innerBlockStart.Length - "}".Length);
+            var innerBlock = innerBlockNotTrimmed.Trim();
+
+            return new CppBlock(innerBlock, token.Line, token.Column);
+        }
     }
 }

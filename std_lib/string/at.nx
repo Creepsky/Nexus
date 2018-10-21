@@ -1,0 +1,9 @@
+/**
+  * @brief 
+  */
+char string.at(usize index)
+{
+    return c++ {
+        __this.value[index]
+    };
+}

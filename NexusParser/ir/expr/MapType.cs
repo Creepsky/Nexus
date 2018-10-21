@@ -4,11 +4,41 @@ using Nexus.gen;
 
 namespace Nexus.ir.expr
 {
-    public class MapType : Expression, IType
+    public class MapType : Expression, IType, IEquatable<MapType>
     {
         public IType KeyType { get; set; }
         public IType ValueType { get; set; }
         public int Array { get; set; }
+        public bool Primitive { get; }
+        public bool Auto { get; }
+
+        public bool Equals(MapType other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Equals(KeyType, other.KeyType) && Equals(ValueType, other.ValueType) && Array == other.Array;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as MapType);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = (KeyType != null ? KeyType.GetHashCode() : 0);
+            hashCode = (hashCode * 397) ^ (ValueType != null ? ValueType.GetHashCode() : 0);
+            hashCode = (hashCode * 397) ^ Array;
+            return hashCode;
+        }
 
         public override string ToString()
         {
@@ -20,9 +50,9 @@ namespace Nexus.ir.expr
             printer.PrintWithModifiers(ToCpp(), type);
         }
 
-        public bool IsPrimitive() => false;
+        public bool IsPrimitive() => Primitive;
 
-        public bool IsAuto() => false;
+        public bool IsAuto() => Auto;
 
         public string ToCpp()
         {
