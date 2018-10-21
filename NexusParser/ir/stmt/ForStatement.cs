@@ -36,7 +36,9 @@ namespace Nexus.ir.stmt
             printer.WriteLine("{");
             printer.Push();
             foreach (var i in Body)
+            {
                 i.Print(type, printer);
+            }
             printer.Pop();
             printer.WriteLine("}");
         }

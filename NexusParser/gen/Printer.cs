@@ -31,7 +31,12 @@ namespace Nexus.gen
             _needIndent = false;
         }
 
-        public void WriteLine(string input = "")
+        public void WriteLine()
+        {
+            WriteLine(string.Empty);
+        }
+
+        public void WriteLine(string input)
         {
             if (_needIndent)
             {

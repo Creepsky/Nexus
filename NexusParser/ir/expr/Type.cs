@@ -225,7 +225,9 @@ namespace Nexus.ir.expr
         public static string ToArray(this string cppString, int array)
         {
             if (array == 0)
+            {
                 return cppString;
+            }
 
             return string.Concat(Enumerable.Repeat("std::vector<", array)) +
                    cppString +

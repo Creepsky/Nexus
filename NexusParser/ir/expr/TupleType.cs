@@ -9,6 +9,8 @@ namespace Nexus.ir.expr
     {
         public IList<IType> Types { get; set; }
         public int Array { get; set; }
+        public bool Primitive { get; }
+        public bool Auto { get; }
 
         public bool Equals(TupleType other)
         {
@@ -58,9 +60,9 @@ namespace Nexus.ir.expr
             printer.PrintWithModifiers(ToCpp(), type);
         }
 
-        public bool IsPrimitive() => false;
+        public bool IsPrimitive() => Primitive;
 
-        public bool IsAuto() => false;
+        public bool IsAuto() => Auto;
 
         public string ToCpp()
         {

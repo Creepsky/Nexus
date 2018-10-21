@@ -10,6 +10,7 @@ namespace Nexus.ir.stmt
 
         public override void Check(Context context)
         {
+            FunctionCall.Check(context);
         }
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)
@@ -27,8 +28,10 @@ namespace Nexus.ir.stmt
             {
                 i.Print(type, printer);
 
-                if (i != FunctionCall.Parameter.Last())
+                if (!i.Equals(FunctionCall.Parameter.Last()))
+                {
                     printer.Write(", ");
+                }
             }
             printer.WriteLine(");");
         }

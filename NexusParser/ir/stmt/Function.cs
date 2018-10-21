@@ -23,10 +23,14 @@ namespace Nexus.ir.stmt
             Type.Check(_context);
 
             foreach (var i in Parameter)
+            {
                 i.Check(_context);
+            }
 
             foreach (var i in Statements)
+            {
                 i.Check(_context);
+            }
         }
 
         public override IGenerationElement Generate(Context upperContext, GenerationPhase phase)
@@ -42,10 +46,14 @@ namespace Nexus.ir.stmt
                 Type.Generate(_context, phase);
 
                 foreach (var i in Parameter)
+                {
                     i.Generate(_context, phase);
+                }
 
                 foreach (var i in Statements)
+                {
                     i.Generate(_context, phase);
+                }
             }
 
             return this;

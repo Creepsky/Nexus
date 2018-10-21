@@ -45,7 +45,9 @@ namespace Nexus.ir.stmt
             printer.WriteLine("{");
             printer.Push();
             foreach (var i in Then)
+            {
                 i.Print(PrintType.FunctionSource, printer);
+            }
             printer.Pop();
             printer.WriteLine("}");
             if (Else.Any())
@@ -54,7 +56,9 @@ namespace Nexus.ir.stmt
                 printer.WriteLine("{");
                 printer.Push();
                 foreach (var i in Else)
+                {
                     i.Print(PrintType.FunctionSource, printer);
+                }
                 printer.Pop();
                 printer.WriteLine("}");
             }

@@ -13,10 +13,7 @@ namespace Nexus.ir.stmt
 
         public override void Check(Context context)
         {
-            if (Right.GetType() == typeof(TupleLiteral))
-            {
-            }
-            else if (Right.GetType() == typeof(FunctionCall))
+            if (Right.GetType() == typeof(FunctionCall))
             {
                 var functionCall = (FunctionCall)Right;
                 context.Get<Function>(functionCall.Name, Right);
@@ -31,11 +28,13 @@ namespace Nexus.ir.stmt
         public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
             foreach (var i in Names.Where(i => i != "_"))
+            {
                 context.Add(i, new Variable
                 {
                     Type = Right.GetResultType(context),
                     Name = i,
                 });
+            }
 
             return this;
         }

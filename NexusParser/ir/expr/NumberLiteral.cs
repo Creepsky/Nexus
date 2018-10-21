@@ -16,7 +16,9 @@ namespace Nexus.ir.expr
             PrimitiveType? type = null;
 
             if (string.IsNullOrEmpty(integerPart))
+            {
                 throw new ArgumentNullException(nameof(integerPart), "not a number");
+            }
 
             if (!string.IsNullOrEmpty(suffix))
             {

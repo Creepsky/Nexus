@@ -44,7 +44,9 @@ namespace Nexus.ir.expr
                 i.Value.Print(type, printer);
                 printer.Write("}");
                 if (!i.Equals(Values.Last()))
+                {
                     printer.Write(", ");
+                }
             }
             printer.Write("}");
         }
