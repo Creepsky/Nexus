@@ -103,6 +103,16 @@ namespace Nexus.ir.expr
             return Name == other.Name;
         }
 
+        public override bool Equals(object other)
+        {
+            return Equals(other as SimpleType);
+        }
+
+        public override int GetHashCode()
+        {
+            return Array;
+        }
+
         public override string ToString()
         {
             return $"{Name}{string.Concat(Enumerable.Repeat("[]", Array))}";

@@ -9,6 +9,8 @@ namespace Nexus.ir.expr
         public IType KeyType { get; set; }
         public IType ValueType { get; set; }
         public int Array { get; set; }
+        public bool Primitive { get; } = false;
+        public bool Auto { get; } = false;
 
         public bool Equals(MapType other)
         {
@@ -48,15 +50,9 @@ namespace Nexus.ir.expr
             printer.PrintWithModifiers(ToCpp(), type);
         }
 
-        public bool IsPrimitive()
-        {
-            return false;
-        }
+        public bool IsPrimitive() => Primitive;
 
-        public bool IsAuto()
-        {
-            return false;
-        }
+        public bool IsAuto() => Auto;
 
         public string ToCpp()
         {

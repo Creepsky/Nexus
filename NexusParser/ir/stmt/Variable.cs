@@ -41,16 +41,16 @@ namespace Nexus.ir.stmt
                 throw new NoScopeException(this);
             }
 
-            switch (phase)
+            if (phase == GenerationPhase.Declaration)
             {
-                case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(Function):
-                case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(ExtensionFunction):
+                if (upperContext.Element.GetType() == typeof(Function) ||
+                    upperContext.Element.GetType() == typeof(ExtensionFunction))
+                {
                     return GenerateParameter(upperContext);
-                case GenerationPhase.Declaration:
-                    throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
-                        new[] {nameof(Class), nameof(Function)});
-                default:
-                    break;
+                }
+
+                throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
+                    new[] {nameof(Class), nameof(Function)});
             }
 
             return this;
