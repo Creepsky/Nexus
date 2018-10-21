@@ -56,7 +56,8 @@ function_call : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BR
 function_body : function_body_statement * ;
 
 function_body_statement :
-                  assignment_statement
+                  CPP_BLOCK
+                | assignment_statement
                 | return_statement
                 | function_declaration
                 | variable_statement
