@@ -1,5 +1,6 @@
 ﻿using System;
 using McMaster.Extensions.CommandLineUtils;
+using NLog;
 
 #pragma warning disable CS3021
 
@@ -9,6 +10,18 @@ namespace Nexus
     {
         private static int Main(string[] args)
         {
+            var config = new NLog.Config.LoggingConfiguration();
+            var logConsole = new NLog.Targets.ConsoleTarget("logconsole");
+
+            #if DEBUG
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logConsole);
+            #else
+            config.AddRule(LogLevel.Info, LogLevel.Fatal, logConsole);
+            #endif
+
+            LogManager.Configuration = config;
+            var logger = LogManager.GetCurrentClassLogger();
+
             var app = new CommandLineApplication
             {
                 Name = "NexusParser"
@@ -26,12 +39,12 @@ namespace Nexus
                 {
                     if (!optionInput.HasValue())
                     {
-                        Console.WriteLine("Missing input path.");
+                        logger.Error("Missing input path.");
                     }
 
                     if (!optionOutput.HasValue())
                     {
-                        Console.WriteLine("Missing output path.");
+                        logger.Error("Missing output path.");
                     }
 
                     app.ShowHint();

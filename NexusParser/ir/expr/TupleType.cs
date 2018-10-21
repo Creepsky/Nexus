@@ -5,42 +5,37 @@ using Nexus.gen;
 
 namespace Nexus.ir.expr
 {
-    public class TupleType : Expression, IType
+    public class TupleType : Expression, IType, IEquatable<TupleType>
     {
         public IList<IType> Types { get; set; }
         public int Array { get; set; }
 
-        public override bool Equals(object obj)
+        public bool Equals(TupleType other)
         {
-            if (obj.GetType() == typeof(TupleType))
+            if (ReferenceEquals(null, other))
             {
-                var rhs = (TupleType) obj;
+                return false;
+            }
 
-                if (Types.Count != rhs.Types.Count)
-                {
-                    return false;
-                }
-
-                for (var i = 0; i < Types.Count; ++i)
-                {
-                    if (!Types[i].Equals(rhs.Types[i]))
-                    {
-                        return false;
-                    }
-                }
-
+            if (ReferenceEquals(this, other))
+            {
                 return true;
             }
 
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
+            if (Types.Count != other.Types.Count)
             {
-                return ((Types != null ? Types.GetHashCode() : 0) * 397) ^ Array;
+                return false;
             }
+
+            for (var i = 0; i < Types.Count; ++i)
+            {
+                if (!Types[i].Equals(other.Types[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public override string ToString()
@@ -70,7 +65,9 @@ namespace Nexus.ir.expr
         public override void Check(Context context)
         {
             foreach (var i in Types)
+            {
                 i.Check(context);
+            }
         }
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)

@@ -15,9 +15,6 @@ namespace Nexus.ir.stmt
                 throw new PositionedException(this, "return statement without parent scope");
             }
 
-            //var function = context.GetElementAs<Function>(this);
-            //var resultType = Value.GetResultType(context);
-
             // TODO: check compatiblity of types
         }
 
@@ -27,7 +24,7 @@ namespace Nexus.ir.stmt
         }
 
         public override IType GetResultType(Context context) =>
-            new SimpleType(TypesExtension.Void, Line, Column);
+            new SimpleType(TypesExtension.Void, 0, Line, Column);
 
         public override void Print(PrintType type, Printer printer)
         {

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using NLog;
 using YamlDotNet.Serialization;
 using Zio;
 using Zio.FileSystems;
@@ -16,13 +18,14 @@ namespace Nexus
         public string OutputPath { get; private set; }
         public string ProjectConfigurationPath { get; private set; }
         public ProjectData ProjectData {get; private set; }
-
         private MountFileSystem _fileSystem = new MountFileSystem();
+        private Logger _logger;
         
         public Configuration(string inputPath, string outputPath)
         {
             InputPath = inputPath;
             OutputPath = outputPath;
+            _logger = LogManager.GetCurrentClassLogger();
         }
 
         public void Read()
@@ -39,8 +42,8 @@ namespace Nexus
             // again.. change the (probably) relative path to an absolute one
             OutputPath = Path.GetFullPath(OutputPath);
 
-            Console.WriteLine($"Source path: '{InputPath}'");
-            Console.WriteLine($"Output path: '{OutputPath}'");
+            _logger.Info($"Source path: '{InputPath}'");
+            _logger.Info($"Output path: '{OutputPath}'");
 
             // check the project configuration file
             foreach (var extension in new[] {"yaml", "yml"})
@@ -59,7 +62,7 @@ namespace Nexus
                 throw new FileNotFoundException("The project configuration file does not exist");
             }
 
-            Console.WriteLine($"Reading the project file '{ProjectConfigurationPath}'");
+            _logger.Info($"Reading the project file '{ProjectConfigurationPath}'");
 
             var yamlDeserializer = new Deserializer();
             var configStream = File.OpenText(ProjectConfigurationPath);
@@ -79,7 +82,7 @@ namespace Nexus
                 _fileSystem.Mount(i.Mount, new SubFileSystem(new PhysicalFileSystem(), OsPathToUPath(i.Path)));
             }
 
-            Console.WriteLine(ProjectData);
+            _logger.Info(ProjectData);
         }
 
         public IEnumerable<string> EnumerateSourceFiles(string path)

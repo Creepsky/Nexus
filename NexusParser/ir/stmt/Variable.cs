@@ -43,8 +43,6 @@ namespace Nexus.ir.stmt
 
             switch (phase)
             {
-                case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(Class):
-                    return GenerateClassVariable((Class)upperContext.Element, upperContext);
                 case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(Function):
                 case GenerationPhase.Declaration when upperContext.Element.GetType() == typeof(ExtensionFunction):
                     return GenerateParameter(upperContext);
@@ -60,7 +58,7 @@ namespace Nexus.ir.stmt
 
         public override IType GetResultType(Context context) => Type;
 
-        private IGenerationElement GenerateClassVariable(Class c, Context context)
+        private IGenerationElement GenerateClassVariable()
         {
             return this;
         }

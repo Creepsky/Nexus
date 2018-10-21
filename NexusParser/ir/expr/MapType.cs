@@ -4,43 +4,25 @@ using Nexus.gen;
 
 namespace Nexus.ir.expr
 {
-    public class MapType : Expression, IType
+    public class MapType : Expression, IType, IEquatable<MapType>
     {
         public IType KeyType { get; set; }
         public IType ValueType { get; set; }
         public int Array { get; set; }
 
-        public override bool Equals(object obj)
+        public bool Equals(MapType other)
         {
-            if (obj.GetType() == typeof(MapType))
+            if (ReferenceEquals(null, other))
             {
-                var rhs = (MapType) obj;
+                return false;
+            }
 
-                if (!KeyType.Equals(rhs.KeyType))
-                {
-                    return false;
-                }
-
-                if (!ValueType.Equals(rhs.ValueType))
-                {
-                    return false;
-                }
-
+            if (ReferenceEquals(this, other))
+            {
                 return true;
             }
 
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = (KeyType != null ? KeyType.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (ValueType != null ? ValueType.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ Array;
-                return hashCode;
-            }
+            return Equals(KeyType, other.KeyType) && Equals(ValueType, other.ValueType) && Array == other.Array;
         }
 
         public override string ToString()
@@ -53,9 +35,15 @@ namespace Nexus.ir.expr
             printer.PrintWithModifiers(ToCpp(), type);
         }
 
-        public bool IsPrimitive() => false;
+        public bool IsPrimitive()
+        {
+            return false;
+        }
 
-        public bool IsAuto() => false;
+        public bool IsAuto()
+        {
+            return false;
+        }
 
         public string ToCpp()
         {

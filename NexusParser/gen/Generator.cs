@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Nexus.ir.stmt;
+using NLog;
 
 namespace Nexus.gen
 {
@@ -17,10 +18,12 @@ namespace Nexus.gen
     {
         private readonly Context _globalContext = new Context();
         private readonly IList<ir.File> _files;
+        private readonly Logger _logger;
 
         public Generator(IList<ir.File> files)
         {
             _files = files;
+            _logger = LogManager.GetCurrentClassLogger();
         }
 
         public void Generate()
@@ -34,7 +37,7 @@ namespace Nexus.gen
 
             foreach (var phase in phases)
             {
-                Console.WriteLine($"Generating data, phase {phase.ToString()}");
+                _logger.Info($"Generating data, phase {phase.ToString()}");
                 foreach (var file in _files)
                 {
                     foreach (var i in file.Elements)

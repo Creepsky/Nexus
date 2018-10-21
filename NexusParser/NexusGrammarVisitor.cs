@@ -405,28 +405,28 @@ namespace Nexus
             Column = context.Start.Column
         };
 
-        private CppBlock ExtractCppBlock(string wholeCppBlock, IToken token)
+        private static CppBlock ExtractCppBlock(string wholeCppBlock, IToken token)
         {
-            wholeCppBlock = wholeCppBlock.Trim();
+            var wholeBlockTrimmed = wholeCppBlock.Trim();
 
-            if (!wholeCppBlock.StartsWith("c++") ||
-                !wholeCppBlock.EndsWith("}"))
+            if (!wholeBlockTrimmed.StartsWith("c++") ||
+                !wholeBlockTrimmed.EndsWith("}"))
             {
                 throw new PositionedException(token.Line, token.Column, "invalid c++ block");
             }
 
-            wholeCppBlock = wholeCppBlock.Substring("c++".Length).TrimStart();
+            var cppBlockWithoutCpp = wholeBlockTrimmed.Substring("c++".Length).TrimStart();
 
-            if (!wholeCppBlock.StartsWith("{"))
+            if (!cppBlockWithoutCpp.StartsWith("{"))
             {
                 throw new PositionedException(token.Line, token.Column, "invalid c++ block");
             }
 
-            wholeCppBlock = wholeCppBlock.Substring("{".Length);
-            wholeCppBlock = wholeCppBlock.Substring(0, wholeCppBlock.Length - "}".Length);
-            wholeCppBlock = wholeCppBlock.Trim();
+            var innerBlockStart = cppBlockWithoutCpp.Substring("{".Length);
+            var innerBlockNotTrimmed = innerBlockStart.Substring(0, innerBlockStart.Length - "}".Length);
+            var innerBlock = innerBlockNotTrimmed.Trim();
 
-            return new CppBlock(wholeCppBlock, token.Line, token.Column);
+            return new CppBlock(innerBlock, token.Line, token.Column);
         }
     }
 }

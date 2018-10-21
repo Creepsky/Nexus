@@ -18,31 +18,6 @@ namespace Nexus.ir.expr
         public override IType GetResultType(Context context)
         {
             throw new NotImplementedException();
-//            var resultType = context.Get(Name).GetResultType(context);
-//
-//            if (resultType.GetType() == typeof(SimpleType))
-//            {
-//                var simpleResultType = (SimpleType) resultType;
-//
-//                if (simpleResultType.IsPrimitive())
-//                {
-//                    if (simpleResultType.ToPrimitiveType() == PrimitiveType.String)
-//                    {
-//                        // TODO: add char primitive
-//                        throw new NotImplementedException();
-//                    }
-//                }
-//            }
-//            else if (resultType.GetType() == typeof(MapType))
-//            {
-//                return resultType;
-//            }
-//            else if (resultType.GetType() == typeof(TupleType))
-//            {
-//                return resultType;
-//            }
-//            
-//            throw new TypeMismatchException(this, " element", resultType.GetType().Name);
         }
 
         public override void Check(Context context)
@@ -68,7 +43,9 @@ namespace Nexus.ir.expr
 
                         // from primitives, only strings can be indexed
                         if (primitiveType != PrimitiveType.String)
+                        {
                             throw new TypeMismatchException(Index, PrimitiveType.String.ToString(), nameof(primitiveType));
+                        }
                     }
                     else
                     {
@@ -82,10 +59,7 @@ namespace Nexus.ir.expr
                 var map = (MapType) resultType;
                 map.KeyType.GetResultType(context);
             }
-            else if (resultType.GetType() == typeof(TupleType))
-            {
-                throw new NotImplementedException();
-            }
+            // TODO: add else if (resultType.GetType() == typeof(TupleType))
             else
             {
                 throw new NotImplementedException();

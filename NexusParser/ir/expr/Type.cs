@@ -28,11 +28,21 @@ namespace Nexus.ir.expr
         Bool
     }
 
-    public class SimpleType : Expression, IType
+    public class SimpleType : Expression, IType, IEquatable<SimpleType>
     {
         public int Array { get; }
 
-        public SimpleType(string name, int array, int line = 0, int column = 0)
+        public SimpleType(string name)
+            : this(name, 0)
+        {
+        }
+
+        public SimpleType(string name, int array)
+            : this(name, array, 0, 0)
+        {
+        }
+
+        public SimpleType(string name, int array, int line, int column)
         {
             Name = name;
             Array = array;
@@ -78,19 +88,19 @@ namespace Nexus.ir.expr
 
         public PrimitiveType ToPrimitiveType() => TypesExtension.ToType(Name);
 
-        public override bool Equals(object obj)
+        public bool Equals(SimpleType other)
         {
-            if (obj.GetType() == typeof(SimpleType))
+            if (ReferenceEquals(null, other))
             {
-                return Name == ((SimpleType) obj).Name;
+                return false;
             }
 
-            return false;
-        }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
+            return Name == other.Name;
         }
 
         public override string ToString()
@@ -234,38 +244,38 @@ namespace Nexus.ir.expr
             }
         }
 
-        public const string I8 = "i8";
-        public const string I16 = "i16";
-        public const string I32 = "i32";
-        public const string I64 = "i64";
+        public static readonly string I8 = "i8";
+        public static readonly string I16 = "i16";
+        public static readonly string I32 = "i32";
+        public static readonly string I64 = "i64";
 
-        public const string Short = "short";
-        public const string Int = "int";
-        public const string Long = "long";
+        public static readonly string Short = "short";
+        public static readonly string Int = "int";
+        public static readonly string Long = "long";
 
-        public const string U8 = "u8";
-        public const string U16 = "u16";
-        public const string U32 = "u32";
-        public const string U64 = "u64";
+        public static readonly string U8 = "u8";
+        public static readonly string U16 = "u16";
+        public static readonly string U32 = "u32";
+        public static readonly string U64 = "u64";
 
-        public const string Byte = "byte";
-        public const string UShort = "ushort";
-        public const string UInt = "uint";
-        public const string ULong = "ulong";
-        public const string USize = "usize";
+        public static readonly string Byte = "byte";
+        public static readonly string UShort = "ushort";
+        public static readonly string UInt = "uint";
+        public static readonly string ULong = "ulong";
+        public static readonly string USize = "usize";
 
-        public const string F32 = "f32";
-        public const string F64 = "f64";
+        public static readonly string F32 = "f32";
+        public static readonly string F64 = "f64";
 
-        public const string Float = "float";
-        public const string Double = "double";
+        public static readonly string Float = "float";
+        public static readonly string Double = "double";
 
-        public const string Bool = "bool";
-        public const string Boolean = Bool;
+        public static readonly string Bool = "bool";
+        public static readonly string Boolean = Bool;
 
-        public const string String = "string";
+        public static readonly string String = "string";
 
-        public const string Void = "void";
+        public static readonly string Void = "void";
 
         public static readonly IReadOnlyCollection<string> Primitives = new[]
         {
@@ -295,7 +305,7 @@ namespace Nexus.ir.expr
             USize,
         };
 
-        public static readonly IDictionary<string, string> Aliases = new Dictionary<string, string>
+        public static readonly IReadOnlyDictionary<string, string> Aliases = new Dictionary<string, string>
         {
             {Short, I16},
             {Int, I32},

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Antlr4.Runtime;
 using Nexus.gen;
+using NLog;
 using Zio;
 using Zio.FileSystems;
 
@@ -31,7 +32,8 @@ namespace Nexus
 
         private static ir.File ParseFile(string path, Configuration configuration)
         {
-            Console.WriteLine($"Parsing '{path}'");
+            var logger = LogManager.GetCurrentClassLogger();
+            logger.Info($"Parsing '{path}'");
             var file = configuration.OpenFile(path);
             var textReader = new StreamReader(file);
             var input = new AntlrInputStream(textReader);

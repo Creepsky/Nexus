@@ -41,7 +41,7 @@ namespace Nexus.ir.stmt
         }
 
         public override IType GetResultType(Context context) =>
-            new SimpleType(TypesExtension.Void, Line, Column);
+            new SimpleType(TypesExtension.Void, 0, Line, Column);
 
         public override void Print(PrintType type, Printer printer)
         {

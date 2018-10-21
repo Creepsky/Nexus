@@ -16,16 +16,12 @@ namespace Nexus.ir.expr
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
-            if (phase == GenerationPhase.Declaration)
-            {
-            }
-
             return this;
         }
 
         public override IType GetResultType(Context context)
         {
-            return new SimpleType(TypesExtension.Void, 0);
+            return new SimpleType(TypesExtension.Void, 0, Line, Column);
         }
 
         public override void Check(Context context)
@@ -41,7 +37,7 @@ namespace Nexus.ir.expr
 
     public class CppBlockStatement : Statement
     {
-        private CppBlock _cppBlock;
+        private readonly CppBlock _cppBlock;
 
         public CppBlockStatement(CppBlock cppBlock)
         {
