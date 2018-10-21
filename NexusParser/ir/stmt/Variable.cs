@@ -58,11 +58,6 @@ namespace Nexus.ir.stmt
 
         public override IType GetResultType(Context context) => Type;
 
-        private IGenerationElement GenerateClassVariable()
-        {
-            return this;
-        }
-
         private IGenerationElement GenerateParameter(Context context)
         {
             context.Add(Name, this);

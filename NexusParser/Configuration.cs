@@ -19,7 +19,7 @@ namespace Nexus
         public string ProjectConfigurationPath { get; private set; }
         public ProjectData ProjectData {get; private set; }
         private MountFileSystem _fileSystem = new MountFileSystem();
-        private Logger _logger;
+        private readonly Logger _logger;
         
         public Configuration(string inputPath, string outputPath)
         {

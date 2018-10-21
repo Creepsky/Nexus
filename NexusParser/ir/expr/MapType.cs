@@ -25,6 +25,19 @@ namespace Nexus.ir.expr
             return Equals(KeyType, other.KeyType) && Equals(ValueType, other.ValueType) && Array == other.Array;
         }
 
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as MapType);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = (KeyType != null ? KeyType.GetHashCode() : 0);
+            hashCode = (hashCode * 397) ^ (ValueType != null ? ValueType.GetHashCode() : 0);
+            hashCode = (hashCode * 397) ^ Array;
+            return hashCode;
+        }
+
         public override string ToString()
         {
             return $"[{KeyType} -> {ValueType}] {string.Concat(Enumerable.Repeat("[]", Array))}";

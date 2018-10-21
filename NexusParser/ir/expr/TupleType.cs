@@ -38,6 +38,16 @@ namespace Nexus.ir.expr
             return true;
         }
 
+        public override bool Equals(object other)
+        {
+            return Equals(other as TupleType);
+        }
+
+        public override int GetHashCode()
+        {
+            return ((Types != null ? Types.GetHashCode() : 0) * 397) ^ Array;
+        }
+
         public override string ToString()
         {
             return $"({string.Join(',', Types)}) {string.Concat(Enumerable.Repeat("[]", Array))}";

@@ -59,7 +59,6 @@ namespace Nexus.ir.expr
                 var map = (MapType) resultType;
                 map.KeyType.GetResultType(context);
             }
-            // TODO: add else if (resultType.GetType() == typeof(TupleType))
             else
             {
                 throw new NotImplementedException();
