@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Nexus.common;
 using Nexus.gen;
 
 namespace Nexus.ir.expr
@@ -27,12 +29,29 @@ namespace Nexus.ir.expr
 
         public override void Check(Context context)
         {
-            throw new System.NotImplementedException();
+            if (Types.Distinct().Count() != Types.Count)
+            {
+                var duplicateItems =
+                    from x in Types
+                    group x by x into grouped
+                    where grouped.Count() > 1
+                    select grouped.Key;
+                
+                throw new PositionedException(this, $"Duplicated template variable names: {string.Join(", ", duplicateItems)}");
+            }
+
+            if (!Types.Any())
+            {
+                throw new PositionedException(this, "Empty template list");
+            }
         }
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            if (type == PrintType.Header)
+            {
+                printer.WriteLine($"template <typename {string.Join(", typename ", Types)}>");
+            }
         }
     }
 
@@ -55,7 +74,10 @@ namespace Nexus.ir.expr
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            if (type == PrintType.Header)
+            {
+                printer.WriteLine("template <typename... T>");
+            }
         }
     }
 }

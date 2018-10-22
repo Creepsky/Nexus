@@ -9,6 +9,7 @@ namespace Nexus.ir.stmt
     {
         public IType ReturnType { get; set; }
         public IType ExtensionBase { get; set; }
+        public ITemplateList TemplateList { get; set; }
         public IList<Variable> Parameter { get; set; }
         public IList<IStatement> Body { get; set; }
         private Context _context;
@@ -21,6 +22,7 @@ namespace Nexus.ir.stmt
         public override void Check(Context context)
         {
             ExtensionBase.Check(_context);
+            TemplateList?.Check(context);
 
             foreach (var i in Parameter)
             {
@@ -58,6 +60,7 @@ namespace Nexus.ir.stmt
         {
             if (type == PrintType.Header)
             {
+                TemplateList?.Print(type, printer);
                 ReturnType.Print(type, printer);
                 printer.Write($" {ExtensionBase.Name}_{Name}(");
                 

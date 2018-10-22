@@ -8,6 +8,7 @@ namespace Nexus.ir.stmt
     public class Function : Statement
     {
         public IType Type { get; set; }
+        public ITemplateList TemplateList { get; set; }
         public IList<Variable> Parameter { get; set; }
         public IList<IStatement> Statements { get; set; }
         public bool Const { get; set; }

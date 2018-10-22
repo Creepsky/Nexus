@@ -61,21 +61,7 @@ namespace Nexus.ir.stmt
                 //    printer.WriteLine("#include <vector>");
                 //if (Public.Types.Any(i => i.Type == "string"))
                 //    printer.WriteLine("#include <string>");
-                if (TemplateList != null)
-                {
-                    if (TemplateList.GetType() == typeof(VariadicTemplateList))
-                    {
-                        printer.WriteLine("template <typename... T>");
-                    }
-                    else if (TemplateList.GetType() == typeof(TemplateList))
-                    {
-                        var templateList = (TemplateList) TemplateList;
-
-                        printer.Write("template <");
-                        printer.Write("typename " + string.Join(", typename ", templateList.Types));
-                        printer.WriteLine(">");
-                    }
-                }
+                TemplateList?.Print(type, printer);
                 printer.WriteLine($"struct {Name}");
                 printer.WriteLine("{");
                 printer.Push();
