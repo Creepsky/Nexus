@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Nexus.gen;
 using Nexus.ir.stmt;
 
@@ -21,12 +22,25 @@ namespace Nexus.ir.expr
 
         public override void Check(Context context)
         {
-            throw new NotImplementedException();
+            // TODO: check the signature of the function and the parameter
         }
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new NotImplementedException();
+            if (type == PrintType.Header)
+            {
+                printer.Write(Name);
+                printer.Write("(");
+                foreach (var i in Parameter)
+                {
+                    i.Print(type, printer);
+                    if (!i.Equals(Parameter.Last()))
+                    {
+                        printer.Write(", ");
+                    }
+                }
+                printer.Write(")");
+            }
         }
     }
 }
