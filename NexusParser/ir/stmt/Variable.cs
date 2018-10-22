@@ -43,14 +43,15 @@ namespace Nexus.ir.stmt
 
             if (phase == GenerationPhase.Declaration)
             {
-                if (upperContext.Element.GetType() == typeof(Function) ||
+                if (upperContext.Element.GetType() == typeof(Class) ||
+                    upperContext.Element.GetType() == typeof(Function) ||
                     upperContext.Element.GetType() == typeof(ExtensionFunction))
                 {
                     return GenerateParameter(upperContext);
                 }
 
                 throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
-                    new[] {nameof(Class), nameof(Function)});
+                    new[] {nameof(Class), nameof(Function), nameof(ExtensionFunction) });
             }
 
             return this;

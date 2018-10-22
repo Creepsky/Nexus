@@ -7,7 +7,7 @@ file_declaration :   class
 
 file : file_declaration* ;
 
-class : CLASS name=IDENTIFIER LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
+class : CLASS name=IDENTIFIER template_list? LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
 
 class_member :    CPP_BLOCK COLON
                 | variable_declaration
@@ -112,12 +112,21 @@ extension_type :  IDENTIFIER
 extension_function : returnType=type extensionType=type DOT name=IDENTIFIER LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
                      LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
+template_list : LESS template_list_parameter GREATER ;
+
+template_list_parameter :   IDENTIFIER (COMMA IDENTIFIER)* #templateList
+                          | IDENTIFIER DOT_DOT_DOT #variadicTemplates
+                          ;
+
+
+
 /* Lexer */
 
 COMMENT : '//' ~('\r'|'\n')* -> skip ;
 MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;
 CPP_BLOCK : 'c++' WHITESPACE* LEFT_CURLY_BRACE WHITESPACE* .*? WHITESPACE* RIGHT_CURLY_BRACE ;
 CLASS : 'class' ;
+DOT_DOT_DOT : '...' ;
 LEFT_CURLY_BRACE : '{' ;
 RIGHT_CURLY_BRACE : '}' ;
 LEFT_BRACE : '(' ;
