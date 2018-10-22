@@ -1,0 +1,38 @@
+class i32
+{
+    c++ {
+        int32_t value
+    };
+}
+
+i32 i32.operator+(i8 rhs) {
+    return this.value + rhs;
+}
+
+i32 i32.operator+(i16 rhs) {
+    return this.value + rhs;
+}
+
+i32 i32.operator+(i32 rhs) {
+    return this.value + rhs;
+}
+
+i64 i32.operator+(i64 rhs) {
+    return this.value + rhs;
+}
+
+i32 i32.operator+(u8 rhs) {
+    return this.value + rhs;
+}
+
+i32 i32.operator+(u16 rhs) {
+    return this.value + rhs;
+}
+
+i32 i32.operator+(u32 rhs) {
+    return this.value + rhs;
+}
+
+i64 i32.operator+(u64 rhs) {
+    return this.value + rhs;
+}

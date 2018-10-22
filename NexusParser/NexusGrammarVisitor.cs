@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Nexus.common;
 using Nexus.ir;
 using Nexus.ir.expr;
@@ -24,6 +25,10 @@ namespace Nexus
         public override object VisitClass(NexusParser.ClassContext context)
         {
             var member = context.class_member().Select(Visit).ToList();
+
+            if (context.template_list() != null)
+            {
+            }
 
             return new Class(context.name.Text,
                 member.OfType<Variable>().ToList(),
@@ -427,6 +432,19 @@ namespace Nexus
             var innerBlock = innerBlockNotTrimmed.Trim();
 
             return new CppBlock(innerBlock, token.Line, token.Column);
+        }
+
+        public override object VisitTemplateList([NotNull] NexusParser.TemplateListContext context)
+        {
+            return new TemplateList(
+                context.IDENTIFIER()
+                .Select(i => i.GetText())
+                .ToList());
+        }
+
+        public override object VisitVariadicTemplates([NotNull] NexusParser.VariadicTemplatesContext context)
+        {
+            return base.VisitVariadicTemplates(context);
         }
     }
 }

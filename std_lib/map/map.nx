@@ -1,0 +1,6 @@
+class map<TKey, TValue>
+{
+    c++ {
+        std::map<TKey, TValue> values
+    };
+}
