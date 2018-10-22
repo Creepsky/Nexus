@@ -170,6 +170,17 @@ namespace Nexus
             Column = context.Start.Column
         };
 
+        public override object VisitExtension_function_call(NexusParser.Extension_function_callContext context)
+        {
+            return new ExtensionFunctionCall
+            {
+                Variable = context.IDENTIFIER().GetText(),
+                FunctionCall = (FunctionCall) Visit(context.function_call()),
+                Line = context.Start.Line,
+                Column = context.Start.Column
+            };
+        }
+
         public override object VisitFunction_body_statement(NexusParser.Function_body_statementContext context)
         {
             if (context.function_call() != null)

@@ -52,7 +52,9 @@ for_init :        assignment_statement
 for_statement : FOR LEFT_BRACE for_init comparison COLON expression RIGHT_BRACE
                 LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
-function_call : IDENTIFIER template_list_usage LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE ;
+function_call : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE ;
+
+extension_function_call : IDENTIFIER DOT function_call ;
 
 function_body : function_body_statement* ;
 
@@ -66,6 +68,7 @@ function_body_statement :
                 | while_statement
                 | for_statement
                 | function_call COLON
+                | extension_function_call COLON
                 | tuple_explosion_statement ;
 
 key_value_pair : expression ARROW_RIGHT expression ;
@@ -80,6 +83,8 @@ expression :	  expression STAR expression #mul
                 | LEFT_BRACKET key_value_pair (COMMA key_value_pair)* RIGHT_BRACKET #map
                 | expression RANGE expression #range
                 | expression EQUAL expression #test
+                | function_call #functionCall
+                | extension_function_call #extensionFunctionCall
                 | CPP_BLOCK #cppBlock
                 | factor #fact ;
 

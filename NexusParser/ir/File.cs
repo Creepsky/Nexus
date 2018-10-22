@@ -59,10 +59,6 @@ namespace Nexus.ir
             foreach (var i in GetElements<IPrintable>())
             {
                 i.Print(type, printer);
-            }
-
-            if (type == PrintType.Header)
-            {
                 printer.WriteLine();
             }
         }
