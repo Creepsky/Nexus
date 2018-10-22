@@ -1,5 +1,4 @@
 using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
 using Nexus.common;
 using Nexus.ir;
 using Nexus.ir.expr;
@@ -22,12 +21,12 @@ namespace Nexus
             };
         }
 
-        public override object VisitClass(NexusParser.ClassContext context)
+        public override object VisitClass_declaration(NexusParser.Class_declarationContext context)
         {
             var member = context.class_member().Select(Visit).ToList();
 
             return new Class(context.name.Text,
-                context.template_list() == null ? null : (ITemplateList) Visit(context.template_list()),
+                context.template_list_declaration() == null ? null : (ITemplateList) Visit(context.template_list_declaration()),
                 member.OfType<Variable>().ToList(),
                 member.OfType<CppBlockStatement>().ToList())
             {
@@ -91,6 +90,8 @@ namespace Nexus
         {
             Type = (IType) Visit(context.type()),
             Name = context.IDENTIFIER().GetText(),
+            TemplateList = context.template_list_declaration() != null ?
+                (ITemplateList) Visit(context.template_list_declaration()) : null,
             Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList(),
             Statements = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i))
                 .ToList(),
@@ -136,7 +137,7 @@ namespace Nexus
             Then = context.then.function_body_statement()
                 .Select(i => (IStatement) Visit(i))
                 .ToList(),
-            Else = context.@else.function_body_statement()
+            Else = context.otherwise.function_body_statement()
                 .Select(i => (IStatement) Visit(i))
                 .ToList(),
             Line = context.Start.Line,
@@ -269,7 +270,7 @@ namespace Nexus
             Column = context.Start.Column
         };
 
-        public override object VisitBoolean(NexusParser.BooleanContext context) => new BooleanLiteral
+        public override object VisitTruth_value(NexusParser.Truth_valueContext context) => new BooleanLiteral
         {
             Value = context.TRUE() != null,
             Line = context.Start.Line,
@@ -319,9 +320,9 @@ namespace Nexus
                 return VisitNumber(context.number());
             }
 
-            if (context.boolean() != null)
+            if (context.truth_value() != null)
             {
-                return VisitBoolean(context.boolean());
+                return VisitTruth_value(context.truth_value());
             }
 
             if (context.BINARY() != null)
@@ -401,15 +402,53 @@ namespace Nexus
             ReturnType = (IType) Visit(context.returnType),
             ExtensionBase = (IType) Visit(context.extensionType),
             Name = context.name.Text,
+            TemplateList = context.template_list_declaration() != null ?
+                (ITemplateList) Visit(context.template_list_declaration()) : null,
             Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList(),
             Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
             Line = context.Start.Line,
             Column = context.Start.Column
         };
 
+        public override object VisitTemplate_list_declaration(NexusParser.Template_list_declarationContext context)
+        {
+            if (context.template_list() != null)
+            {
+                return Visit(context.template_list());
+            }
+
+            if (context.variadic_template() != null)
+            {
+                return Visit(context.variadic_template());
+            }
+
+            return base.VisitTemplate_list_declaration(context);
+        }
+
+        public override object VisitTemplate_list_usage(NexusParser.Template_list_usageContext context)
+        {
+            return Visit(context.template_list());
+        }
+
         public override object VisitTemplate_list(NexusParser.Template_listContext context)
         {
-            return Visit(context.template_list_parameter());
+            return new TemplateList(
+                context.IDENTIFIER()
+                    .Select(i => i.GetText())
+                    .ToList())
+            {
+                Line = context.Start.Line,
+                Column = context.Start.Column
+            };
+        }
+
+        public override object VisitVariadic_template(NexusParser.Variadic_templateContext context)
+        {
+            return new VariadicTemplateList
+            {
+                Line = context.Start.Line,
+                Column = context.Start.Column
+            };
         }
 
         private static CppBlock ExtractCppBlock(string wholeCppBlock, IToken token)
@@ -434,27 +473,6 @@ namespace Nexus
             var innerBlock = innerBlockNotTrimmed.Trim();
 
             return new CppBlock(innerBlock, token.Line, token.Column);
-        }
-
-        public override object VisitTemplateList([NotNull] NexusParser.TemplateListContext context)
-        {
-            return new TemplateList(
-                context.IDENTIFIER()
-                    .Select(i => i.GetText())
-                    .ToList())
-            {
-                Line = context.Start.Line,
-                Column = context.Start.Column
-            };
-        }
-
-        public override object VisitVariadicTemplates([NotNull] NexusParser.VariadicTemplatesContext context)
-        {
-            return new VariadicTemplateList
-            {
-                Line = context.Start.Line,
-                Column = context.Start.Column
-            };
         }
     }
 }

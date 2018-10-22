@@ -2,12 +2,12 @@ grammar Nexus;
 
 /* Parser */
 
-file_declaration :   class
+file_declaration :   class_declaration
                    | extension_function ;
 
 file : file_declaration* ;
 
-class : CLASS name=IDENTIFIER template_list? LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
+class_declaration : CLASS name=IDENTIFIER template_list_declaration? LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
 
 class_member :    CPP_BLOCK COLON
                 | variable_declaration
@@ -18,12 +18,13 @@ type :    IDENTIFIER ARRAY_DECLARATION* #namedType
         | LEFT_BRACKET key=type ARROW_RIGHT value=type RIGHT_BRACKET ARRAY_DECLARATION* #mapType
 	;
 
-variable_declaration : type IDENTIFIER (EQUAL expression)? COLON ;
+variable_declaration : type IDENTIFIER template_list_usage? (EQUAL expression)? COLON ;
 
 function_parameter : type IDENTIFIER (EQUAL expression)?;
 
-function_declaration : type IDENTIFIER LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
-                       LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
+function_declaration :  type IDENTIFIER template_list_declaration?
+                        LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
+                        LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
 assignment_statement : left=expression EQUAL right=expression COLON ;
 
@@ -40,7 +41,7 @@ tuple_explosion_statement : IDENTIFIER IDENTIFIER (COMMA IDENTIFIER)* EQUAL tupl
 
 if_statement :  IF LEFT_BRACE comparison RIGHT_BRACE
                 LEFT_CURLY_BRACE then=function_body RIGHT_CURLY_BRACE
-                ELSE LEFT_CURLY_BRACE else=function_body RIGHT_CURLY_BRACE ;
+                ELSE LEFT_CURLY_BRACE otherwise=function_body RIGHT_CURLY_BRACE ;
 
 while_statement : WHILE LEFT_BRACE comparison RIGHT_BRACE
                   LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
@@ -51,9 +52,9 @@ for_init :        assignment_statement
 for_statement : FOR LEFT_BRACE for_init comparison COLON expression RIGHT_BRACE
                 LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
-function_call : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE ;
+function_call : IDENTIFIER template_list_usage LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE ;
 
-function_body : function_body_statement * ;
+function_body : function_body_statement* ;
 
 function_body_statement :
                   CPP_BLOCK COLON
@@ -82,7 +83,7 @@ expression :	  expression STAR expression #mul
                 | CPP_BLOCK #cppBlock
                 | factor #fact ;
 
-boolean : TRUE | FALSE ;
+truth_value : TRUE | FALSE ;
 
 array_access : IDENTIFIER LEFT_BRACKET expression RIGHT_BRACKET ;
 
@@ -92,7 +93,7 @@ number :  INTEGER INTEGER_SUFFIX?
 quoted_text : APOSTROPHE text=.*? APOSTROPHE ;
 
 factor :      number
-            | boolean
+            | truth_value
             | BINARY
             | HEX
             | quoted_text
@@ -109,16 +110,18 @@ extension_type :  IDENTIFIER
                 | type
                 ;
 
-extension_function : returnType=type extensionType=type DOT name=IDENTIFIER LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
-                     LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
+extension_function :    returnType=type extensionType=type DOT name=IDENTIFIER
+                        template_list_declaration?
+                        LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
+                        LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
-template_list : LESS template_list_parameter GREATER ;
+template_list_declaration : LESS (template_list | variadic_template) GREATER ;
 
-template_list_parameter :   IDENTIFIER (COMMA IDENTIFIER)* #templateList
-                          | IDENTIFIER DOT_DOT_DOT #variadicTemplates
-                          ;
+template_list_usage : LESS template_list GREATER ;
 
+template_list : IDENTIFIER (COMMA IDENTIFIER)* ;
 
+variadic_template : IDENTIFIER DOT_DOT_DOT  ;
 
 /* Lexer */
 
