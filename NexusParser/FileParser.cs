@@ -44,10 +44,6 @@ namespace Nexus
             var visitor = new NexusGrammarVisitor();
             var ir = (ir.File) visitor.Visit(ast);
             ir.Path = path;
-            foreach (var i in ir.Elements)
-            {
-                i.Path = path;
-            }
             return ir;
         }
 

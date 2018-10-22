@@ -56,8 +56,6 @@ namespace Nexus.ir.stmt
         {
             if (type == PrintType.Header)
             {
-                printer.WriteLine("#pragma once");
-                printer.WriteLine();
                 // TODO: add #include function
                 //if (Public.Types.Any(i => i.IsArray()))
                 //    printer.WriteLine("#include <vector>");
