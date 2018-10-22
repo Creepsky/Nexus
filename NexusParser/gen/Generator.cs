@@ -40,17 +40,14 @@ namespace Nexus.gen
                 _logger.Info($"Generating data, phase {phase.ToString()}");
                 foreach (var file in _files)
                 {
-                    foreach (var i in file.Elements)
-                    {
-                        i.Generate(_globalContext, phase);
-                    }
+                    file.Generate(_globalContext, phase);
                 }
             }
         }
 
         public void Check()
         {
-            foreach (var i in _globalContext.GetElements())
+            foreach (var i in _files)
             {
                 i.Check(_globalContext);
             }
@@ -64,7 +61,7 @@ namespace Nexus.gen
             var headerPrinter = new Printer(headerStringWriter);
             var sourcePrinter = new Printer(sourceStringWriter);
 
-            foreach (var i in _globalContext.GetElements())
+            foreach (var i in _files)
             {
                 headerStringWriter.GetStringBuilder().Clear();
                 sourceStringWriter.GetStringBuilder().Clear();
@@ -72,20 +69,12 @@ namespace Nexus.gen
                 i.Print(PrintType.Header, headerPrinter);
                 i.Print(PrintType.Source, sourcePrinter);
 
-                if (i.GetType() == typeof(Class) ||
-                    i.GetType() == typeof(ExtensionFunction))
-                {
-                    compilationUnits.Add(new CompilationUnit{
-                        Name = i.GetType() == typeof(Class) ? ((Class) i).Name : ((ExtensionFunction) i).Name,
-                        Path = i.GetType() == typeof(Class) ? ((Class) i).Path : ((ExtensionFunction) i).Path,
-                        Header = headerStringWriter.ToString(),
-                        Source = sourceStringWriter.ToString()
-                    });
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException(nameof(i), $"Invalid generation element type: {i.GetType().Name}");
-                }
+                compilationUnits.Add(new CompilationUnit{
+                    Name = i.Name,
+                    Path = i.Path,
+                    Header = headerStringWriter.ToString(),
+                    Source = sourceStringWriter.ToString()
+                });
             }
 
             return compilationUnits;
