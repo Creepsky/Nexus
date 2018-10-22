@@ -26,11 +26,8 @@ namespace Nexus
         {
             var member = context.class_member().Select(Visit).ToList();
 
-            if (context.template_list() != null)
-            {
-            }
-
             return new Class(context.name.Text,
+                context.template_list() == null ? null : (ITemplateList) Visit(context.template_list()),
                 member.OfType<Variable>().ToList(),
                 member.OfType<CppBlockStatement>().ToList())
             {
@@ -410,6 +407,11 @@ namespace Nexus
             Column = context.Start.Column
         };
 
+        public override object VisitTemplate_list(NexusParser.Template_listContext context)
+        {
+            return Visit(context.template_list_parameter());
+        }
+
         private static CppBlock ExtractCppBlock(string wholeCppBlock, IToken token)
         {
             var wholeBlockTrimmed = wholeCppBlock.Trim();
@@ -438,13 +440,21 @@ namespace Nexus
         {
             return new TemplateList(
                 context.IDENTIFIER()
-                .Select(i => i.GetText())
-                .ToList());
+                    .Select(i => i.GetText())
+                    .ToList())
+            {
+                Line = context.Start.Line,
+                Column = context.Start.Column
+            };
         }
 
         public override object VisitVariadicTemplates([NotNull] NexusParser.VariadicTemplatesContext context)
         {
-            return base.VisitVariadicTemplates(context);
+            return new VariadicTemplateList
+            {
+                Line = context.Start.Line,
+                Column = context.Start.Column
+            };
         }
     }
 }

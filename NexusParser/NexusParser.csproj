@@ -7,6 +7,7 @@
     <RootNamespace>Nexus</RootNamespace>
     <Version>0.0.1</Version>
     <NoWarn>3021</NoWarn>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

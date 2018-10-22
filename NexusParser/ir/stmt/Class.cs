@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Nexus.gen;
 using Nexus.ir.expr;
 
@@ -6,18 +7,20 @@ namespace Nexus.ir.stmt
 {
     public class Class : Statement
     {
+        public ITemplateList TemplateList { get; }
         public IList<Variable> Variables { get; }
         public IList<CppBlockStatement> CppBlocks { get; }
 
         public SimpleType Type { get; }
         private Context _context;
 
-        public Class(string name, IList<Variable> variables, IList<CppBlockStatement> cppBlocks)
+        public Class(string name, ITemplateList templateList, IList<Variable> variables, IList<CppBlockStatement> cppBlocks)
         {
             Name = name;
             Variables = variables;
             CppBlocks = cppBlocks;
             Type = new SimpleType(Name, 0, Line, Column);
+            TemplateList = templateList;
         }
 
         public override string ToString()
@@ -60,7 +63,21 @@ namespace Nexus.ir.stmt
                 //    printer.WriteLine("#include <vector>");
                 //if (Public.Types.Any(i => i.Type == "string"))
                 //    printer.WriteLine("#include <string>");
-                printer.WriteLine();
+                if (TemplateList != null)
+                {
+                    if (TemplateList.GetType() == typeof(VariadicTemplateList))
+                    {
+                        printer.WriteLine("template <typename... T>");
+                    }
+                    else if (TemplateList.GetType() == typeof(TemplateList))
+                    {
+                        var templateList = (TemplateList) TemplateList;
+
+                        printer.Write("template <");
+                        printer.Write("typename " + string.Join(", typename ", templateList.Types));
+                        printer.WriteLine(">");
+                    }
+                }
                 printer.WriteLine($"struct {Name}");
                 printer.WriteLine("{");
                 printer.Push();
