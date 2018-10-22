@@ -1,6 +1,6 @@
 class tuple<T...>
 {
     c++ {
-        std::tuple<T...> values;
+        std::tuple<T...> values
     };
 }
