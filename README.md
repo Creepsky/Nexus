@@ -5,26 +5,24 @@
 
 A simple yet powerful system programming language.
 
-```c
-(int, string) create_tuple() {
+```c#
+class My_class {
+    int my_int;
+    usize my_usize;
+}
+
+(int, string) MyClass.create_tuple() {
     return (123, "abc");
 }
 
-auto number, text = create_tuple();
+void MyClass.do_something() {
+    auto number, text = create_tuple();
+    string [] values;
+    auto upper_bound = 10;
 
-string [] values;
-auto upper_bound = 10;
-
-for (auto i : 0..upper_bound) {
-    values.add(text);
-}
-
-class A {
-    long a;
-}
-
-int A.extension_function() {
-    return a;
+    for (auto i : 0..upper_bound) {
+        values.add(text);
+    }
 }
 ```
 
