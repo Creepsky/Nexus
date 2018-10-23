@@ -45,7 +45,8 @@ namespace Nexus.ir.stmt
             {
                 if (upperContext.Element.GetType() == typeof(Class) ||
                     upperContext.Element.GetType() == typeof(Function) ||
-                    upperContext.Element.GetType() == typeof(ExtensionFunction))
+                    upperContext.Element.GetType() == typeof(ExtensionFunction) ||
+                    upperContext.Element.GetType() == typeof(OperatorFunction))
                 {
                     return GenerateParameter(upperContext);
                 }
