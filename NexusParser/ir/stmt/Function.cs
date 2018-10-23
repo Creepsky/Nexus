@@ -12,7 +12,7 @@ namespace Nexus.ir.stmt
         public IList<Variable> Parameter { get; set; }
         public IList<IStatement> Statements { get; set; }
         public bool Const { get; set; }
-        private Context _context { get; set; }
+        private Context _context;
 
         public override string ToString()
         {
@@ -39,22 +39,14 @@ namespace Nexus.ir.stmt
             if (phase == GenerationPhase.ForwardDeclaration)
             {
                 upperContext.Add(Name, this);
-            }
-            else if (phase == GenerationPhase.Definition)
-            {
                 _context = upperContext.StackNewContext(this);
+            }
 
-                Type.Generate(_context, phase);
+            Type.Generate(_context, phase);
 
-                foreach (var i in Parameter)
-                {
-                    i.Generate(_context, phase);
-                }
-
-                foreach (var i in Statements)
-                {
-                    i.Generate(_context, phase);
-                }
+            foreach (var i in GetElements())
+            {
+                i.Generate(_context, phase);
             }
 
             return this;
@@ -64,58 +56,20 @@ namespace Nexus.ir.stmt
 
         public override void Print(PrintType type, Printer printer)
         {
-            if (type == PrintType.Header)
+            if (type == PrintType.Source)
             {
-                Type.Print(PrintType.Header, printer);
-
-                printer.Write($" {Name}(");
-
-                if (Parameter.Any())
+                if (_context.UpperContext.Element.GetType() == typeof(ExtensionFunction))
                 {
-                    var last = Parameter.Last();
-
+                    printer.Write($"auto {Name} = [](");
                     foreach (var i in Parameter)
                     {
                         i.Print(PrintType.Parameter, printer);
-
-                        if (last != i)
+                        if (!i.Equals(Parameter.Last()))
                         {
                             printer.Write(", ");
                         }
                     }
-                }
-
-                printer.Write(")");
-
-                if (Const)
-                {
-                    printer.Write(" const");
-                }
-
-                printer.WriteLine(";");
-            }
-            else if (type == PrintType.Source)
-            {
-                if (_context.UpperContext.Element.GetType() == typeof(Class))
-                {
-                    Type.Print(PrintType.Source, printer);
-                    printer.Write($" {((Class)_context.UpperContext.Element).Name}::{Name}(");
-                    // i.Type.IsPrimitive() ? $"{i.Type.ToCpp()}" : $"const {i.Type.ToCpp()}&
-                    foreach (var i in Parameter)
-                    {
-                        i.Print(PrintType.Parameter, printer);
-
-                        if (i != Parameter.Last())
-                        {
-                            printer.Write(", ");
-                        }
-                    }
-                    printer.Write(")");
-                    if (Const)
-                    {
-                        printer.Write(" const");
-                    }
-                    printer.WriteLine();
+                    printer.WriteLine(")");
                     printer.WriteLine("{");
                     printer.Push();
                     foreach (var i in Statements)
@@ -123,9 +77,15 @@ namespace Nexus.ir.stmt
                         i.Print(PrintType.FunctionSource, printer);
                     }
                     printer.Pop();
-                    printer.WriteLine("}");
+                    printer.WriteLine("};");
                 }
             }
+        }
+
+        private IEnumerable<IGenerationElement> GetElements()
+        {
+            return Parameter.OfType<IGenerationElement>()
+                .Concat(Statements);
         }
     }
 }

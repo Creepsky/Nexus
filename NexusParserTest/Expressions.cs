@@ -164,9 +164,6 @@ namespace NexusParserTest
         private static void CheckBinaryOperation(IExpression left, IExpression right, BinaryOperatorType type,
             Context context, string expectedOutput)
         {
-            var writer = new StringWriter();
-            var printer = new Printer(writer);
-
             var bin = new BinaryOperation
             {
                 Left = left,
@@ -174,11 +171,9 @@ namespace NexusParserTest
                 Type = type
             };
 
-            bin.Check(context);
-            Assert.Equal(bin, bin.Generate(context, GenerationPhase.ForwardDeclaration));
+            GenerateAndCheck(bin, context);
             bin.GetResultType(context);
-            bin.Print(PrintType.Header, printer);
-            Assert.Equal(expectedOutput, writer.ToString());
+            Assert.Equal(expectedOutput, Print(bin));
         }
 
         [Theory]
@@ -192,15 +187,58 @@ namespace NexusParserTest
             Assert.Equal(1, i.ExtensionFunctions[0].Body.Count);
             Assert.IsType<ReturnStatement>(i.ExtensionFunctions[0].Body[0]);
             var rs = (ReturnStatement)i.ExtensionFunctions[0].Body[0];
-            var context = new Context();
-            i.Generate(context, GenerationPhase.ForwardDeclaration);
-            i.Generate(context, GenerationPhase.Declaration);
-            i.Generate(context, GenerationPhase.Definition);
-            i.Check(context);
+            GenerateAndCheck(i, new Context());
+            Assert.Equal(expected ?? expression, Print(rs.Value));
+        }
+
+        [Fact]
+        public static void FunctionTest()
+        {
+            var i = FileParser.ParseFile("class test{} " +
+                                         "int test.func(){ " +
+                                         "int max(int a, int b) { if (a > b) { return a; } else { return b; } } " +
+                                         "int my_a = 1; int my_b = 2; " +
+                                         "auto my_max = max_of(my_a, my_b); " +
+                                         " }");
+            GenerateAndCheck(i, new Context());
+            var element = i.ExtensionFunctions[0].Body[0];
+            Assert.IsType<Function>(element);
+            var function = (Function)element;
+
+            var expectedLines = new[]
+            {
+                "auto max = [](int32_t a, int32_t b)",
+                "{",
+                "    if (a > b)",
+                "    {",
+                "        return a;",
+                "    }",
+                "    else",
+                "    {",
+                "        return b;",
+                "    }",
+                "};",
+                ""
+            };
+
+            Assert.Equal(string.Join(Environment.NewLine, expectedLines), Print(function, PrintType.Source));
+        }
+
+        private static void GenerateAndCheck(IGenerationElement element, Context context)
+        {
+            element.Generate(context, GenerationPhase.ForwardDeclaration);
+            element.Generate(context, GenerationPhase.Declaration);
+            element.Generate(context, GenerationPhase.Definition);
+            element.Check(context);
+            
+        }
+
+        private static string Print(IPrintable element, PrintType type = PrintType.Header)
+        {
             var stringWriter = new StringWriter();
             var printer = new Printer(stringWriter);
-            rs.Value.Print(PrintType.Header, printer);
-            Assert.Equal(expected ?? expression, stringWriter.ToString());
+            element.Print(type, printer);
+            return stringWriter.ToString();
         }
     }
 }
