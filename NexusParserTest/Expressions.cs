@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Nexus;
 using Nexus.gen;
 using Nexus.ir.expr;
 using Nexus.ir.stmt;
@@ -178,6 +179,23 @@ namespace NexusParserTest
             bin.GetResultType(context);
             bin.Print(PrintType.Header, printer);
             Assert.Equal(expectedOutput, writer.ToString());
+        }
+
+        [Theory]
+        [InlineData("(1 + 1) * 5")]
+        [InlineData("a * b + (1 - 0) / -2")]
+        [InlineData("[1, 2, 3][1] * a[0] / 1", "{1, 2, 3}[1] * a[0] / 1")]
+        public static void ParenTest(string expression, string expected = null)
+        {
+            var i = FileParser.ParseFile($"int test.func() {{ return {expression}; }}");
+            Assert.Equal(1, i.ExtensionFunctions.Count);
+            Assert.Equal(1, i.ExtensionFunctions[0].Body.Count);
+            Assert.IsType<ReturnStatement>(i.ExtensionFunctions[0].Body[0]);
+            var rs = (ReturnStatement)i.ExtensionFunctions[0].Body[0];
+            var stringWriter = new StringWriter();
+            var printer = new Printer(stringWriter);
+            rs.Value.Print(PrintType.Header, printer);
+            Assert.Equal(expected ?? expression, stringWriter.ToString());
         }
     }
 }

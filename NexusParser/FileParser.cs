@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Antlr4.Runtime;
 using Nexus.gen;
 using NLog;
@@ -17,7 +18,7 @@ namespace Nexus
             return ParseDirectory("/", configuration).ToList();
         }
 
-        private static IEnumerable<ir.File> ParseDirectory(string path, Configuration configuration)
+        public static IEnumerable<ir.File> ParseDirectory(string path, Configuration configuration)
         {
             var files = configuration.EnumerateSourceFiles(path)
                 .Select(i => ParseFile(i, configuration));
@@ -30,20 +31,33 @@ namespace Nexus
             return files;
         }
 
-        private static ir.File ParseFile(string path, Configuration configuration)
+        public static ir.File ParseFile(string input)
+        {
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
+            var inputStream = new AntlrInputStream(stream);
+            return ParseFile(inputStream);
+        }
+
+        public static ir.File ParseFile(string path, Configuration configuration)
         {
             var logger = LogManager.GetCurrentClassLogger();
             logger.Info($"Parsing '{path}'");
             var file = configuration.OpenFile(path);
             var textReader = new StreamReader(file);
             var input = new AntlrInputStream(textReader);
+            var ir = ParseFile(input);
+            ir.Path = path;
+            return ir;
+        }
+
+        public static ir.File ParseFile(ICharStream input)
+        {
             var lexer = new NexusLexer(input, Console.Out, Console.Error);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new NexusParser(tokenStream);
             var ast = parser.file();
             var visitor = new NexusGrammarVisitor();
-            var ir = (ir.File) visitor.Visit(ast);
-            ir.Path = path;
+            var ir = (ir.File)visitor.Visit(ast);
             return ir;
         }
 
