@@ -32,12 +32,7 @@ return_statement : RETURN expression COLON ;
 
 variable_statement : type IDENTIFIER (EQUAL expression)? COLON ;
 
-tuple_explosion_expression :      IDENTIFIER
-                                | array_access
-                                | function_call
-                                ;
-
-tuple_explosion_statement : IDENTIFIER IDENTIFIER (COMMA IDENTIFIER)* EQUAL tuple_explosion_expression COLON ;
+tuple_explosion_statement : IDENTIFIER IDENTIFIER (COMMA IDENTIFIER)* EQUAL expression COLON ;
 
 if_statement :  IF LEFT_BRACE comparison RIGHT_BRACE
                 LEFT_CURLY_BRACE then=function_body RIGHT_CURLY_BRACE
@@ -83,14 +78,13 @@ expression :	  expression STAR expression #mul
                 | LEFT_BRACKET key_value_pair (COMMA key_value_pair)* RIGHT_BRACKET #map
                 | expression RANGE expression #range
                 | expression EQUAL expression #test
+                | expression LEFT_BRACKET expression RIGHT_BRACKET #arrayAccess
                 | function_call #functionCall
                 | extension_function_call #extensionFunctionCall
                 | CPP_BLOCK #cppBlock
                 | factor #fact ;
 
 truth_value : TRUE | FALSE ;
-
-array_access : IDENTIFIER LEFT_BRACKET expression RIGHT_BRACKET ;
 
 number :  INTEGER INTEGER_SUFFIX?
         | REAL REAL_SUFFIX? ;
@@ -102,7 +96,6 @@ factor :      number
             | BINARY
             | HEX
             | quoted_text
-            | array_access
             | IDENTIFIER ;
 
 comparison :      expression EQUAL expression

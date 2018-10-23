@@ -6,6 +6,7 @@ namespace Nexus.ir.expr
 {
     public class ArrayAccess : Expression
     {
+        public IExpression Value { get; set; }
         public IExpression Index { get; set; }
         
         public override string ToString() => $"{Name}[{Index}]";
@@ -17,7 +18,7 @@ namespace Nexus.ir.expr
 
         public override IType GetResultType(Context context)
         {
-            throw new NotImplementedException();
+            return Value.GetResultType(context);
         }
 
         public override void Check(Context context)
@@ -67,6 +68,7 @@ namespace Nexus.ir.expr
 
         public override void Print(PrintType type, Printer printer)
         {
+            Value.Print(type, printer);
             printer.Write($"{Name}[");
             Index.Print(type, printer);
             printer.Write("]");
