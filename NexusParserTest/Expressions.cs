@@ -177,10 +177,10 @@ namespace NexusParserTest
         }
 
         [Theory]
-        [InlineData("(1 + 1) * 5")]
-        [InlineData("a * b + (1 - 0) / -2")]
+        [InlineData("(1 + 1) * 5", null)]
+        [InlineData("a * b + (1 - 0) / -2", null)]
         [InlineData("[1, 2, 3][1] * a[0] / 1", "{1, 2, 3}[1] * a[0] / 1")]
-        public static void ParenTest(string expression, string expected = null)
+        public static void ParenTest(string expression, string expected)
         {
             var i = FileParser.ParseFile($"class test {{}} int test.func() {{ return {expression}; }}");
             Assert.Equal(1, i.ExtensionFunctions.Count);
