@@ -401,18 +401,27 @@ namespace Nexus
             };
         }
 
-        public override object VisitExtension_function(NexusParser.Extension_functionContext context) => new ExtensionFunction
+        public override object VisitExtension_function(NexusParser.Extension_functionContext context)
         {
-            ReturnType = (IType) Visit(context.returnType),
-            ExtensionBase = (IType) Visit(context.extensionType),
-            Name = context.name.Text,
-            TemplateList = context.template_list_declaration() != null ?
-                (ITemplateList) Visit(context.template_list_declaration()) : null,
-            Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList(),
-            Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
-            Line = context.Start.Line,
-            Column = context.Start.Column
-        };
+            var function = context.@operator() != null ? new OperatorFunction() : new ExtensionFunction();
+
+            function.ReturnType = (IType) Visit(context.returnType);
+            function.ExtensionBase = (IType) Visit(context.extensionType);
+            function.TemplateList = context.template_list_declaration() != null
+                ? (ITemplateList) Visit(context.template_list_declaration())
+                : null;
+            function.Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList();
+            function.Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList();
+            function.Line = context.Start.Line;
+            function.Column = context.Start.Column;
+
+            function.SetName(
+                function.GetType() == typeof(OperatorFunction)
+                ? context.@operator().GetText()
+                : context.IDENTIFIER().GetText());
+
+            return function;
+        }
 
         public override object VisitTemplate_list_declaration(NexusParser.Template_list_declarationContext context)
         {

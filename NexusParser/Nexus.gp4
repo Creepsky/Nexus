@@ -108,10 +108,16 @@ extension_type :  IDENTIFIER
                 | type
                 ;
 
-extension_function :    returnType=type extensionType=type DOT name=IDENTIFIER
+extension_function :    returnType=type extensionType=type DOT (name=IDENTIFIER | OPERATOR operator)
                         template_list_declaration?
                         LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
                         LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
+
+operator :   PLUS
+           | MINUS
+           | STAR
+           | SLASH
+           ;
 
 template_list_declaration : LESS (template_list | variadic_template) GREATER ;
 
@@ -160,6 +166,7 @@ STAR: '*' ;
 SLASH: '/' ;
 COMMA : ',' ;
 RETURN : 'return' ;
+OPERATOR : 'operator' ;
 RANGE : '..' ;
 DOT : '.' ;
 CPP : 'c++' ;
