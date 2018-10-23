@@ -59,12 +59,12 @@ namespace Nexus.ir.expr
 
         public override IType GetResultType(Context context)
         {
-            throw new NotImplementedException();
+            return Left.GetResultType(context);
         }
 
         public override void Check(Context context)
         {
-            throw new NotImplementedException();
+            // TODO: add checking
         }
 
         public override void Print(PrintType type, Printer printer)

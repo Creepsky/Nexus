@@ -31,7 +31,7 @@ namespace Nexus.ir.expr
             {
                 i.Print(type, printer);
 
-                if (i != Values.Last())
+                if (!i.Equals(Values.Last()))
                 {
                     printer.Write(", ");
                 }

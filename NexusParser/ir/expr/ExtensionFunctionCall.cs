@@ -5,7 +5,7 @@ namespace Nexus.ir.expr
 {
     public class ExtensionFunctionCall : Expression
     {
-        public string Variable { get; set; }
+        public IExpression Variable { get; set; }
         public FunctionCall FunctionCall { get; set; }
         
         public override IGenerationElement Generate(Context context, GenerationPhase phase)
@@ -34,7 +34,8 @@ namespace Nexus.ir.expr
         {
             if (type == PrintType.Header)
             {
-                printer.Write($"{Variable}.");
+                Variable.Print(type, printer);
+                printer.Write(".");
                 FunctionCall.Print(type, printer);
             }
         }

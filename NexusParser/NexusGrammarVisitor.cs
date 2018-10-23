@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Nexus.common;
 using Nexus.ir;
 using Nexus.ir.expr;
@@ -126,7 +127,7 @@ namespace Nexus
         public override object VisitTuple_explosion_statement(NexusParser.Tuple_explosion_statementContext context) => new TupleExplosionStatement
         {
             Names = context.IDENTIFIER().Skip(1).Select(i => i.GetText()).ToList(),
-            Right = (IExpression) Visit(context.tuple_explosion_expression()),
+            Right = (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column
         };
@@ -174,7 +175,7 @@ namespace Nexus
         {
             return new ExtensionFunctionCall
             {
-                Variable = context.IDENTIFIER().GetText(),
+                Variable = new VariableLiteral{Name = context.IDENTIFIER().GetText()},
                 FunctionCall = (FunctionCall) Visit(context.function_call()),
                 Line = context.Start.Line,
                 Column = context.Start.Column
@@ -284,14 +285,6 @@ namespace Nexus
         public override object VisitTruth_value(NexusParser.Truth_valueContext context) => new BooleanLiteral
         {
             Value = context.TRUE() != null,
-            Line = context.Start.Line,
-            Column = context.Start.Column
-        };
-
-        public override object VisitArray_access(NexusParser.Array_accessContext context) => new ArrayAccess
-        {
-            Name = context.IDENTIFIER().GetText(),
-            Index = (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column
         };
@@ -484,6 +477,17 @@ namespace Nexus
             var innerBlock = innerBlockNotTrimmed.Trim();
 
             return new CppBlock(innerBlock, token.Line, token.Column);
+        }
+
+        public override object VisitArrayAccess([NotNull] NexusParser.ArrayAccessContext context)
+        {
+            return new ArrayAccess
+            {
+                Value = (IExpression) Visit(context.expression(0)),
+                Index = (IExpression) Visit(context.expression(1)),
+                Line = context.Start.Line,
+                Column = context.Start.Column
+            };
         }
     }
 }
