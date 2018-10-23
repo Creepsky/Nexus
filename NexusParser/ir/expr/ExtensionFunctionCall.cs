@@ -21,6 +21,8 @@ namespace Nexus.ir.expr
 
         public override void Check(Context context)
         {
+            Variable.Check(context);
+
             var name = $"{Variable}.{FunctionCall.Name}";
             var function = context.Get(name);
 
@@ -28,6 +30,8 @@ namespace Nexus.ir.expr
             {
                 throw new NotFoundException(this, "extension function", nameof(name));
             }
+
+            FunctionCall.Check(context);
         }
 
         public override void Print(PrintType type, Printer printer)

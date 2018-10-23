@@ -187,11 +187,16 @@ namespace NexusParserTest
         [InlineData("[1, 2, 3][1] * a[0] / 1", "{1, 2, 3}[1] * a[0] / 1")]
         public static void ParenTest(string expression, string expected = null)
         {
-            var i = FileParser.ParseFile($"int test.func() {{ return {expression}; }}");
+            var i = FileParser.ParseFile($"class test {{}} int test.func() {{ return {expression}; }}");
             Assert.Equal(1, i.ExtensionFunctions.Count);
             Assert.Equal(1, i.ExtensionFunctions[0].Body.Count);
             Assert.IsType<ReturnStatement>(i.ExtensionFunctions[0].Body[0]);
             var rs = (ReturnStatement)i.ExtensionFunctions[0].Body[0];
+            var context = new Context();
+            i.Generate(context, GenerationPhase.ForwardDeclaration);
+            i.Generate(context, GenerationPhase.Declaration);
+            i.Generate(context, GenerationPhase.Definition);
+            i.Check(context);
             var stringWriter = new StringWriter();
             var printer = new Printer(stringWriter);
             rs.Value.Print(PrintType.Header, printer);
