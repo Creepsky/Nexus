@@ -50,6 +50,11 @@ namespace Nexus.ir.stmt
                 i.Generate(_context, phase);
             }
 
+            foreach (var i in Body)
+            {
+                i.Generate(_context, phase);
+            }
+
             return this;
         }
 
