@@ -14,6 +14,11 @@ namespace Nexus.ir.stmt
         public IList<IStatement> Body { get; set; }
         private Context _context;
 
+        public virtual void SetName(string name)
+        {
+            Name = name;
+        }
+
         public override string ToString()
         {
             return $"{ReturnType} {ExtensionBase}.{Name}()";
