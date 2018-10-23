@@ -6,9 +6,9 @@ using NLog;
 
 namespace Nexus
 {
-    internal static class Program
+    public static class Program
     {
-        private static int Main(string[] args)
+        public static int Main(string[] args)
         {
             var config = new NLog.Config.LoggingConfiguration();
             var logConsole = new NLog.Targets.ConsoleTarget("logconsole");
