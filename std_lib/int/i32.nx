@@ -1,5 +1,7 @@
 class i32
 {
+    include <cstdint>;
+
     c++ {
         int32_t value
     };
@@ -17,7 +19,7 @@ i32 i32.operator+(i32 rhs) {
     return value + rhs;
 }
 
-i64 i32.operator+(i64 rhs) {
+i32 i32.operator+(i64 rhs) {
     return value + rhs;
 }
 
@@ -33,6 +35,22 @@ i32 i32.operator+(u32 rhs) {
     return value + rhs;
 }
 
-i64 i32.operator+(u64 rhs) {
+i32 i32.operator+(u64 rhs) {
     return value + rhs;
+}
+
+usize i32.minimum() {
+    include <limits>;
+
+    return c++ {
+        std::numeric_limits<int32_t>::max()
+    };
+}
+
+usize i32.maximum() {
+    include <limits>;
+
+    return c++ {
+        std::numeric_limits<int32_t>::max()
+    };
 }

@@ -69,7 +69,9 @@ function_body_statement :
                 | for_statement
                 | function_call COLON
                 | extension_function_call COLON
-                | tuple_explosion_statement ;
+                | tuple_explosion_statement
+                | include COLON
+                ;
 
 key_value_pair : expression ARROW_RIGHT expression ;
 
