@@ -215,6 +215,11 @@ namespace Nexus
                 return new CppBlockStatement(ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start));
             }
 
+            if (context.include() != null)
+            {
+                return Visit(context.include());
+            }
+
             return base.VisitFunction_body_statement(context);
         }
 

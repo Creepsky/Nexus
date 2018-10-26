@@ -19,9 +19,13 @@ namespace Nexus.ir.stmt
             var scopeType = context.Element.GetType();
 
             if (scopeType != typeof(Class) &&
-                scopeType != typeof(File))
+                scopeType != typeof(File) &&
+                scopeType != typeof(ExtensionFunction))
             {
-                throw new UnexpectedScopeException(this, scopeType.Name, new []{nameof(File), nameof(Class)});
+                throw new UnexpectedScopeException(this, scopeType.Name, new []
+                {
+                    nameof(File), nameof(Class), nameof(ExtensionFunction)
+                });
             }
         }
 
@@ -29,7 +33,8 @@ namespace Nexus.ir.stmt
         {
             File file;
 
-            if (context.Element.GetType() == typeof(Class))
+            if (context.Element.GetType() == typeof(Class) ||
+                context.Element.GetType() == typeof(ExtensionFunction))
             {
                 file = context.UpperContext.GetElementAs<File>(this);
             }
