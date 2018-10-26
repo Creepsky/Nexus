@@ -435,11 +435,10 @@ namespace Nexus
             function.Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList();
             function.Line = context.Start.Line;
             function.Column = context.Start.Column;
-
-            function.SetName(
+            function.Name =
                 function.GetType() == typeof(OperatorFunction)
-                ? context.@operator().GetText()
-                : context.IDENTIFIER().GetText());
+                ? "operator" + context.@operator().GetText()
+                : context.IDENTIFIER().GetText();
 
             return function;
         }
@@ -488,20 +487,7 @@ namespace Nexus
         private static CppBlock ExtractCppBlock(string wholeCppBlock, IToken token)
         {
             var wholeBlockTrimmed = wholeCppBlock.Trim();
-
-            if (!wholeBlockTrimmed.StartsWith("c++") ||
-                !wholeBlockTrimmed.EndsWith("}"))
-            {
-                throw new PositionedException(token.Line, token.Column, "invalid c++ block");
-            }
-
             var cppBlockWithoutCpp = wholeBlockTrimmed.Substring("c++".Length).TrimStart();
-
-            if (!cppBlockWithoutCpp.StartsWith("{"))
-            {
-                throw new PositionedException(token.Line, token.Column, "invalid c++ block");
-            }
-
             var innerBlockStart = cppBlockWithoutCpp.Substring("{".Length);
             var innerBlockNotTrimmed = innerBlockStart.Substring(0, innerBlockStart.Length - "}".Length);
             var innerBlock = innerBlockNotTrimmed.Trim();
