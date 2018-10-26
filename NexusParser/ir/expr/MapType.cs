@@ -47,17 +47,12 @@ namespace Nexus.ir.expr
 
         public override void Print(PrintType type, Printer printer)
         {
-            printer.PrintWithModifiers(ToCpp(), type);
+            printer.PrintWithModifiers("map", type);
         }
 
         public bool IsPrimitive() => Primitive;
 
         public bool IsAuto() => Auto;
-
-        public string ToCpp()
-        {
-            return $"std::map<{KeyType.ToCpp().ToArray(Array)}, {ValueType.ToCpp().ToArray(Array)}>";
-        }
 
         public override IType GetResultType(Context context)
         {

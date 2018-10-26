@@ -429,8 +429,11 @@ namespace Nexus
 
             function.ReturnType = (IType) Visit(context.returnType);
             function.ExtensionBase = (IType) Visit(context.extensionType);
-            function.TemplateList = context.template_list_declaration() != null
-                ? (ITemplateList) Visit(context.template_list_declaration())
+            function.ExtensionBaseTemplateList = context.extensionTypeTemplates != null
+                ? (ITemplateList) Visit(context.extensionTypeTemplates)
+                : null;
+            function.TemplateList = context.functionTemplates != null
+                ? (ITemplateList) Visit(context.functionTemplates)
                 : null;
             function.Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList();
             function.Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList();

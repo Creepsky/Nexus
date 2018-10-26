@@ -11,9 +11,6 @@ namespace Nexus.ir.expr
     {
         bool IsPrimitive();
         bool IsAuto();
-
-        string ToCpp();
-
         int Array { get; }
     }
 
@@ -74,18 +71,6 @@ namespace Nexus.ir.expr
             return Name == "auto";
         }
 
-        public string ToCpp()
-        {
-            try
-            {
-                return TypesExtension.ToType(Name).ToCpp().ToArray(Array);
-            }
-            catch (Exception)
-            {
-                return Name;
-            }
-        }
-
         public PrimitiveType ToPrimitiveType() => TypesExtension.ToType(Name);
 
         public bool Equals(SimpleType other)
@@ -120,7 +105,7 @@ namespace Nexus.ir.expr
 
         public override void Print(PrintType type, Printer printer)
         {
-            printer.PrintWithModifiers(ToCpp(), type);
+            printer.PrintWithModifiers(Name, type);
         }
 
         public override IType GetResultType(Context context)
@@ -150,28 +135,6 @@ namespace Nexus.ir.expr
 
     public static class TypesExtension
     {
-        public static string ToCpp(this PrimitiveType type)
-        {
-            switch (type)
-            {
-                case PrimitiveType.I8: return "int8_t";
-                case PrimitiveType.I16: return "int16_t";
-                case PrimitiveType.I32: return "int32_t";
-                case PrimitiveType.I64: return "int64_t";
-                case PrimitiveType.U8: return "uint8_t";
-                case PrimitiveType.U16: return "uint16_t";
-                case PrimitiveType.U32: return "uint32_t";
-                case PrimitiveType.U64: return "uint64_t";
-                case PrimitiveType.USize: return "size_t";
-                case PrimitiveType.F32: return "float";
-                case PrimitiveType.F64: return "double";
-                case PrimitiveType.String: return "std::string";
-                case PrimitiveType.Void: return "void";
-                case PrimitiveType.Bool: return "bool";
-                default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
-        }
-
         public static PrimitiveType ToType(string type)
         {
             switch (type.ToLowerInvariant())

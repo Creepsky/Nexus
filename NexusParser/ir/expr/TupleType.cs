@@ -57,17 +57,12 @@ namespace Nexus.ir.expr
 
         public override void Print(PrintType type, Printer printer)
         {
-            printer.PrintWithModifiers(ToCpp(), type);
+            printer.PrintWithModifiers("tuple", type);
         }
 
         public bool IsPrimitive() => Primitive;
 
         public bool IsAuto() => Auto;
-
-        public string ToCpp()
-        {
-            return $"std::tuple<{string.Join(", ", Types.Select(i => i.ToCpp().ToArray(Array)))}>";
-        }
 
         public override IType GetResultType(Context context)
         {
