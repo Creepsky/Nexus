@@ -1,9 +1,12 @@
-﻿using System.Linq;
-
-namespace Nexus.ir.stmt
+﻿namespace Nexus.ir.stmt
 {
     public class OperatorFunction : ExtensionFunction
     {
-        public string Operator { get; private set; }
+        public string Operator { get; }
+
+        public OperatorFunction(string op)
+        {
+            Operator = op;
+        }
     }
 }

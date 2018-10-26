@@ -1,6 +1,5 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Nexus.common;
 using Nexus.ir;
 using Nexus.ir.expr;
 using Nexus.ir.stmt;
@@ -424,7 +423,9 @@ namespace Nexus
 
         public override object VisitExtension_function(NexusParser.Extension_functionContext context)
         {
-            var function = context.@operator() != null ? new OperatorFunction() : new ExtensionFunction();
+            var function = context.@operator() != null
+                ? new OperatorFunction(context.@operator().GetText())
+                : new ExtensionFunction();
 
             function.ReturnType = (IType) Visit(context.returnType);
             function.ExtensionBase = (IType) Visit(context.extensionType);
