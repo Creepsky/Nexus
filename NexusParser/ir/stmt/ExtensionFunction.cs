@@ -101,7 +101,7 @@ namespace Nexus.ir.stmt
                 printer.WriteLine(")");
                 printer.WriteLine("{");
                 printer.Push();
-                foreach (var i in Body)
+                foreach (var i in Body.Where(i => i.GetType() != typeof(Include)))
                 {
                     i.Print(type, printer);
                 }
