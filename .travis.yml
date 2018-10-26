@@ -3,6 +3,7 @@ solution: NexusParser.sln
 dotnet: 2.1
 mono: none
 before_install:
+  - wget https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.3/codacy-coverage-reporter-4.0.3-assembly.jar
   - dotnet tool install --tool-path="./coverlet/" coverlet.console
   - cd NexusParser
   - wget http://www.antlr.org/download/antlr-4.7.1-complete.jar
@@ -14,3 +15,4 @@ script:
 after_success:
   - ./coverlet/coverlet NexusParserTest/bin/Debug/netcoreapp2.1/NexusParserTest.dll --target "dotnet" --targetargs "test NexusParserTest/NexusParserTest.csproj --no-build" --format opencover
   - bash <(curl -s https://codecov.io/bash)
+  - java -jar codacy-coverage-reporter-assembly-4.0.3.jar report -l CSharp -r coverage.xml
