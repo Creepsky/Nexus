@@ -71,7 +71,7 @@ namespace Nexus.gen
 
                 compilationUnits.Add(new CompilationUnit{
                     Name = i.Name,
-                    Path = i.Path,
+                    Path = i.FilePath,
                     Header = headerStringWriter.ToString(),
                     Source = sourceStringWriter.ToString()
                 });

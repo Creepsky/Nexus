@@ -14,7 +14,7 @@ namespace Nexus.ir
         
         public string Name { get; set; }
 
-        public string Path
+        public string FilePath
         {
             get => _path;
             set
@@ -24,7 +24,7 @@ namespace Nexus.ir
                 
                 foreach (var i in GetElements<IGenerationElement>())
                 {
-                    i.Path = Path;
+                    i.FilePath = FilePath;
                 }
             }
         }
