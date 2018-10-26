@@ -12,11 +12,12 @@ namespace Nexus.ir.stmt
         public ITemplateList TemplateList { get; set; }
         public IList<Variable> Parameter { get; set; }
         public IList<IStatement> Body { get; set; }
+        public IList<ExtensionFunction> Overloadings { get; } = new List<ExtensionFunction>();
         private Context _context;
 
-        public virtual void SetName(string name)
+        public void AddOverload(ExtensionFunction overload)
         {
-            Name = name;
+            Overloadings.Add(overload);
         }
 
         public override string ToString()
@@ -72,7 +73,7 @@ namespace Nexus.ir.stmt
             {
                 TemplateList?.Print(type, printer);
                 ReturnType.Print(type, printer);
-                printer.Write($" {ExtensionBase.Name}_{Name}(");
+                printer.Write($" {Name}(");
                 
                 var thisVariable = new Variable
                 {

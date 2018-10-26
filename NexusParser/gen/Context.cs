@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Nexus.common;
 using Nexus.ir;
+using Nexus.ir.stmt;
 
 namespace Nexus.gen
 {
@@ -52,12 +53,31 @@ namespace Nexus.gen
 
         private void Add(string name, IGenerationElement element, IDictionary<string, IGenerationElement> symbols)
         {
-            if (Contains(name))
-            {
-                throw new RedeclarationException(element, Get(name), name);
-            }
+            var current = Get(name);
 
-            symbols.Add(name, element);
+            if (current != null)
+            {
+                if (element.GetType() == typeof(ExtensionFunction) ||
+                    element.GetType() == typeof(OperatorFunction))
+                {
+                    if (current.GetType() != typeof(ExtensionFunction) &&
+                        current.GetType() != typeof(OperatorFunction))
+                    {
+                        throw new RedeclarationException(element, current, name);
+                    }
+
+                    var function = (ExtensionFunction) current;
+                    function.AddOverload((ExtensionFunction) element);
+                }
+                else
+                {
+                    throw new RedeclarationException(element, current, name);
+                }
+            }
+            else
+            {
+                symbols.Add(name, element);
+            }
         }
 
         public T Get<T>(string name, IPositioned caller) where T : IGenerationElement

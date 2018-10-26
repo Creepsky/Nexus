@@ -46,7 +46,7 @@ namespace Nexus
             var textReader = new StreamReader(file);
             var input = new AntlrInputStream(textReader);
             var ir = ParseFile(input);
-            ir.Path = path;
+            ir.FilePath = path;
             return ir;
         }
 
