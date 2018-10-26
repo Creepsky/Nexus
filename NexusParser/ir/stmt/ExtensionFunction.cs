@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
 
@@ -27,6 +28,13 @@ namespace Nexus.ir.stmt
 
         public override void Check(Context context)
         {
+            var extensionBase =  context.Get(ExtensionBase.Name);
+
+            if (extensionBase.GetType() != typeof(Class))
+            {
+                throw new TypeMismatchException(this, typeof(Class).Name, extensionBase.GetType().Name);
+            }
+
             ExtensionBase.Check(_context);
             TemplateList?.Check(context);
 
