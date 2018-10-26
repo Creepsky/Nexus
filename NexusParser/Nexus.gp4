@@ -115,8 +115,9 @@ extension_type :  IDENTIFIER
                 | type
                 ;
 
-extension_function :    returnType=type extensionType=type DOT (name=IDENTIFIER | OPERATOR operator)
-                        template_list_declaration?
+extension_function :    returnType=type extensionType=type extensionTypeTemplates=template_list_declaration?
+                        DOT (name=IDENTIFIER | OPERATOR operator)
+                        functionTemplates=template_list_declaration?
                         LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
                         LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 

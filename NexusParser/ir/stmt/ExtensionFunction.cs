@@ -10,6 +10,7 @@ namespace Nexus.ir.stmt
     {
         public IType ReturnType { get; set; }
         public IType ExtensionBase { get; set; }
+        public ITemplateList ExtensionBaseTemplateList { get; set; }
         public ITemplateList TemplateList { get; set; }
         public IList<Variable> Parameter { get; set; }
         public IList<IStatement> Body { get; set; }
