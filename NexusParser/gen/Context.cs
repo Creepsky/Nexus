@@ -35,12 +35,29 @@ namespace Nexus.gen
 
         public void Add(string name, IGenerationElement element)
         {
+            Add(name, element, _symbols);
+        }
+
+        public void AddGlobal(string name, IGenerationElement element)
+        {
+            var current = this;
+
+            while (current.UpperContext != null)
+            {
+                current = current.UpperContext;
+            }
+
+            Add(name, element, current._symbols);
+        }
+
+        private void Add(string name, IGenerationElement element, IDictionary<string, IGenerationElement> symbols)
+        {
             if (Contains(name))
             {
                 throw new RedeclarationException(element, Get(name), name);
             }
 
-            _symbols.Add(name, element);
+            symbols.Add(name, element);
         }
 
         public T Get<T>(string name, IPositioned caller) where T : IGenerationElement

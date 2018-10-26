@@ -11,6 +11,11 @@ class_declaration : CLASS name=IDENTIFIER template_list_declaration? LEFT_CURLY_
 
 class_member :    CPP_BLOCK COLON
                 | variable_declaration
+                | include COLON
+                ;
+
+include :         INCLUDE LESS path=.*? GREATER #farInclude
+                | INCLUDE APOSTROPHE path=.*? APOSTROPHE #nearInclude
                 ;
 
 type :    IDENTIFIER ARRAY_DECLARATION* #namedType
@@ -146,6 +151,7 @@ ELSE : 'else' ;
 ELSE_IF : ELSE IF ;
 WHILE : 'while' ;
 FOR : 'for' ;
+INCLUDE : 'include' ;
 APOSTROPHE : '"' ;
 EQUAL : '=' ;
 LESS : '<' ;

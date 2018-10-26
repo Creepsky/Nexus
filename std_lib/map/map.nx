@@ -1,5 +1,7 @@
 class map<TKey, TValue>
 {
+    include <map>;
+
     c++ {
         std::map<TKey, TValue> values
     };

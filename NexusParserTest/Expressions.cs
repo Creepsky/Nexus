@@ -68,7 +68,8 @@ namespace NexusParserTest
                 }
             });
 
-            context.Add("MyClass", new Class("MyClass", null, new List<Variable>(), new List<CppBlockStatement>()));
+            context.Add("MyClass",
+                new Class("MyClass", null, new List<Variable>(), new List<CppBlockStatement>(), new List<Include>()));
 
             context.Add("MyClass.func", new ExtensionFunction
             {
