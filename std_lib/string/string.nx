@@ -1,5 +1,7 @@
 class string
 {
+    include <string>;
+
     c++ {
         std::string value
     };

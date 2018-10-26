@@ -29,7 +29,8 @@ namespace Nexus
             return new Class(context.name.Text,
                 context.template_list_declaration() == null ? null : (ITemplateList) Visit(context.template_list_declaration()),
                 member.OfType<Variable>().ToList(),
-                member.OfType<CppBlockStatement>().ToList())
+                member.OfType<CppBlockStatement>().ToList(),
+                member.OfType<Include>().ToList())
             {
                 Line = context.Start.Line,
                 Column = context.Start.Column
@@ -43,7 +44,22 @@ namespace Nexus
                 return new CppBlockStatement(ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start));
             }
 
+            if (context.include() != null)
+            {
+                return Visit(context.include());
+            }
+
             return Visit(context.variable_declaration());
+        }
+
+        public override object VisitFarInclude(NexusParser.FarIncludeContext context)
+        {
+            return new Include(context.path.Text);
+        }
+
+        public override object VisitNearInclude(NexusParser.NearIncludeContext context)
+        {
+            return new Include(context.path.Text);
         }
 
         public override object VisitNamedType(NexusParser.NamedTypeContext context) => new SimpleType(

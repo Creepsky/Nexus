@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Nexus.gen;
 using Nexus.ir.expr;
 
@@ -10,17 +9,19 @@ namespace Nexus.ir.stmt
         public ITemplateList TemplateList { get; }
         public IList<Variable> Variables { get; }
         public IList<CppBlockStatement> CppBlocks { get; }
+        public IList<Include> Includes { get; }
 
         public SimpleType Type { get; }
         private Context _context;
 
-        public Class(string name, ITemplateList templateList, IList<Variable> variables, IList<CppBlockStatement> cppBlocks)
+        public Class(string name, ITemplateList templateList, IList<Variable> variables, IList<CppBlockStatement> cppBlocks, IList<Include> includes)
         {
             Name = name;
             Variables = variables;
             CppBlocks = cppBlocks;
             Type = new SimpleType(Name, 0, Line, Column);
             TemplateList = templateList;
+            Includes = includes;
         }
 
         public override string ToString()
@@ -32,8 +33,13 @@ namespace Nexus.ir.stmt
         {
             if (phase == GenerationPhase.ForwardDeclaration)
             {
-                upperContext.Add(Name, this);
+                upperContext.AddGlobal(Name, this);
                 _context = upperContext.StackNewContext(this);
+            }
+
+            foreach (var i in Includes)
+            {
+                i.Generate(_context, phase);
             }
 
             foreach (var i in Variables)
@@ -56,11 +62,6 @@ namespace Nexus.ir.stmt
         {
             if (type == PrintType.Header)
             {
-                // TODO: add #include function
-                //if (Public.Types.Any(i => i.IsArray()))
-                //    printer.WriteLine("#include <vector>");
-                //if (Public.Types.Any(i => i.Type == "string"))
-                //    printer.WriteLine("#include <string>");
                 TemplateList?.Print(type, printer);
                 printer.WriteLine($"struct {Name}");
                 printer.WriteLine("{");

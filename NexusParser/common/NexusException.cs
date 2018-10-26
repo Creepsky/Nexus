@@ -62,4 +62,11 @@ namespace Nexus.common
             : base(overwritingElement, $"first declaration of {name} at line {oldElement.Line}, col {oldElement.Column}, redeclaration")
         { }
     }
+
+    public class UnexpectedCallException : PositionedException
+    {
+        public UnexpectedCallException(IPositioned element, string className, string functionName)
+            : base(element, $"Unexpected call of function '{functionName}' of class {className}")
+        { }
+    }
 }

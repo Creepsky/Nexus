@@ -149,7 +149,7 @@ namespace Nexus
         public IList<string> Authors { get; set; } = new List<string>();
         public string Date { get; set; } = string.Empty;
         public DateTime DateTime => DateTime.Parse(Date);
-        public IList<Include> Includes { get; set; } = new List<Include>();
+        public IList<ProjectInclude> Includes { get; set; } = new List<ProjectInclude>();
         public string Main { get; set; } = string.Empty;
 
         public override string ToString()
@@ -201,7 +201,7 @@ namespace Nexus
         }
     }
 
-    public class Include
+    public class ProjectInclude
     {
         public string Mount { get; set; }
         public string Path { get; set; }

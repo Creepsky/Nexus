@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
 using Nexus.ir.stmt;
@@ -28,16 +29,31 @@ namespace Nexus.ir
             }
         }
 
+        public IList<Include> Includes { get; } = new List<Include>();
         public IList<Class> Classes { get; set; }
         public IList<ExtensionFunction> ExtensionFunctions { get; set; }
         public int Line { get; set; }
         public int Column { get; set; }
+        private Context _context;
+
+        public void Add(Include include)
+        {
+            if (Includes.All(i => i.Path != include.Path))
+            {
+                Includes.Add(include);
+            }
+        }
 
         public IGenerationElement Generate(Context context, GenerationPhase phase)
-        {            
+        {
+            if (phase == GenerationPhase.ForwardDeclaration)
+            {
+                _context = context.StackNewContext(this);
+            }
+
             foreach (var i in GetElements<IGenerationElement>())
             {
-                i.Generate(context, phase);
+                i.Generate(_context, phase);
             }
 
             return this;
@@ -45,7 +61,7 @@ namespace Nexus.ir
 
         public IType GetResultType(Context context)
         {
-            throw new System.NotImplementedException();
+            throw new UnexpectedCallException(this, "File", "GetResultType");
         }
         
         public void Print(PrintType type, Printer printer)
@@ -56,7 +72,7 @@ namespace Nexus.ir
                 printer.WriteLine();
             }
             
-            foreach (var i in GetElements<IPrintable>())
+            foreach (var i in Includes.OfType<IPrintable>().Concat(GetElements<IPrintable>()))
             {
                 i.Print(type, printer);
                 printer.WriteLine();

@@ -44,7 +44,7 @@ namespace Nexus.ir.stmt
         {
             if (phase == GenerationPhase.ForwardDeclaration)
             {
-                context.Add($"{ExtensionBase.Name}.{Name}", this);
+                context.AddGlobal($"{ExtensionBase.Name}.{Name}", this);
                 _context = context.StackNewContext(this);
             }
 
