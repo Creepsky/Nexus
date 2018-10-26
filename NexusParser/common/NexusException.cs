@@ -14,12 +14,12 @@ namespace Nexus.common
     public class PositionedException : NexusException
     {
         public PositionedException(IPositioned element, string message)
-            : this(element.Line, element.Column, message)
+            : this(element.FilePath, element.Line, element.Column, message)
         {
         }
 
-        public PositionedException(int line, int column, string message)
-            : base($"{message} at line {line}, col {column}")
+        public PositionedException(string filePath, int line, int column, string message)
+            : base($"{message} in file {filePath} at line {line}, col {column}")
         {
         }
     }
@@ -59,7 +59,8 @@ namespace Nexus.common
     public class RedeclarationException : PositionedException
     {
         public RedeclarationException(IPositioned overwritingElement, IPositioned oldElement, string name)
-            : base(overwritingElement, $"first declaration of {name} at line {oldElement.Line}, col {oldElement.Column}, redeclaration")
+            : base(overwritingElement, $"first declaration of {name} in file {oldElement.FilePath} " +
+                                       $"at line {oldElement.Line}, col {oldElement.Column}, redeclaration")
         { }
     }
 

@@ -11,7 +11,7 @@ namespace Nexus.ir.stmt
     {
         public int Line { get; set; }
         public int Column { get; set; }
-        public string Path { get; set; }
+        public string FilePath { get; set; }
         public string Name { get; set; }
         public abstract void Check(Context context);
         public abstract IGenerationElement Generate(Context context, GenerationPhase phase);
