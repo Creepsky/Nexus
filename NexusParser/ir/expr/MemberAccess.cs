@@ -7,8 +7,8 @@ namespace Nexus.ir.expr
 {
     public class MemberAccess : Expression
     {
-        public string Element { get; }
-        public string Member { get; }
+        private string Element { get; }
+        private string Member { get; }
 
         public MemberAccess(string element, string member)
         {
@@ -23,10 +23,15 @@ namespace Nexus.ir.expr
 
         public override IType GetResultType(Context context)
         {
-            throw new System.NotImplementedException();
+            return GetVariable(context).GetResultType(context);
         }
 
         public override void Check(Context context)
+        {
+            GetVariable(context);
+        }
+
+        private Variable GetVariable(Context context)
         {
             string elementName;
 
@@ -50,15 +55,19 @@ namespace Nexus.ir.expr
             var elementType = element.GetResultType(context);
             var elementClass = context.Get<Class>(elementType.Name, this);
 
-            if (elementClass.Variables.All(i => i.Name != Member))
+            var variable = elementClass.Variables.FirstOrDefault(i => i.Name == Member);
+
+            if (variable == null)
             {
                 throw new NotFoundException(this, "member variable", Member);
             }
+
+            return variable;
         }
 
         public override void Print(PrintType type, Printer printer)
         {
-            throw new System.NotImplementedException();
+            printer.Write($"{Element}.{Member}");
         }
     }
 }
