@@ -44,7 +44,7 @@ namespace Nexus.ir.stmt
             }
             else
             {
-                throw new NullReferenceException("Could not extract file from context");
+                throw new PositionedException(this, "Could not extract file from context");
             }
 
             file.Add(this);
