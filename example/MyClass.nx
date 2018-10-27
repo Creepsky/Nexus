@@ -3,8 +3,8 @@ class MyClass
     string myString;
 }
 
-int MyClass.testFunction() {
-    return 0;
+int MyClass.testFunction(int a) {
+    return (0 + 5) * a;
 }
 
 string MyClass.testTemplateFunction<T>(T arg) {
