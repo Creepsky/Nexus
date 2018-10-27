@@ -59,7 +59,7 @@ extension_function_call : IDENTIFIER DOT function_call ;
 function_body : function_body_statement* ;
 
 function_body_statement :
-                  CPP_BLOCK COLON
+                  CPP_BLOCK
                 | assignment_statement
                 | return_statement
                 | function_declaration

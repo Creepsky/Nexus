@@ -7,6 +7,10 @@ int MyClass.testFunction(int a) {
     return (0 + 5) * a;
 }
 
+string MyClass.to_string() {
+    return myString;
+}
+
 string MyClass.testTemplateFunction<T>(T arg) {
     return arg.to_string();
 }

@@ -1,5 +1,4 @@
-﻿using Nexus.common;
-using Nexus.gen;
+﻿using Nexus.gen;
 using Nexus.ir.stmt;
 
 namespace Nexus.ir.expr
@@ -20,13 +19,27 @@ namespace Nexus.ir.expr
 
         public override void Check(Context context)
         {
-            // does the variable exist in this or some higher context?
-            context.Get<Variable>(Name, this);
+            if (Name == "this")
+            {
+                context.GetElementAs<ExtensionFunction>(this);
+            }
+            else
+            {
+                // does the variable exist in this or some higher context?
+                context.Get<Variable>(Name, this);
+            }
         }
 
         public override void Print(PrintType type, Printer printer)
         {
-            printer.Write(Name);
+            if (Name == "this")
+            {
+                printer.Write("__this");
+            }
+            else
+            {
+                printer.Write(Name);
+            }
         }
     }
 }

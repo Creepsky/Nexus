@@ -1,5 +1,4 @@
-﻿using System;
-using McMaster.Extensions.CommandLineUtils;
+﻿using McMaster.Extensions.CommandLineUtils;
 using NLog;
 
 #pragma warning disable CS3021
