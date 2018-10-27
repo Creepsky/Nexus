@@ -1,6 +1,6 @@
 TValue map<TValue, TKey>.at<TValue, TKey>(TValue value)
 {
-    return c++ {
+    return c++ {|
         __this.values.at(value)
-    };
+    |};
 }

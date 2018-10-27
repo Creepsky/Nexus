@@ -492,8 +492,8 @@ namespace Nexus
         {
             var wholeBlockTrimmed = wholeCppBlock.Trim();
             var cppBlockWithoutCpp = wholeBlockTrimmed.Substring("c++".Length).TrimStart();
-            var innerBlockStart = cppBlockWithoutCpp.Substring("{".Length);
-            var innerBlockNotTrimmed = innerBlockStart.Substring(0, innerBlockStart.Length - "}".Length);
+            var innerBlockStart = cppBlockWithoutCpp.Substring("{|".Length);
+            var innerBlockNotTrimmed = innerBlockStart.Substring(0, innerBlockStart.Length - "|}".Length);
             var innerBlock = innerBlockNotTrimmed.Trim();
 
             return new CppBlock(innerBlock, token.Line, token.Column);

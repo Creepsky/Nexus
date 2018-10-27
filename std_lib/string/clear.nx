@@ -3,7 +3,7 @@
   */
 void string.clear()
 {
-    c++ {
+    c++ {|
         __this.value.clear()
-    };
+    |};
 }

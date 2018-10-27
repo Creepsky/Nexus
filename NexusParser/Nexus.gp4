@@ -139,7 +139,7 @@ variadic_template : IDENTIFIER DOT_DOT_DOT  ;
 
 COMMENT : '//' ~('\r'|'\n')* -> skip ;
 MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;
-CPP_BLOCK : 'c++' WHITESPACE* LEFT_CURLY_BRACE WHITESPACE* .*? WHITESPACE* RIGHT_CURLY_BRACE ;
+CPP_BLOCK : 'c++' WHITESPACE* LEFT_CURLY_BRACE PIPE WHITESPACE* .*? WHITESPACE* PIPE RIGHT_CURLY_BRACE ;
 CLASS : 'class' ;
 DOT_DOT_DOT : '...' ;
 LEFT_CURLY_BRACE : '{' ;
@@ -174,6 +174,7 @@ MINUS : '-' ;
 STAR: '*' ;
 SLASH: '/' ;
 COMMA : ',' ;
+PIPE : '|' ;
 RETURN : 'return' ;
 OPERATOR : 'operator' ;
 RANGE : '..' ;
