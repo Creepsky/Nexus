@@ -1,4 +1,6 @@
-﻿using Nexus.gen;
+﻿using System;
+using Nexus.common;
+using Nexus.gen;
 using Nexus.ir.stmt;
 
 namespace Nexus.ir.expr
@@ -21,7 +23,15 @@ namespace Nexus.ir.expr
         {
             if (Name == "this")
             {
-                context.GetElementAs<ExtensionFunction>(this);
+                if (context.Element.GetType() != typeof(ExtensionFunction) &&
+                    context.Element.GetType() != typeof(OperatorFunction))
+                {
+                    throw new UnexpectedScopeException(this, context.Element.GetType().Name, new []
+                    {
+                        typeof(ExtensionFunction).Name,
+                        typeof(OperatorFunction).Name
+                    });
+                }
             }
             else
             {

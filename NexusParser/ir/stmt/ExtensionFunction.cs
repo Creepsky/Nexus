@@ -83,8 +83,16 @@ namespace Nexus.ir.stmt
         {
             if (phase == GenerationPhase.ForwardDeclaration)
             {
-                context.AddGlobal($"{ExtensionBase.Name}.{Name}", this);
+                context.AddGlobal(Name, this);
                 _context = context.StackNewContext(this);
+                _context.Add("this", new Variable
+                {
+                    FilePath = FilePath,
+                    Line = Line,
+                    Column = Column,
+                    Type = ExtensionBase,
+                    Name = "__this"
+                });
             }
 
             ReturnType.Generate(_context, phase);

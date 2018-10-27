@@ -1,6 +1,7 @@
 using System.Linq;
 using Nexus.common;
 using Nexus.gen;
+using Nexus.ir.stmt;
 
 namespace Nexus.ir.expr
 {
@@ -32,12 +33,11 @@ namespace Nexus.ir.expr
         {
             Variable.Check(context);
 
-            var name = $"{Variable}.{FunctionCall.Name}";
-            var function = context.Get(name);
+            var function = context.Get(FunctionCall.Name);
 
             if (function == null)
             {
-                throw new NotFoundException(this, "extension function", name);
+                throw new NotFoundException(this, "extension function", FunctionCall.Name);
             }
 
             FunctionCall.Check(context);

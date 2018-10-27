@@ -7,10 +7,10 @@ namespace Nexus.ir.expr
 {
     public class MemberAccess : Expression
     {
-        private string Element { get; }
+        private IExpression Element { get; }
         private string Member { get; }
 
-        public MemberAccess(string element, string member)
+        public MemberAccess(IExpression element, string member)
         {
             Element = element;
             Member = member;
@@ -33,27 +33,9 @@ namespace Nexus.ir.expr
 
         private Variable GetVariable(Context context)
         {
-            string elementName;
+            var resultType = Element.GetResultType(context);
 
-            if (Element == "this")
-            {
-                var extensionFunction = context.GetElementAs<ExtensionFunction>(this);
-                elementName = extensionFunction.ExtensionBase.Name;
-            }
-            else
-            {
-                elementName = Element;
-            }
-
-            var element = context.Get(elementName, this);
-
-            if (element == null)
-            {
-                throw new NotFoundException(this, "element", Element);
-            }
-
-            var elementType = element.GetResultType(context);
-            var elementClass = context.Get<Class>(elementType.Name, this);
+            var elementClass = context.Get<Class>(resultType.Name, this);
 
             var variable = elementClass.Variables.FirstOrDefault(i => i.Name == Member);
 
@@ -67,7 +49,8 @@ namespace Nexus.ir.expr
 
         public override void Print(PrintType type, Printer printer)
         {
-            printer.Write($"{Element}.{Member}");
+            Element.Print(type, printer);
+            printer.Write($".{Member}");
         }
     }
 }
