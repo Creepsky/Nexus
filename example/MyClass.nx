@@ -8,7 +8,7 @@ int MyClass.testFunction(int a) {
 }
 
 string MyClass.to_string() {
-    return myString;
+    return this.myString;
 }
 
 string MyClass.testTemplateFunction<T>(T arg) {

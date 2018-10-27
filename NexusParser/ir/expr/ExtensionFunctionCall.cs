@@ -37,7 +37,7 @@ namespace Nexus.ir.expr
 
             if (function == null)
             {
-                throw new NotFoundException(this, "extension function", nameof(name));
+                throw new NotFoundException(this, "extension function", name);
             }
 
             FunctionCall.Check(context);
