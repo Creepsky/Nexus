@@ -13,6 +13,8 @@ namespace Nexus
 {
     public static class FileParser
     {
+        public static string CurrentPath { get; private set; }
+
         public static IList<ir.File> ParseProject(Configuration configuration)
         {
             return ParseDirectory("/", configuration).ToList();
@@ -41,12 +43,12 @@ namespace Nexus
         public static ir.File ParseFile(string path, Configuration configuration)
         {
             var logger = LogManager.GetCurrentClassLogger();
+            CurrentPath = path;
             logger.Info($"Parsing '{path}'");
             var file = configuration.OpenFile(path);
             var textReader = new StreamReader(file);
             var input = new AntlrInputStream(textReader);
             var ir = ParseFile(input);
-            ir.FilePath = path;
             return ir;
         }
 
