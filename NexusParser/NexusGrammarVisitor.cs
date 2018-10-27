@@ -205,6 +205,16 @@ namespace Nexus
             FilePath = FileParser.CurrentPath
         };
 
+        public override object VisitMember_access(NexusParser.Member_accessContext context)
+        {
+            return new MemberAccess(context.IDENTIFIER(0).GetText(), context.IDENTIFIER(1).GetText())
+            {
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+        }
+
         public override object VisitFunction_call(NexusParser.Function_callContext context) => new FunctionCall
         {
             Name = context.IDENTIFIER().GetText(),
