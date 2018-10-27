@@ -16,6 +16,7 @@ namespace Nexus.ir.stmt
             }
 
             // TODO: check compatiblity of types
+            Value.Check(context);
         }
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)

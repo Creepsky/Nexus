@@ -279,7 +279,6 @@ namespace Nexus.ir.expr
 
         public override void Check(Context context)
         {
-            throw new NotImplementedException();
         }
 
         public override void Print(PrintType type, Printer printer)
