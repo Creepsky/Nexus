@@ -52,8 +52,6 @@ for_init :        assignment_statement
 for_statement : FOR LEFT_BRACE for_init comparison COLON expression RIGHT_BRACE
                 LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
-member_access : element=IDENTIFIER DOT member=IDENTIFIER ;
-
 function_call : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE ;
 
 extension_function_call : IDENTIFIER DOT function_call ;
@@ -91,6 +89,7 @@ expression :	  expression STAR expression #mul
                 | function_call #functionCall
                 | extension_function_call #extensionFunctionCall
                 | CPP_BLOCK #cppBlock
+                | element=expression DOT member=IDENTIFIER #memberAccess
                 | factor #fact ;
 
 truth_value : TRUE | FALSE ;
@@ -106,7 +105,6 @@ factor :      number
             | HEX
             | quoted_text
             | IDENTIFIER
-            | member_access
             ;
 
 comparison :      expression EQUAL expression
