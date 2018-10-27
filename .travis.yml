@@ -12,7 +12,7 @@ before_install:
 script:
   - dotnet restore
   - dotnet build
-  - dotnet test
+  - dotnet test NexusParserTest/NexusParserTest.csproj
 after_success:
   - ./coverlet/coverlet NexusParserTest/bin/Debug/netcoreapp2.1/NexusParserTest.dll --target "dotnet" --targetargs "test NexusParserTest/NexusParserTest.csproj --no-build" --format opencover
   - ./coverlet/coverlet NexusParserTest/bin/Debug/netcoreapp2.1/NexusParserTest.dll --target "dotnet" --targetargs "test NexusParserTest/NexusParserTest.csproj --no-build" --format cobertura
