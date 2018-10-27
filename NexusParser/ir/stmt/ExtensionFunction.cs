@@ -101,7 +101,7 @@ namespace Nexus.ir.stmt
 
                 foreach (var i in Parameter)
                 {
-                    i.Print(PrintType.Parameter, printer);
+                    i.Print(PrintType.ParameterConstRef, printer);
                     if (i != Parameter.Last())
                     {
                         printer.Write(", ");
