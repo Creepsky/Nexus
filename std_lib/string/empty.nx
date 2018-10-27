@@ -4,7 +4,7 @@
   */
 void string.empty()
 {
-    return c++ {
+    return c++ {|
         __this.value.empty()
-    };
+    |};
 }

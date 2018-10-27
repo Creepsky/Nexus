@@ -3,7 +3,7 @@
   */
 void string.bytes()
 {
-    return c++ {
+    return c++ {|
         __this.value.size()
-    };
+    |};
 }

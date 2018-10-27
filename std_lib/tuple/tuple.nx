@@ -2,7 +2,7 @@ class tuple<T...>
 {
     include <tuple>;
 
-    c++ {
-        std::tuple<T...> values
-    };
+    c++ {|
+        std::tuple<T...> values;
+    |}
 }
