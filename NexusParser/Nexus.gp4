@@ -9,7 +9,7 @@ file : file_declaration* ;
 
 class_declaration : CLASS name=IDENTIFIER template_list_declaration? LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
 
-class_member :    CPP_BLOCK COLON
+class_member :    CPP_BLOCK
                 | variable_declaration
                 | include COLON
                 ;

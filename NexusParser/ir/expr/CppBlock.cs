@@ -63,7 +63,7 @@ namespace Nexus.ir.expr
         public override void Print(PrintType type, Printer printer)
         {
             _cppBlock.Print(type, printer);
-            printer.WriteLine(";");
+            printer.WriteLine();
         }
     }
 }
