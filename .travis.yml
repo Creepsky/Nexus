@@ -12,7 +12,9 @@ before_install:
 script:
   - dotnet restore
   - dotnet build
+  - dotnet test
 after_success:
   - ./coverlet/coverlet NexusParserTest/bin/Debug/netcoreapp2.1/NexusParserTest.dll --target "dotnet" --targetargs "test NexusParserTest/NexusParserTest.csproj --no-build" --format opencover
+  - ./coverlet/coverlet NexusParserTest/bin/Debug/netcoreapp2.1/NexusParserTest.dll --target "dotnet" --targetargs "test NexusParserTest/NexusParserTest.csproj --no-build" --format cobertura
   - bash <(curl -s https://codecov.io/bash)
-  - java -jar codacy-coverage-reporter-assembly-4.0.3.jar report -l CSharp -r coverage.xml
+  - java -jar codacy-coverage-reporter-4.0.3-assembly.jar report -l CSharp -r coverage.cobertura.xml --commit-uuid $TRAVIS_COMMIT

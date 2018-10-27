@@ -1,17 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Nexus.ir.stmt;
 using NLog;
 
 namespace Nexus.gen
 {
-    public struct CompilationUnit
+    public struct CompilationUnit : IEquatable<CompilationUnit>
     {
-        public string Name { get; set; }
-        public string Path { get; set; }
-        public string Header { get; set; }
-        public string Source { get; set; }
+        public string Name { get; }
+        public string Path { get; }
+        public string Header { get; }
+        public string Source { get; }
+
+        public CompilationUnit(string name, string path, string header, string source)
+        {
+            Name = name;
+            Path = path;
+            Header = header;
+            Source = source;
+        }
+
+        public bool Equals(CompilationUnit other)
+        {
+            return string.Equals(Name, other.Name) && string.Equals(Path, other.Path) && string.Equals(Header, other.Header) && string.Equals(Source, other.Source);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is CompilationUnit other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (Name != null ? Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Path != null ? Path.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Header != null ? Header.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Source != null ? Source.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
     }
 
     public class Generator
@@ -69,12 +99,12 @@ namespace Nexus.gen
                 i.Print(PrintType.Header, headerPrinter);
                 i.Print(PrintType.Source, sourcePrinter);
 
-                compilationUnits.Add(new CompilationUnit{
-                    Name = i.Name,
-                    Path = i.FilePath,
-                    Header = headerStringWriter.ToString(),
-                    Source = sourceStringWriter.ToString()
-                });
+                compilationUnits.Add(new CompilationUnit(
+                    i.Name,
+                    i.FilePath,
+                    headerStringWriter.ToString(),
+                    sourceStringWriter.ToString()
+                ));
             }
 
             return compilationUnits;

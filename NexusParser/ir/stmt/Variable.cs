@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
@@ -16,22 +14,9 @@ namespace Nexus.ir.stmt
             return $"{Type} {Name}";
         }
 
-        public void PrintSourceInitialization(Printer printer)
-        {
-           // printer.Write($"{_variable.Name}{{{_variable.Initialization?.ToString() ?? string.Empty}}}");
-        }
-
         public override void Check(Context upperContext)
         {
-            if (Type.IsAuto())
-            {
-                //throw new Exception();
-            }
-
-            if (Initialization != null)
-            {
-                //throw new Exception();
-            }
+            // TODO
         }
 
         public override IGenerationElement Generate(Context upperContext, GenerationPhase phase)
