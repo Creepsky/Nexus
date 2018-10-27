@@ -32,6 +32,7 @@ namespace Nexus.ir
         public IList<Include> Includes { get; } = new List<Include>();
         public IList<Class> Classes { get; set; }
         public IList<ExtensionFunction> ExtensionFunctions { get; set; }
+        public IList<CppBlockStatement> CppBlocks { get; set; }
         public int Line { get; set; }
         public int Column { get; set; }
         private Context _context;
@@ -89,7 +90,9 @@ namespace Nexus.ir
 
         private IEnumerable<T> GetElements<T>()
         {
-            return Classes.OfType<T>().Concat(ExtensionFunctions.OfType<T>());
+            return Classes.OfType<T>()
+                .Concat(ExtensionFunctions.OfType<T>())
+                .Concat(CppBlocks.OfType<T>());
         }
     }
 }
