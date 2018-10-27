@@ -208,7 +208,7 @@ namespace NexusParserTest
 
             var expectedLines = new[]
             {
-                "auto max = [](int32_t a, int32_t b)",
+                "auto max = [](i32 a, i32 b)",
                 "{",
                 "    if (a > b)",
                 "    {",
