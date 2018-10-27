@@ -30,13 +30,42 @@ namespace Nexus.ir.stmt
         public override void Check(Context context)
         {
             var extensionBase =  context.Get(ExtensionBase.Name);
+            var found = false;
+            var template = false;
 
-            if (extensionBase.GetType() != typeof(Class))
+            if (extensionBase == null)
             {
-                throw new TypeMismatchException(this, typeof(Class).Name, extensionBase.GetType().Name);
+                if (TemplateList != null &&
+                    TemplateList.GetType() == typeof(TemplateList))
+                {
+                    var templateList = (TemplateList) TemplateList;
+                    found = templateList.Types.Contains(ExtensionBase.Name);
+                    if (found)
+                    {
+                        template = true;
+                    }
+                }
+            }
+            else
+            {
+                found = true;
             }
 
-            ExtensionBase.Check(_context);
+            if (!found)
+            {
+                throw new NotFoundException(this, typeof(Class).Name, ExtensionBase.Name);
+            }
+
+            if (!template)
+            {
+                if (extensionBase.GetType() != typeof(Class))
+                {
+                    throw new TypeMismatchException(this, typeof(Class).Name, extensionBase.GetType().Name);
+                }
+
+                ExtensionBase.Check(_context);
+            }
+
             TemplateList?.Check(context);
 
             foreach (var i in Parameter)

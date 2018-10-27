@@ -1,6 +1,6 @@
 /**
   * @brief Returns the length of the string.
-  * @returns the number of characters.
+  * @returns The number of characters.
   */
 usize string.size()
 {

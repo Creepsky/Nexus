@@ -20,6 +20,7 @@ namespace Nexus.ir.stmt
 
         public override IGenerationElement Generate(Context context, GenerationPhase phase)
         {
+            Value.Generate(context, phase);
             return this;
         }
 

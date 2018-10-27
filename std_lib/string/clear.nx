@@ -4,6 +4,6 @@
 void string.clear()
 {
     c++ {|
-        __this.value.clear()
-    |};
+        __this.value.clear();
+    |}
 }

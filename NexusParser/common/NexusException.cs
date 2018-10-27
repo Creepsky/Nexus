@@ -40,6 +40,12 @@ namespace Nexus.common
 
     public class NotFoundException : PositionedException
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="element">The throwing element.</param>
+        /// <param name="type">The name of the type of the not found element.</param>
+        /// <param name="name">The name that could not be found.</param>
         public NotFoundException(IPositioned element, string type, string name)
             : base(element, $"could not find the {type} with the name {name}")
         { }
