@@ -1,0 +1,5 @@
+class vector<T>
+{
+    include <vector>;
+    c++ {|std::vector<T> values;|}
+}

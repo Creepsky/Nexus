@@ -1,4 +1,4 @@
-int main.run(string[] args)
+int main.run()
 {
     return 0;
 }

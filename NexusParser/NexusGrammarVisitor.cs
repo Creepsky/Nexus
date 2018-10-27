@@ -10,6 +10,16 @@ namespace Nexus
 {
     public class NexusGrammarVisitor : NexusBaseVisitor<object>
     {
+        public override object VisitCpp_block(NexusParser.Cpp_blockContext context)
+        {
+            return new CppBlockStatement(ExtractCppBlock(context.GetText(), context.Start))
+            {
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+        }
+
         public override object VisitFile(NexusParser.FileContext context)
         {
             var list = context.file_declaration().Select(Visit).ToList();
@@ -18,7 +28,8 @@ namespace Nexus
             {
                 Classes = list.OfType<Class>().ToList(),
                 ExtensionFunctions = list.OfType<ExtensionFunction>().ToList(),
-                FilePath = FileParser.CurrentPath
+                CppBlocks = list.OfType<CppBlockStatement>().ToList(),
+                FilePath = FileParser.CurrentPath,
             };
         }
 
@@ -40,9 +51,9 @@ namespace Nexus
 
         public override object VisitClass_member(NexusParser.Class_memberContext context)
         {
-            if (context.CPP_BLOCK() != null)
+            if (context.cpp_block() != null)
             {
-                return new CppBlockStatement(ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start));
+                return Visit(context.cpp_block());
             }
 
             if (context.include() != null)
@@ -239,14 +250,9 @@ namespace Nexus
                 };
             }
 
-            if (context.CPP_BLOCK() != null)
+            if (context.cpp_block() != null)
             {
-                return new CppBlockStatement(ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start))
-                {
-                    Line = context.Start.Line,
-                    Column = context.Start.Column,
-                    FilePath = FileParser.CurrentPath
-                };
+                return Visit(context.cpp_block());
             }
 
             if (context.include() != null)

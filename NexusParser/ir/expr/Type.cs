@@ -105,7 +105,7 @@ namespace Nexus.ir.expr
 
         public override void Print(PrintType type, Printer printer)
         {
-            printer.PrintWithModifiers(Name, type);
+            printer.PrintWithModifiers(Name.ToArray(Array), type);
         }
 
         public override IType GetResultType(Context context)
@@ -222,15 +222,15 @@ namespace Nexus.ir.expr
             PrimitiveType.F32, PrimitiveType.F64
         };
 
-        public static string ToArray(this string cppString, int array)
+        public static string ToArray(this string type, int array)
         {
             if (array == 0)
             {
-                return cppString;
+                return type;
             }
 
-            return string.Concat(Enumerable.Repeat("std::vector<", array)) +
-                   cppString +
+            return string.Concat(Enumerable.Repeat("vector<", array)) +
+                   type +
                    string.Concat(Enumerable.Repeat('>', array));
         }
 

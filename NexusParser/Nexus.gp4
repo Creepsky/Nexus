@@ -3,13 +3,17 @@ grammar Nexus;
 /* Parser */
 
 file_declaration :   class_declaration
-                   | extension_function ;
+                   | extension_function
+                   | cpp_block
+                   ;
+
+cpp_block : CPP_BLOCK ;
 
 file : file_declaration* ;
 
 class_declaration : CLASS name=IDENTIFIER template_list_declaration? LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
 
-class_member :    CPP_BLOCK
+class_member :    cpp_block
                 | variable_declaration
                 | include COLON
                 ;
@@ -59,7 +63,7 @@ extension_function_call : IDENTIFIER DOT function_call ;
 function_body : function_body_statement* ;
 
 function_body_statement :
-                  CPP_BLOCK
+                  cpp_block
                 | assignment_statement
                 | return_statement
                 | function_declaration

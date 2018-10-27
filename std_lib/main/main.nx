@@ -1,3 +1,14 @@
 class main
 {
+    string [] args;
 }
+
+c++ {|
+int main(int argn, char** argv) {
+    Main m;
+    for (auto i = 0; i < argn; ++i) {
+        add(m.args, argv[i]);
+    }
+    return run(m);
+}
+|}
