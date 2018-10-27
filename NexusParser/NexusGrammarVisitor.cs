@@ -17,7 +17,8 @@ namespace Nexus
             return new File
             {
                 Classes = list.OfType<Class>().ToList(),
-                ExtensionFunctions = list.OfType<ExtensionFunction>().ToList()
+                ExtensionFunctions = list.OfType<ExtensionFunction>().ToList(),
+                FilePath = FileParser.CurrentPath
             };
         }
 
@@ -32,7 +33,8 @@ namespace Nexus
                 member.OfType<Include>().ToList())
             {
                 Line = context.Start.Line,
-                Column = context.Start.Column
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
             };
         }
 
@@ -53,26 +55,40 @@ namespace Nexus
 
         public override object VisitFarInclude(NexusParser.FarIncludeContext context)
         {
-            return new Include(context.path.Text);
+            return new Include(context.path.Text)
+            {
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
         }
 
         public override object VisitNearInclude(NexusParser.NearIncludeContext context)
         {
-            return new Include(context.path.Text);
+            return new Include(context.path.Text)
+            {
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
         }
 
         public override object VisitNamedType(NexusParser.NamedTypeContext context) => new SimpleType(
             context.IDENTIFIER().GetText(),
             context.ARRAY_DECLARATION().Length,
             context.Start.Line,
-            context.Start.Column);
+            context.Start.Column)
+        {
+            FilePath = FileParser.CurrentPath
+        };
 
         public override object VisitTupleType(NexusParser.TupleTypeContext context) => new TupleType
         {
             Types = context.type().Select(i => (IType) Visit(i)).ToList(),
             Array = context.ARRAY_DECLARATION().Length,
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitMapType(NexusParser.MapTypeContext context) => new MapType
@@ -81,7 +97,8 @@ namespace Nexus
             ValueType = (IType) Visit(context.value),
             Array = context.ARRAY_DECLARATION().Length,
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitVariable_declaration(NexusParser.Variable_declarationContext context) => new Variable
@@ -90,7 +107,8 @@ namespace Nexus
             Name = context.IDENTIFIER().GetText(),
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitFunction_parameter(NexusParser.Function_parameterContext context) => new Variable
@@ -99,7 +117,8 @@ namespace Nexus
             Name = context.IDENTIFIER().GetText(),
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitFunction_declaration(NexusParser.Function_declarationContext context) => new Function
@@ -112,7 +131,8 @@ namespace Nexus
             Statements = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i))
                 .ToList(),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitAssignment_statement(NexusParser.Assignment_statementContext context) => new AssignmentStatement
@@ -120,14 +140,16 @@ namespace Nexus
             Left = (IExpression) Visit(context.left),
             Right = (IExpression) Visit(context.right),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitReturn_statement(NexusParser.Return_statementContext context) => new ReturnStatement
         {
             Value = (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitVariable_statement(NexusParser.Variable_statementContext context) => new Variable
@@ -136,7 +158,8 @@ namespace Nexus
             Name = context.IDENTIFIER().GetText(),
             Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitTuple_explosion_statement(NexusParser.Tuple_explosion_statementContext context) => new TupleExplosionStatement
@@ -144,7 +167,8 @@ namespace Nexus
             Names = context.IDENTIFIER().Skip(1).Select(i => i.GetText()).ToList(),
             Right = (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitIf_statement(NexusParser.If_statementContext context) => new IfStatement
@@ -157,7 +181,8 @@ namespace Nexus
                 .Select(i => (IStatement) Visit(i))
                 .ToList(),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitWhile_statement(NexusParser.While_statementContext context) => new WhileStatement
@@ -165,7 +190,8 @@ namespace Nexus
             Condition = (ICondition) Visit(context.comparison()),
             Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitFor_statement(NexusParser.For_statementContext context) => new ForStatement
@@ -175,7 +201,8 @@ namespace Nexus
             Step = (IExpression) Visit(context.expression()),
             Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitFunction_call(NexusParser.Function_callContext context) => new FunctionCall
@@ -183,7 +210,8 @@ namespace Nexus
             Name = context.IDENTIFIER().GetText(),
             Parameter = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitExtension_function_call(NexusParser.Extension_function_callContext context)
@@ -193,7 +221,8 @@ namespace Nexus
                 Variable = new VariableLiteral{Name = context.IDENTIFIER().GetText()},
                 FunctionCall = (FunctionCall) Visit(context.function_call()),
                 Line = context.Start.Line,
-                Column = context.Start.Column
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
             };
         }
 
@@ -205,13 +234,19 @@ namespace Nexus
                 {
                     FunctionCall = (FunctionCall) VisitFunction_call(context.function_call()),
                     Line = context.Start.Line,
-                    Column = context.Start.Column
+                    Column = context.Start.Column,
+                    FilePath = FileParser.CurrentPath
                 };
             }
 
             if (context.CPP_BLOCK() != null)
             {
-                return new CppBlockStatement(ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start));
+                return new CppBlockStatement(ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start))
+                {
+                    Line = context.Start.Line,
+                    Column = context.Start.Column,
+                    FilePath = FileParser.CurrentPath
+                };
             }
 
             if (context.include() != null)
@@ -228,7 +263,8 @@ namespace Nexus
             Type = BinaryOperatorType.Div,
             Right = (IExpression) Visit(context.expression(1)),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitAdd(NexusParser.AddContext context) => new BinaryOperation
@@ -237,14 +273,16 @@ namespace Nexus
             Type = BinaryOperatorType.Add,
             Right = (IExpression) Visit(context.expression(1)),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitTuple(NexusParser.TupleContext context) => new TupleLiteral
         {
             Values = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitSub(NexusParser.SubContext context) => new BinaryOperation
@@ -253,21 +291,24 @@ namespace Nexus
             Type = BinaryOperatorType.Sub,
             Right = (IExpression) Visit(context.expression(1)),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitParen(NexusParser.ParenContext context) => new ParenExpression
         {
             Expression = (IExpression)Visit(context.expression()),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitArray(NexusParser.ArrayContext context) => new ArrayLiteral
         {
             Values = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitMul(NexusParser.MulContext context) => new BinaryOperation
@@ -276,7 +317,8 @@ namespace Nexus
             Type = BinaryOperatorType.Mul,
             Right = (IExpression) Visit(context.expression(1)),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitRange(NexusParser.RangeContext context) => new RangeLiteral
@@ -284,7 +326,8 @@ namespace Nexus
             Start = (IExpression) Visit(context.expression(0)),
             End = (IExpression) Visit(context.expression(1)),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitCppBlock(NexusParser.CppBlockContext context)
@@ -299,27 +342,33 @@ namespace Nexus
                 i => (IExpression) Visit(i.expression(1))
             ),
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitTruth_value(NexusParser.Truth_valueContext context) => new BooleanLiteral
         {
             Value = context.TRUE() != null,
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitNumber(NexusParser.NumberContext context)
         {
             if (context.INTEGER() != null)
             {
-                return NumberLiteral.Parse(
+                var number = NumberLiteral.Parse(
                     context.INTEGER().GetText(),
                     null,
                     context.INTEGER_SUFFIX()?.GetText(),
                     context.Start.Line,
                     context.Start.Column
                 );
+
+                number.FilePath = FileParser.CurrentPath;
+
+                return number;
             }
 
             if (context.REAL() != null)
@@ -334,7 +383,8 @@ namespace Nexus
         {
             Value = context.text.Text,
             Line = context.Start.Line,
-            Column = context.Start.Column
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
         };
 
         public override object VisitFactor(NexusParser.FactorContext context)
@@ -351,12 +401,16 @@ namespace Nexus
 
             if (context.BINARY() != null)
             {
-                return NumberLiteral.ParseBinary(context.BINARY().GetText().Substring(2), context.Start.Line, context.Start.Column);
+                var number = NumberLiteral.ParseBinary(context.BINARY().GetText().Substring(2), context.Start.Line, context.Start.Column);
+                number.FilePath = FileParser.CurrentPath;
+                return number;
             }
 
             if (context.HEX() != null)
             {
-                return NumberLiteral.ParseHex(context.HEX().GetText().Substring(2), context.Start.Line, context.Start.Column);
+                var number = NumberLiteral.ParseHex(context.HEX().GetText().Substring(2), context.Start.Line, context.Start.Column);
+                number.FilePath = FileParser.CurrentPath;
+                return number;
             }
 
             if (context.quoted_text() != null)
@@ -365,7 +419,8 @@ namespace Nexus
                 {
                     Value = context.quoted_text().text == null ? string.Empty : context.quoted_text().text.Text,
                     Line = context.Start.Line,
-                    Column = context.Start.Column
+                    Column = context.Start.Column,
+                    FilePath = FileParser.CurrentPath
                 };
             }
 
@@ -375,7 +430,8 @@ namespace Nexus
                 {
                     Name = context.IDENTIFIER().GetText(),
                     Line = context.Start.Line,
-                    Column = context.Start.Column
+                    Column = context.Start.Column,
+                    FilePath = FileParser.CurrentPath
                 };
             }
 
@@ -417,7 +473,8 @@ namespace Nexus
                 Type = type,
                 Right = (IExpression) Visit(context.expression(1)),
                 Line = context.Start.Line,
-                Column = context.Start.Column
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
             };
         }
 
@@ -443,6 +500,7 @@ namespace Nexus
                 function.GetType() == typeof(OperatorFunction)
                 ? "operator" + context.@operator().GetText()
                 : context.IDENTIFIER().GetText();
+            function.FilePath = FileParser.CurrentPath;
 
             return function;
         }
@@ -475,7 +533,8 @@ namespace Nexus
                     .ToList())
             {
                 Line = context.Start.Line,
-                Column = context.Start.Column
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
             };
         }
 
@@ -484,7 +543,8 @@ namespace Nexus
             return new VariadicTemplateList
             {
                 Line = context.Start.Line,
-                Column = context.Start.Column
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
             };
         }
 
@@ -496,7 +556,7 @@ namespace Nexus
             var innerBlockNotTrimmed = innerBlockStart.Substring(0, innerBlockStart.Length - "|}".Length);
             var innerBlock = innerBlockNotTrimmed.Trim();
 
-            return new CppBlock(innerBlock, token.Line, token.Column);
+            return new CppBlock(innerBlock, token.Line, token.Column) {FilePath = FileParser.CurrentPath};
         }
 
         public override object VisitArrayAccess([NotNull] NexusParser.ArrayAccessContext context)
@@ -506,7 +566,8 @@ namespace Nexus
                 Value = (IExpression) Visit(context.expression(0)),
                 Index = (IExpression) Visit(context.expression(1)),
                 Line = context.Start.Line,
-                Column = context.Start.Column
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
             };
         }
     }
