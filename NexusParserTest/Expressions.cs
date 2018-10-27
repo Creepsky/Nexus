@@ -118,10 +118,10 @@ namespace NexusParserTest
                 Name = "myClassInstance"
             });
 
-            CheckBinaryOperation(new I8(100), new I8(-100), BinaryOperatorType.Add, context, "100 + -100");
+            CheckBinaryOperation(new I8(100), new I8(-100), BinaryOperatorType.Add, context, "i8(100) + i8(-100)");
 
             CheckBinaryOperation(new VariableLiteral {Name = "a"}, new ArrayAccess {Value = new VariableLiteral{Name = "b"}, Index = new USize(0)},
-                BinaryOperatorType.Sub, context, "a - b[0]");
+                BinaryOperatorType.Sub, context, "a - b[usize(0)]");
 
             CheckBinaryOperation(new ArrayAccess
             {
@@ -141,7 +141,7 @@ namespace NexusParserTest
                     }
                 },
                 Index = new I32(2)
-            }, new F32(10), BinaryOperatorType.Mul, context, "{1, 2, 3, 4, 5, 6, 7, 8, 9}[2] * 10");
+            }, new F32(10), BinaryOperatorType.Mul, context, "{i8(1), i16(2), i32(3), i64(4), u8(5), u16(6), u32(7), u64(8), usize(9)}[i32(2)] * f32(10)");
 
             CheckBinaryOperation(new Text{Value = "abc"}, new ArrayAccess
             {
@@ -159,7 +159,7 @@ namespace NexusParserTest
                     }
                 },
                 Index = new USize(1)
-            }, BinaryOperatorType.Div, context, "\"abc\" / myClassInstance.func(\"text\", 16)[1]");
+            }, BinaryOperatorType.Div, context, "\"abc\" / myClassInstance.func(\"text\", i32(16))[usize(1)]");
         }
 
         private static void CheckBinaryOperation(IExpression left, IExpression right, BinaryOperatorType type,
@@ -178,9 +178,9 @@ namespace NexusParserTest
         }
 
         [Theory]
-        [InlineData("(1 + 1) * 5", null)]
-        [InlineData("a * b + (1 - 0) / -2", null)]
-        [InlineData("[1, 2, 3][1] * a[0] / 1", "{1, 2, 3}[1] * a[0] / 1")]
+        [InlineData("(1 + 1) * 5", "(i64(1) + i64(1)) * i64(5)")]
+        [InlineData("a * b + (1 - 0) / -2", "a * b + (i64(1) - i64(0)) / i64(-2)")]
+        [InlineData("[1, 2, 3][1] * a[0] / 1", "{i64(1), i64(2), i64(3)}[i64(1)] * a[i64(0)] / i64(1)")]
         public static void ParenTest(string expression, string expected)
         {
             var i = FileParser.ParseFile($"class test {{}} int test.func() {{ return {expression}; }}");
