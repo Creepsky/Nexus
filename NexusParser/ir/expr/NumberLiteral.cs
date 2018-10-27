@@ -284,7 +284,7 @@ namespace Nexus.ir.expr
 
         public override void Print(PrintType type, Printer printer)
         {
-            printer.Write(Value.ToString());
+            printer.Write($"{TypesExtension.ToString(Type)}({Value.ToString()})");
         }
     }
 

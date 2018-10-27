@@ -164,6 +164,43 @@ namespace Nexus.ir.expr
             }
         }
 
+        public static string ToString(this PrimitiveType type)
+        {
+            switch (type)
+            {
+                case PrimitiveType.I8:
+                    return I8;
+                case PrimitiveType.I16:
+                    return I16;
+                case PrimitiveType.I32:
+                    return I32;
+                case PrimitiveType.I64:
+                    return I64;
+                case PrimitiveType.U8:
+                    return U8;
+                case PrimitiveType.U16:
+                    return U16;
+                case PrimitiveType.U32:
+                    return U32;
+                case PrimitiveType.U64:
+                    return U64;
+                case PrimitiveType.USize:
+                    return USize;
+                case PrimitiveType.F32:
+                    return F32;
+                case PrimitiveType.F64:
+                    return F64;
+                case PrimitiveType.String:
+                    return String;
+                case PrimitiveType.Void:
+                    return Void;
+                case PrimitiveType.Bool:
+                    return Bool;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
         public static readonly IReadOnlyCollection<PrimitiveType> Integer = new List<PrimitiveType>
         {
             PrimitiveType.I8, PrimitiveType.I16, PrimitiveType.I32, PrimitiveType.I64,
