@@ -1,6 +1,10 @@
 build:
   stage: build
   script:
+    - cd NexusParser
+    - wget https://www.antlr.org/download/antlr-4.7.2-complete.jar
+    - ./antlr.sh
+    - cd ..
     - dotnet build NexusParser.sln -c Release
     - cd NexusParser/bin/Release/netcoreapp2.1
     - dotnet NexusParser.dll --input ../../../../example/ --output ../../../../example/bin/
