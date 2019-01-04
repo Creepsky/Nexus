@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++0x -Wall -pedantic-errors -g
 
-SRCS =  MyClass.cpp
+SRCS =  main.cpp
 OBJS = ${SRCS:.cpp=.o}
 
 MAIN = example
