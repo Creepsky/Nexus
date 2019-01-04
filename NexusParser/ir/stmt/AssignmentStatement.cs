@@ -10,23 +10,64 @@ namespace Nexus.ir.stmt
 
         public override void Check(Context context)
         {
-            // TODO
+            Left.Check(context);
+            Right.Check(context);
         }
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        public override SimpleType GetResultType(Context context) =>
+            new SimpleType(TypesExtension.Void)
+            {
+                FilePath = FilePath,
+                Line = Line,
+                Column = Column
+            };
+
+        public override void ForwardDeclare(Context upperContext)
         {
-            return this;
+            Left.ForwardDeclare(upperContext);
+            Right.ForwardDeclare(upperContext);
         }
 
-        public override IType GetResultType(Context context) =>
-            new SimpleType(TypesExtension.Void, 0, Line, Column);
+        public override void Declare()
+        {
+            Left.Declare();
+            Right.Declare();
+        }
 
-        public override void Print(PrintType type, Printer printer)
+        public override void Define()
+        {
+            Left.Define();
+            Right.Define();
+        }
+
+        public override void Remove()
+        {
+            Left.Remove();
+            Right.Remove();
+        }
+
+        public override void Template(TemplateContext context, IGenerationElement concreteElement)
+        {
+            Left.Template(context, concreteElement);
+            Right.Template(context, concreteElement);
+        }
+
+        public override bool Print(PrintType type, Printer printer)
         {
             Left.Print(type, printer);
             printer.Write(" = ");
             Right.Print(type, printer);
             printer.WriteLine(";");
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new AssignmentStatement
+            {
+                Left = (IExpression) Left.CloneDeep(),
+                Right = (IExpression) Right.CloneDeep()
+            };
         }
     }
 }

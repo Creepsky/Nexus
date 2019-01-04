@@ -8,17 +8,7 @@ namespace Nexus.ir.expr
         public IExpression Start { get; set; }
         public IExpression End { get; set; }
 
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
-
-        public override IType GetResultType(Context context)
+        public override SimpleType GetResultType(Context context)
         {
             throw new NotImplementedException();
         }
@@ -28,9 +18,18 @@ namespace Nexus.ir.expr
             throw new NotImplementedException();
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
-            printer.Write("TODO: RangeLiteral");
+            throw new NotImplementedException();
+        }
+
+        public override object Clone()
+        {
+            return new RangeLiteral
+            {
+                Start = (IExpression) Start.CloneDeep(),
+                End = (IExpression) End.CloneDeep()
+            };
         }
     }
 }

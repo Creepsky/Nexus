@@ -5,6 +5,6 @@
 usize string.size()
 {
     return c++ {|
-        __this.value.size() / 4
+        usize(__this.value.size() / 4)
     |};
 }

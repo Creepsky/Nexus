@@ -11,20 +11,24 @@ namespace Nexus.ir.expr
 
         public override string ToString() => '{' + string.Join(", ", Values) + '}';
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
+        //public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        //{
+        //    return this;
+        //}
 
-        public override IType GetResultType(Context context) =>
+        public override SimpleType GetResultType(Context context) =>
             Values.First().GetResultType(context);
 
         public override void Check(Context context)
         {
             // TODO: check if all values has the same value or are compatible
+            foreach (var i in Values)
+            {
+                i.Check(context);
+            }
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             printer.Write("{");
             foreach (var i in Values)
@@ -37,6 +41,15 @@ namespace Nexus.ir.expr
                 }
             }
             printer.Write("}");
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new ArrayLiteral
+            {
+                Values = Values.Select(i => (IExpression) i.CloneDeep()).ToList()
+            };
         }
     }
 }

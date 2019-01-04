@@ -1,0 +1,3 @@
+T vector<T>.at<T, E>(E element) {
+    return new T(this.values.at(element));
+}

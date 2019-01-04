@@ -1,9 +1,0 @@
-T T.add<T, U>(U rhs) {
-    c++ {|
-        if (__this.value + rhs.value > __this.maximum()) {
-            throw new std::exception("numeric overflow");
-        }
-    |}
-
-    return c++ {|__this.value + rhs.value|};
-}

@@ -1,4 +1,5 @@
-﻿using Nexus.gen;
+﻿using System;
+using Nexus.gen;
 
 namespace Nexus.ir.expr
 {    
@@ -12,9 +13,40 @@ namespace Nexus.ir.expr
         public int Column { get; set; }
         public string Name { get; set; }
         public string FilePath { get; set; }
-        public abstract IGenerationElement Generate(Context context, GenerationPhase phase);
-        public abstract IType GetResultType(Context context);
+        //public abstract IGenerationElement Generate(Context context, GenerationPhase phase);
+        public abstract SimpleType GetResultType(Context context);
+        public IGenerationElement CloneDeep()
+        {
+            var i = (Expression) Clone();
+            i.Column = Column;
+            i.Line = Line;
+            i.FilePath = FilePath;
+            i.Name = new string(Name);
+            return i;
+        }
+
+        public virtual void ForwardDeclare(Context upperContext)
+        {
+        }
+
+        public virtual void Declare()
+        {
+        }
+
+        public virtual void Define()
+        {
+        }
+
+        public virtual void Remove()
+        {
+        }
+
+        public virtual void Template(TemplateContext context, IGenerationElement concreteElement)
+        {
+        }
+
         public abstract void Check(Context context);
-        public abstract void Print(PrintType type, Printer printer);
+        public abstract bool Print(PrintType type, Printer printer);
+        public abstract object Clone();
     }
 }

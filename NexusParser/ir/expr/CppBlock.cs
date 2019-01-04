@@ -1,11 +1,12 @@
-﻿using Nexus.gen;
+﻿using System.Linq;
+using Nexus.gen;
 using Nexus.ir.stmt;
 
 namespace Nexus.ir.expr
 {
     public class CppBlock : Expression
     {
-        public string Block { get; }
+        public string Block { get; private set; }
         
         public CppBlock(string block, int line, int column)
         {
@@ -14,24 +15,42 @@ namespace Nexus.ir.expr
             Column = column;
         }
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        public override SimpleType GetResultType(Context context)
         {
-            return this;
+            return new SimpleType(TypesExtension.CppType)
+            {
+                FilePath = FilePath,
+                Line = Line,
+                Column = Column
+            };
         }
 
-        public override IType GetResultType(Context context)
+        public override void Template(TemplateContext context, IGenerationElement concreteElement)
         {
-            return new SimpleType(TypesExtension.Void, 0, Line, Column);
+            foreach (var (key, value) in context.TemplateVariables)
+            {
+                Block = Block.Replace(key, value.GetResultType(context).ToString());
+            }
         }
 
         public override void Check(Context context)
         {
-            // TODO
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             printer.Write(Block);
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new CppBlock(new string(Block), Line, Column);
+        }
+
+        public override string ToString()
+        {
+            return Block.Length > 10 ? new string(Block.Take(10).ToArray()) : Block;
         }
     }
 
@@ -49,21 +68,48 @@ namespace Nexus.ir.expr
             _cppBlock.Check(context);
         }
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            _cppBlock.Generate(context, phase);
-            return this;
-        }
-
-        public override IType GetResultType(Context context)
+        public override SimpleType GetResultType(Context context)
         {
             return _cppBlock.GetResultType(context);
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override void ForwardDeclare(Context upperContext)
         {
-            _cppBlock.Print(type, printer);
-            printer.WriteLine();
+        }
+
+        public override void Declare()
+        {
+            _cppBlock.Declare();
+        }
+
+        public override void Define()
+        {
+            _cppBlock.Define();
+        }
+
+        public override void Remove()
+        {
+            _cppBlock.Remove();
+        }
+
+        public override void Template(TemplateContext context, IGenerationElement concreteElement)
+        {
+            _cppBlock.Template(context, concreteElement);
+        }
+
+        public override bool Print(PrintType type, Printer printer)
+        {
+            if (_cppBlock.Print(type, printer))
+            {
+                printer.WriteLine();
+                return true;
+            }
+            return false;
+        }
+
+        public override object Clone()
+        {
+            return new CppBlockStatement((CppBlock) _cppBlock.CloneDeep());
         }
     }
 }

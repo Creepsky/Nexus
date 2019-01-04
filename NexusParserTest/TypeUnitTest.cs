@@ -23,36 +23,42 @@ namespace NexusParserTest
             var i32TypeAlias = new SimpleType(TypesExtension.Int, 0);
             var byteArrayAlias = new SimpleType(TypesExtension.U8, 1);
 
-            var mapType = new MapType
+            var mapType = new SimpleType("map")
             {
-                KeyType = i32Type,
-                ValueType = stringType
+                TemplateList = new TemplateList(new List<SimpleType>
+                {
+                    i32Type,
+                    stringType
+                })
             };
 
-            var mapTypeAlias = new MapType
+            var mapTypeAlias = new SimpleType("map")
             {
-                KeyType = i32TypeAlias,
-                ValueType = new SimpleType(TypesExtension.String, 0)
+                TemplateList = new TemplateList(new List<SimpleType>
+                {
+                    i32TypeAlias,
+                    new SimpleType(TypesExtension.String, 0)
+                })
             };
 
-            var tupleType = new TupleType
+            var tupleType = new SimpleType("tuple")
             {
-                Types = new List<IType>
+                TemplateList = new TemplateList(new List<SimpleType>
                 {
                     i32Type,
                     stringType,
                     byteArray
-                }
+                })
             };
 
-            var tupleTypeAlias = new TupleType
+            var tupleTypeAlias = new SimpleType("tuple")
             {
-                Types = new List<IType>
+                TemplateList = new TemplateList(new List<SimpleType>
                 {
                     i32TypeAlias,
                     new SimpleType(TypesExtension.String, 0),
                     byteArrayAlias
-                }
+                })
             };
 
             Assert.Equal(mapType, mapTypeAlias);

@@ -8,14 +8,14 @@ namespace Nexus.ir.expr
 
         public override string ToString() => Value ? "true" : "false";
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        public override SimpleType GetResultType(Context context)
         {
-            return this;
-        }
-
-        public override IType GetResultType(Context context)
-        {
-            return new SimpleType(TypesExtension.Bool, 0, Line, Column);
+            return new SimpleType(TypesExtension.Bool)
+            {
+                FilePath = FilePath,
+                Line = Line,
+                Column = Column
+            };
         }
 
         public override void Check(Context context)
@@ -23,9 +23,18 @@ namespace Nexus.ir.expr
             // TODO
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             printer.Write(Value ? "true" : "false");
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new BooleanLiteral
+            {
+                Value = Value
+            };
         }
     }
 }

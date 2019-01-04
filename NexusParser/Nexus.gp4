@@ -2,144 +2,160 @@ grammar Nexus;
 
 /* Parser */
 
-file_declaration :   class_declaration
-                   | extension_function
-                   | cpp_block
-                   ;
+file_declaration : class_declaration
+                 | function_declaration
+                 | cpp_block
+                 ;
 
 cpp_block : CPP_BLOCK ;
 
 file : file_declaration* ;
 
-class_declaration : CLASS name=IDENTIFIER template_list_declaration? LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
+class_declaration : CLASS name=IDENTIFIER template_list? LEFT_CURLY_BRACE class_member* RIGHT_CURLY_BRACE ;
 
-class_member :    cpp_block
-                | variable_declaration
-                | include COLON
-                ;
+class_member : cpp_block
+             | variable_declaration
+             | include COLON
+             ;
 
-include :         INCLUDE LESS path=.*? GREATER #farInclude
-                | INCLUDE APOSTROPHE path=.*? APOSTROPHE #nearInclude
-                ;
+include : INCLUDE LESS path=.*? GREATER #farInclude
+        | INCLUDE APOSTROPHE path=.*? APOSTROPHE #nearInclude
+        ;
 
-type :    IDENTIFIER ARRAY_DECLARATION* #namedType
-        | LEFT_BRACE type (COMMA type)*  RIGHT_BRACE ARRAY_DECLARATION* #tupleType
-        | LEFT_BRACKET key=type ARROW_RIGHT value=type RIGHT_BRACKET ARRAY_DECLARATION* #mapType
-	;
+type : IDENTIFIER template_list? ARRAY_DECLARATION* #namedType
+     | LEFT_BRACE type (COMMA type)*  RIGHT_BRACE ARRAY_DECLARATION* #tupleType
+     | LEFT_BRACKET key=type ARROW_RIGHT value=type RIGHT_BRACKET ARRAY_DECLARATION* #mapType
+     | CPP_BLOCK #cppType
+     ;
 
-variable_declaration : type IDENTIFIER template_list_usage? (EQUAL expression)? COLON ;
+variable_declaration : type IDENTIFIER template_list? COLON ;
 
-function_parameter : type IDENTIFIER (EQUAL expression)?;
+function_parameter : type IDENTIFIER;
 
-function_declaration :  type IDENTIFIER template_list_declaration?
-                        LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
-                        LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
+function_body : function_body_statement* ;
+
+function_declaration : returnType=type (extensionType=type (DOT | DOUBLE_COLON))?
+                       (OPERATOR operator | name=IDENTIFIER)
+                       template_list?
+                       LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
+                       LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
 assignment_statement : left=expression EQUAL right=expression COLON ;
 
 return_statement : RETURN expression COLON ;
 
-variable_statement : type IDENTIFIER (EQUAL expression)? COLON ;
+// variable_statement : type IDENTIFIER COLON ;
 
 tuple_explosion_statement : IDENTIFIER IDENTIFIER (COMMA IDENTIFIER)* EQUAL expression COLON ;
 
-if_statement :  IF LEFT_BRACE comparison RIGHT_BRACE
-                LEFT_CURLY_BRACE then=function_body RIGHT_CURLY_BRACE
-                ELSE LEFT_CURLY_BRACE otherwise=function_body RIGHT_CURLY_BRACE ;
+if_statement : IF LEFT_BRACE expression RIGHT_BRACE
+               LEFT_CURLY_BRACE then=function_body RIGHT_CURLY_BRACE
+               (ELSE LEFT_CURLY_BRACE otherwise=function_body RIGHT_CURLY_BRACE)? ;
 
-while_statement : WHILE LEFT_BRACE comparison RIGHT_BRACE
+while_statement : WHILE LEFT_BRACE expression RIGHT_BRACE
                   LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
-for_init :        assignment_statement
-                | variable_statement ;
+// for_init : assignment_statement
+//          | variable_statement
+//          ;
 
-for_statement : FOR LEFT_BRACE for_init comparison COLON expression RIGHT_BRACE
+for_statement : FOR LEFT_BRACE expression COLON expression COLON expression RIGHT_BRACE
                 LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
-function_call : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE ;
+function_call_expression : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE ;
 
-extension_function_call : IDENTIFIER DOT function_call ;
+include_statement : include COLON ;
 
-function_body : function_body_statement* ;
+expression_statement : expression COLON ;
 
-function_body_statement :
-                  cpp_block
-                | assignment_statement
-                | return_statement
-                | function_declaration
-                | variable_statement
-                | if_statement
-                | while_statement
-                | for_statement
-                | function_call COLON
-                | extension_function_call COLON
-                | tuple_explosion_statement
-                | include COLON
-                ;
-
+function_body_statement : assignment_statement
+                        | return_statement
+                        | function_declaration
+                        // | variable_statement
+                        | if_statement
+                        | while_statement
+                        | for_statement
+                        | tuple_explosion_statement
+                        | include_statement
+                        | expression_statement
+                        | cpp_block
+                        ;
+                        
 key_value_pair : expression ARROW_RIGHT expression ;
 
-expression :	  expression STAR expression #mul
-                | expression SLASH expression #div
-                | expression PLUS expression #add
-                | expression MINUS expression #sub
-                | LEFT_BRACE expression (COMMA expression)+ RIGHT_BRACE #tuple
-                | LEFT_BRACE expression RIGHT_BRACE #paren
-                | LEFT_BRACKET expression(COMMA expression)* RIGHT_BRACKET #array
-                | LEFT_BRACKET key_value_pair (COMMA key_value_pair)* RIGHT_BRACKET #map
-                | expression RANGE expression #range
-                | expression EQUAL expression #test
-                | expression LEFT_BRACKET expression RIGHT_BRACKET #arrayAccess
-                | function_call #functionCall
-                | extension_function_call #extensionFunctionCall
-                | CPP_BLOCK #cppBlock
-                | element=expression DOT member=IDENTIFIER #memberAccess
-                | factor #fact ;
+expression : //expression shorthand_operator #postfixOperatorExpression
+           //| shorthand_operator expression #prefixOperatorExpression
+             element=expression DOT member=IDENTIFIER #memberAccessExpression
+           | expression (DOT | DOUBLE_COLON) function_call_expression #extensionFunctionCallExpression
+           | type IDENTIFIER #variableDeclaration
+           | LEFT_BRACE expression (COMMA expression)+ RIGHT_BRACE #tupleLiteral
+           | LEFT_BRACE expression RIGHT_BRACE #paren
+           | LEFT_BRACKET expression(COMMA expression)* RIGHT_BRACKET #arrayLiteral
+           | LEFT_BRACKET key_value_pair (COMMA key_value_pair)* RIGHT_BRACKET #mapLiteral
+           | NEW type LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE #newExpression
+           | expression RANGE expression #rangeLiteral
+           | expression LEFT_BRACKET expression RIGHT_BRACKET #arrayAccessExpression
+           | function_call_expression #functionCallExpression
+           | expression math_operator expression #mathematicOperation
+           | CPP_BLOCK #cppBlockExpression
+           | expression comparison_operator expression #comparisonOperation
+           | expression logical_operator expression #logicalOperation
+           | expression EQUAL expression #assignmentExpression
+           | factor #fact
+           ;
 
-truth_value : TRUE | FALSE ;
+truth_value : TRUE
+            | FALSE
+            ;
 
-number :  INTEGER INTEGER_SUFFIX?
-        | REAL REAL_SUFFIX? ;
+number : INTEGER INTEGER_SUFFIX?
+       | REAL REAL_SUFFIX?
+       ;
 
 quoted_text : APOSTROPHE text=.*? APOSTROPHE ;
 
-factor :      number
-            | truth_value
-            | BINARY
-            | HEX
-            | quoted_text
-            | IDENTIFIER
-            ;
+factor : number
+       | truth_value
+       | BINARY
+       | HEX
+       | quoted_text
+       | IDENTIFIER
+       ;
 
-comparison :      expression EQUAL expression
-                | expression LESS expression
-                | expression LESS_EQUAL expression
-                | expression GREATER expression
-                | expression GREATER_EQUAL expression ;
+operator : math_operator
+         | comparison_operator
+         | logical_operator
+         | equal_operator=EQUAL
+         ;
 
-extension_type :  IDENTIFIER
-                | type
-                ;
+math_operator : PLUS EQUAL?
+              | MINUS EQUAL?
+              | STAR EQUAL?
+              | SLASH EQUAL?
+              | ARRAY_DECLARATION
+              ;
 
-extension_function :    returnType=type extensionType=type extensionTypeTemplates=template_list_declaration?
-                        DOT (name=IDENTIFIER | OPERATOR operator)
-                        functionTemplates=template_list_declaration?
-                        LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
-                        LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
+comparison_operator : LESS
+                    | GREATER
+                    | LESS EQUAL
+                    | GREATER EQUAL
+                    | EQUAL EQUAL
+                    ;
 
-operator :   PLUS
-           | MINUS
-           | STAR
-           | SLASH
-           ;
+logical_operator : AMPERSAND AMPERSAND?
+                 | PIPE PIPE?
+                 | CARET
+                 ;
 
-template_list_declaration : LESS (template_list | variadic_template) GREATER ;
+shorthand_operator : PLUS
+                   | MINUS
+                   | PLUS PLUS
+                   | MINUS MINUS
+                   ;
 
-template_list_usage : LESS template_list GREATER ;
+template_list_declaration : TEMPLATE template_list ;
 
-template_list : IDENTIFIER (COMMA IDENTIFIER)* ;
-
-variadic_template : IDENTIFIER DOT_DOT_DOT  ;
+template_list : LESS ((IDENTIFIER (COMMA IDENTIFIER)*) DOT_DOT_DOT?) GREATER ;
 
 /* Lexer */
 
@@ -167,12 +183,12 @@ ELSE_IF : ELSE IF ;
 WHILE : 'while' ;
 FOR : 'for' ;
 INCLUDE : 'include' ;
+TEMPLATE : 'template' ;
+NEW : 'new' ;
 APOSTROPHE : '"' ;
 EQUAL : '=' ;
 LESS : '<' ;
-LESS_EQUAL : '<=' ;
 GREATER : '>' ;
-GREATER_EQUAL : '>=' ;
 TRUE : 'true' ;
 FALSE : 'false' ;
 PLUS : '+' ;
@@ -181,12 +197,15 @@ STAR: '*' ;
 SLASH: '/' ;
 COMMA : ',' ;
 PIPE : '|' ;
+AMPERSAND : '&' ;
+CARET : '^' ;
 RETURN : 'return' ;
 OPERATOR : 'operator' ;
 RANGE : '..' ;
 DOT : '.' ;
+DOUBLE_COLON : '::' ;
 CPP : 'c++' ;
 INTEGER_SUFFIX : '_' ('i'|'u') ('8'|'16'|'32'|'64') ;
 REAL_SUFFIX : '_f' ('32'|'64') | 'f' | 'd' ;
-IDENTIFIER : [a-zA-Z_-][a-zA-Z0-9_-]* ;
+IDENTIFIER : [a-zA-Z_-][a-zA-Z0-9_]* ;
 WHITESPACE : [ \r\t\n]+ -> skip ;

@@ -14,18 +14,14 @@ namespace Nexus.ir.expr
             return '{' + string.Join(", ", Values.Select(i => '{' + i.Key.ToString() + ", " + i.Value.ToString() + '}')) + '}';
         }
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
-
-        public override IType GetResultType(Context context) =>
-            new MapType
+        public override SimpleType GetResultType(Context context) =>
+            new SimpleType("map",
+                new TemplateList(new List<SimpleType>
+                    {Values.First().Key.GetResultType(context), Values.First().Value.GetResultType(context)}), 0)
             {
+                FilePath = FilePath,
                 Line = Line,
-                Column = Column,
-                KeyType = Values.First().Key.GetResultType(context),
-                ValueType = Values.First().Value.GetResultType(context)
+                Column = Column
             };
 
         public override void Check(Context context)
@@ -33,7 +29,7 @@ namespace Nexus.ir.expr
             throw new NotImplementedException();
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             printer.Write("{");
             foreach (var i in Values)
@@ -49,6 +45,15 @@ namespace Nexus.ir.expr
                 }
             }
             printer.Write("}");
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new MapLiteral
+            {
+                Values = Values.ToDictionary(i => (IExpression) i.Key.CloneDeep(), i => (IExpression) i.Value.CloneDeep())
+            };
         }
     }
 }

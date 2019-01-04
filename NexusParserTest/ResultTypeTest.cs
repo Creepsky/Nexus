@@ -13,13 +13,13 @@ namespace NexusParserTest
         {
             var context = new Context();
 
-            var returnType = new TupleType
+            var returnType = new SimpleType("tuple")
             {
-                Types = new List<IType>
+                TemplateList = new TemplateList(new List<SimpleType>
                 {
                     new SimpleType(TypesExtension.I32, 0),
                     new SimpleType(TypesExtension.USize, 0)
-                }
+                })
             };
             
             var parameter1 = new Variable{
@@ -36,8 +36,8 @@ namespace NexusParserTest
             {
                 Name = "myFunction",
                 Parameter = new List<Variable>{parameter1, parameter2},
-                Statements = new List<IStatement>(),
-                Type = returnType
+                Body = new List<IStatement>(),
+                ReturnType = returnType
             };
             
             context.Add(function.Name, function);

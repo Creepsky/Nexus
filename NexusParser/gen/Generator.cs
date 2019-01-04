@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Nexus.ir;
+using Nexus.ir.expr;
+using Nexus.ir.stmt;
 using NLog;
 
 namespace Nexus.gen
@@ -9,20 +13,18 @@ namespace Nexus.gen
     {
         public string Name { get; }
         public string Path { get; }
-        public string Header { get; }
         public string Source { get; }
 
-        public CompilationUnit(string name, string path, string header, string source)
+        public CompilationUnit(string name, string path, string source)
         {
             Name = name;
             Path = path;
-            Header = header;
             Source = source;
         }
 
         public bool Equals(CompilationUnit other)
         {
-            return string.Equals(Name, other.Name) && string.Equals(Path, other.Path) && string.Equals(Header, other.Header) && string.Equals(Source, other.Source);
+            return string.Equals(Name, other.Name) && string.Equals(Path, other.Path) && string.Equals(Source, other.Source);
         }
 
         public override bool Equals(object obj)
@@ -37,7 +39,6 @@ namespace Nexus.gen
             {
                 var hashCode = (Name != null ? Name.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Path != null ? Path.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Header != null ? Header.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Source != null ? Source.GetHashCode() : 0);
                 return hashCode;
             }
@@ -46,7 +47,7 @@ namespace Nexus.gen
 
     public class Generator
     {
-        private readonly Context _globalContext = new Context();
+        public readonly Context globalContext = new Context();
         private readonly IList<ir.File> _files;
         private readonly Logger _logger;
 
@@ -58,19 +59,20 @@ namespace Nexus.gen
 
         public void Generate()
         {
-            var phases = new[]
+            var phases = new Dictionary<string, Action<ir.File>>
             {
-                GenerationPhase.ForwardDeclaration,
-                GenerationPhase.Declaration,
-                GenerationPhase.Definition
+                {"forward declaration", f => f.ForwardDeclare(globalContext)},
+                {"declaration", f => f.Declare()},
+                {"definition", f => f.Define()}
             };
 
             foreach (var phase in phases)
             {
-                _logger.Info($"Generating data, phase {phase.ToString()}");
+                _logger.Info($"Generating data, {phase.Key} phase");
+
                 foreach (var file in _files)
                 {
-                    file.Generate(_globalContext, phase);
+                    phase.Value(file);
                 }
             }
         }
@@ -79,35 +81,106 @@ namespace Nexus.gen
         {
             foreach (var i in _files)
             {
-                i.Check(_globalContext);
+                i.Check(globalContext);
             }
         }
 
         public IEnumerable<CompilationUnit> Compile()
         {
-            var compilationUnits = new List<CompilationUnit>();
-            var headerStringWriter = new StringWriter();
             var sourceStringWriter = new StringWriter();
-            var headerPrinter = new Printer(headerStringWriter);
             var sourcePrinter = new Printer(sourceStringWriter);
+            var any = false;
 
-            foreach (var i in _files)
+            // includes
+            foreach (var i in globalContext.GetElements().OfType<Include>())
             {
-                headerStringWriter.GetStringBuilder().Clear();
-                sourceStringWriter.GetStringBuilder().Clear();
-
-                i.Print(PrintType.Header, headerPrinter);
-                i.Print(PrintType.Source, sourcePrinter);
-
-                compilationUnits.Add(new CompilationUnit(
-                    i.Name,
-                    i.FilePath,
-                    headerStringWriter.ToString(),
-                    sourceStringWriter.ToString()
-                ));
+                any = any | i.Print(PrintType.Header, sourcePrinter);
             }
 
-            return compilationUnits;
+            if (any)
+            {
+                sourcePrinter.WriteLine();
+                any = false;
+            }
+
+            // forward declaration of all classes
+            foreach (var i in globalContext.GetElements().OfType<Class>())
+            {
+                foreach (var j in i.Variants.Append(i))
+                {
+                    any = any | j.Print(PrintType.ForwardDeclaration, sourcePrinter);
+                }
+            }
+
+            if (any)
+            {
+                sourcePrinter.WriteLine();
+                any = false;
+            }
+
+            // forward declaration of all functions
+            foreach (var i in globalContext.GetElements().OfType<Function>())
+            {
+                foreach (var j in i.Overloads.Append(i))
+                {
+                    any = any | j.Print(PrintType.ForwardDeclaration, sourcePrinter);
+                }
+            }
+
+            if (any)
+            {
+                sourcePrinter.WriteLine();
+                any = false;
+            }
+
+            // definition of all classes
+            foreach (var i in globalContext.GetElements().OfType<Class>())
+            {
+                foreach (var j in i.Variants.Append(i))
+                {
+                    var printed = j.Print(PrintType.Declaration, sourcePrinter);
+
+                    if (printed)
+                    {
+                        sourcePrinter.WriteLine();
+                    }
+
+                    any = any || printed;
+                }
+            }
+
+            // definition of all functions
+            foreach (var i in globalContext.GetElements().OfType<Function>())
+            {
+                foreach (var j in i.Overloads.Append(i))
+                {
+                    var printed = j.Print(PrintType.Definition, sourcePrinter);
+                    
+                    if (printed)
+                    {
+                        sourcePrinter.WriteLine();
+                    }
+
+                    any = any || printed;
+                }
+            }
+
+            //foreach (var i in _files)
+            //{
+            //    headerStringWriter.GetStringBuilder().Clear();
+
+            //    if (i.Print(PrintType.Header, headerPrinter))
+            //    {
+            //        compilationUnits.Add(new CompilationUnit(
+            //            i.Name,
+            //            i.FilePath,
+            //            headerStringWriter.ToString(),
+            //            ""
+            //        ));
+            //    }
+            //}
+
+            yield return new CompilationUnit("main", "/main.cpp", sourceStringWriter.ToString());
         }
     }
 }

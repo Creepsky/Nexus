@@ -1,9 +1,10 @@
+using System;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Nexus.ir;
 using Nexus.ir.expr;
 using Nexus.ir.stmt;
-using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Nexus
@@ -27,9 +28,9 @@ namespace Nexus
             return new File
             {
                 Classes = list.OfType<Class>().ToList(),
-                ExtensionFunctions = list.OfType<ExtensionFunction>().ToList(),
+                Functions = list.OfType<Function>().ToList(),
                 CppBlocks = list.OfType<CppBlockStatement>().ToList(),
-                FilePath = FileParser.CurrentPath,
+                FilePath = FileParser.CurrentPath
             };
         }
 
@@ -38,7 +39,7 @@ namespace Nexus
             var member = context.class_member().Select(Visit).ToList();
 
             return new Class(context.name.Text,
-                context.template_list_declaration() == null ? null : (ITemplateList) Visit(context.template_list_declaration()),
+                context.template_list() == null ? null : (TemplateList) Visit(context.template_list()),
                 member.OfType<Variable>().ToList(),
                 member.OfType<CppBlockStatement>().ToList(),
                 member.OfType<Include>().ToList())
@@ -70,7 +71,8 @@ namespace Nexus
             {
                 Line = context.Start.Line,
                 Column = context.Start.Column,
-                FilePath = FileParser.CurrentPath
+                FilePath = FileParser.CurrentPath,
+                Name = "#include_" + context.path.Text
             };
         }
 
@@ -80,43 +82,73 @@ namespace Nexus
             {
                 Line = context.Start.Line,
                 Column = context.Start.Column,
-                FilePath = FileParser.CurrentPath
+                FilePath = FileParser.CurrentPath,
+                Name = "#include_" + context.path.Text
             };
         }
 
-        public override object VisitNamedType(NexusParser.NamedTypeContext context) => new SimpleType(
-            context.IDENTIFIER().GetText(),
-            context.ARRAY_DECLARATION().Length,
-            context.Start.Line,
-            context.Start.Column)
+        public override object VisitNamedType(NexusParser.NamedTypeContext context)
         {
-            FilePath = FileParser.CurrentPath
-        };
+            //var array = context.ARRAY_DECLARATION().Length;
 
-        public override object VisitTupleType(NexusParser.TupleTypeContext context) => new TupleType
+            if (context.ARRAY_DECLARATION().Length >= 1)
+            {
+                var b = false;
+            }
+
+            var i = new SimpleType(
+                context.IDENTIFIER().GetText(),
+                VisitTemplate_list(context.template_list()) as TemplateList,
+                context.ARRAY_DECLARATION().Length)
+            {
+                FilePath = FileParser.CurrentPath,
+                Line = context.Start.Line,
+                Column = context.Start.Column
+            };
+
+            return i;
+
+            //return array <= 0 ? type : CreateVector(array - 1, context.Start.Line, context.Start.Column, type);
+        }
+
+        //private static SimpleType CreateVector(int depth, int line, int column, SimpleType type)
+        //{
+        //    return new SimpleType("vector")
+        //    {
+        //        TemplateList = new TemplateList(new List<SimpleType>
+        //            {depth > 0 ? CreateVector(depth - 1, line, column, type) : type}),
+        //        FilePath = FileParser.CurrentPath,
+        //        Line = line,
+        //        Column = column
+        //    };
+        //}
+
+        public override object VisitTupleType(NexusParser.TupleTypeContext context) => new SimpleType(
+            "tuple", new TemplateList(context.type().Select(i => (SimpleType) Visit(i)).ToList()), context.ARRAY_DECLARATION().Length)
         {
-            Types = context.type().Select(i => (IType) Visit(i)).ToList(),
-            Array = context.ARRAY_DECLARATION().Length,
             Line = context.Start.Line,
             Column = context.Start.Column,
             FilePath = FileParser.CurrentPath
         };
 
-        public override object VisitMapType(NexusParser.MapTypeContext context) => new MapType
+        public override object VisitMapType(NexusParser.MapTypeContext context) => new SimpleType(
+            "map", new TemplateList(new List<SimpleType>{(SimpleType) Visit(context.key), (SimpleType) Visit(context.value)}), context.ARRAY_DECLARATION().Length)
         {
-            KeyType = (IType) Visit(context.key),
-            ValueType = (IType) Visit(context.value),
-            Array = context.ARRAY_DECLARATION().Length,
             Line = context.Start.Line,
             Column = context.Start.Column,
             FilePath = FileParser.CurrentPath
         };
+
+        public override object VisitCppType(NexusParser.CppTypeContext context)
+        {
+            return new CppType(ExtractCppBlock(context.GetText(), context.Start));
+        }
 
         public override object VisitVariable_declaration(NexusParser.Variable_declarationContext context) => new Variable
         {
-            Type = (IType) Visit(context.type()),
+            Type = (SimpleType) Visit(context.type()),
             Name = context.IDENTIFIER().GetText(),
-            Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
+            //Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column,
             FilePath = FileParser.CurrentPath
@@ -124,23 +156,9 @@ namespace Nexus
 
         public override object VisitFunction_parameter(NexusParser.Function_parameterContext context) => new Variable
         {
-            Type = (IType) Visit(context.type()),
+            Type = (SimpleType) Visit(context.type()),
             Name = context.IDENTIFIER().GetText(),
-            Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
-
-        public override object VisitFunction_declaration(NexusParser.Function_declarationContext context) => new Function
-        {
-            Type = (IType) Visit(context.type()),
-            Name = context.IDENTIFIER().GetText(),
-            TemplateList = context.template_list_declaration() != null ?
-                (ITemplateList) Visit(context.template_list_declaration()) : null,
-            Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList(),
-            Statements = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i))
-                .ToList(),
+            //Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column,
             FilePath = FileParser.CurrentPath
@@ -163,15 +181,15 @@ namespace Nexus
             FilePath = FileParser.CurrentPath
         };
 
-        public override object VisitVariable_statement(NexusParser.Variable_statementContext context) => new Variable
-        {
-            Type = (IType) Visit(context.type()),
-            Name = context.IDENTIFIER().GetText(),
-            Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
+        //public override object VisitVariable_statement(NexusParser.Variable_statementContext context) => new Variable
+        //{
+        //    Type = (SimpleType) Visit(context.type()),
+        //    Name = context.IDENTIFIER().GetText(),
+        //    Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
+        //    Line = context.Start.Line,
+        //    Column = context.Start.Column,
+        //    FilePath = FileParser.CurrentPath
+        //};
 
         public override object VisitTuple_explosion_statement(NexusParser.Tuple_explosion_statementContext context) => new TupleExplosionStatement
         {
@@ -184,11 +202,11 @@ namespace Nexus
 
         public override object VisitIf_statement(NexusParser.If_statementContext context) => new IfStatement
         {
-            Condition = (ICondition) Visit(context.comparison()),
+            Condition = (IExpression) Visit(context.expression()),
             Then = context.then.function_body_statement()
                 .Select(i => (IStatement) Visit(i))
                 .ToList(),
-            Else = context.otherwise.function_body_statement()
+            Else = context.otherwise?.function_body_statement()
                 .Select(i => (IStatement) Visit(i))
                 .ToList(),
             Line = context.Start.Line,
@@ -198,92 +216,150 @@ namespace Nexus
 
         public override object VisitWhile_statement(NexusParser.While_statementContext context) => new WhileStatement
         {
-            Condition = (ICondition) Visit(context.comparison()),
+            Condition = (IExpression) Visit(context.expression()),
             Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
             Line = context.Start.Line,
             Column = context.Start.Column,
             FilePath = FileParser.CurrentPath
         };
 
-        public override object VisitFor_statement(NexusParser.For_statementContext context) => new ForStatement
+        public override object VisitFor_statement(NexusParser.For_statementContext context)
         {
-            Start = (IStatement) Visit(context.for_init()),
-            Stop = (ICondition) Visit(context.comparison()),
-            Step = (IExpression) Visit(context.expression()),
-            Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
+            var tmp1 = (IExpression) Visit(context.expression(0));
+            var tmp1Type = tmp1.GetType().Name;
+            var tmp2 = (IExpression) Visit(context.expression(1));
+            var tmp3 = (IExpression) Visit(context.expression(2));
 
-        public override object VisitFunction_call(NexusParser.Function_callContext context) => new FunctionCall
+            var forStatement = new ForStatement
+            {
+                Start = (IExpression) Visit(context.expression(0)),
+                Stop = (IExpression) Visit(context.expression(1)),
+                Step = (IExpression) Visit(context.expression(2)),
+                Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+
+            return forStatement;
+        }
+
+        public override object VisitFunction_call_expression(NexusParser.Function_call_expressionContext context) => new FunctionCall
         {
             Name = context.IDENTIFIER().GetText(),
-            Parameter = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
+            Parameter = context.expression().Select(i => (IExpression)Visit(i)).ToList(),
             Line = context.Start.Line,
             Column = context.Start.Column,
             FilePath = FileParser.CurrentPath
         };
 
-        public override object VisitExtension_function_call(NexusParser.Extension_function_callContext context)
+        public override object VisitInclude_statement(NexusParser.Include_statementContext context)
         {
-            return new ExtensionFunctionCall
+            return Visit(context.include());
+        }
+
+        public override object VisitExpression_statement(NexusParser.Expression_statementContext context) =>
+            new ExpressionStatement
             {
-                Variable = new VariableLiteral{Name = context.IDENTIFIER().GetText()},
-                FunctionCall = (FunctionCall) Visit(context.function_call()),
+                Expression = context.expression() == null ? null : (IExpression) Visit(context.expression()),
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+
+        //public override object VisitExtension_function_call_statement(NexusParser.Extension_function_call_statementContext context)
+        //{
+        //    return base.VisitExtension_function_call_statement(context);
+        //}
+
+        //public override object VisitFunction_body_statement(NexusParser.Function_body_statementContext context)
+        //{
+        //    //if (context.function_call() != null)
+        //    //{
+        //    //    return new FunctionCallStatement
+        //    //    {
+        //    //        FunctionCall = (FunctionCall)VisitFunction_call(context.function_call()),
+        //    //        Line = context.Start.Line,
+        //    //        Column = context.Start.Column,
+        //    //        FilePath = FileParser.CurrentPath
+        //    //    };
+        //    //}
+
+        //    if (context.cpp_block() != null)
+        //    {
+        //        return Visit(context.cpp_block());
+        //    }
+
+        //    if (context.include_statement() != null)
+        //    {
+        //        var tmp =  VisitInclude_statement(context.include_statement());
+        //        return tmp;
+        //    }
+
+        //    return base.VisitFunction_body_statement(context);
+        //}
+
+        //public override object VisitCalculation_expression(NexusParser.Calculation_expressionContext context)
+        //{
+        //    return new BinaryOperation
+        //    {
+        //        Left = Visit(context.calc),
+        //        Line = context.Start.Line,
+        //        Column = context.Start.Column,
+        //        FilePath = FileParser.CurrentPath
+        //    };
+        //}
+
+        //public override object VisitTuple_expression(NexusParser.Tuple_expressionContext context)
+        //{
+        //    return base.VisitTuple_expression(context);
+        //}
+
+        //public override object VisitArray_index_expression(NexusParser.Array_index_expressionContext context)
+        //{
+        //    return base.VisitArray_index_expression(context);
+        //}
+
+        //public override object VisitMap_expression(NexusParser.Map_expressionContext context)
+        //{
+        //    return base.VisitMap_expression(context);
+        //}
+
+        //public override object VisitRange_expression(NexusParser.Range_expressionContext context)
+        //{
+        //    return base.VisitRange_expression(context);
+        //}
+
+        public override object VisitNewExpression(NexusParser.NewExpressionContext context)
+        {
+            return new New
+            {
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath,
+                Type = (SimpleType) Visit(context.type()),
+                Parameter = context.expression().Select(i => (IExpression) Visit(i)).ToList()
+            };
+        }
+
+        public override object VisitAssignmentExpression(NexusParser.AssignmentExpressionContext context)
+        {
+            return new Assignment((IExpression) Visit(context.expression(0)),
+                (IExpression) Visit(context.expression(1)))
+            {
+                Name = Function.OperatorToName("="),
                 Line = context.Start.Line,
                 Column = context.Start.Column,
                 FilePath = FileParser.CurrentPath
             };
         }
 
-        public override object VisitFunction_body_statement(NexusParser.Function_body_statementContext context)
-        {
-            if (context.function_call() != null)
-            {
-                return new FunctionCallStatement
-                {
-                    FunctionCall = (FunctionCall) VisitFunction_call(context.function_call()),
-                    Line = context.Start.Line,
-                    Column = context.Start.Column,
-                    FilePath = FileParser.CurrentPath
-                };
-            }
+        //public override object VisitPrefixOperatorExpression(NexusParser.PrefixOperatorExpressionContext context)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-            if (context.cpp_block() != null)
-            {
-                return Visit(context.cpp_block());
-            }
-
-            if (context.include() != null)
-            {
-                return Visit(context.include());
-            }
-
-            return base.VisitFunction_body_statement(context);
-        }
-
-        public override object VisitDiv(NexusParser.DivContext context) => new BinaryOperation
-        {
-            Left = (IExpression) Visit(context.expression(0)),
-            Type = BinaryOperatorType.Div,
-            Right = (IExpression) Visit(context.expression(1)),
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
-
-        public override object VisitAdd(NexusParser.AddContext context) => new BinaryOperation
-        {
-            Left = (IExpression) Visit(context.expression(0)),
-            Type = BinaryOperatorType.Add,
-            Right = (IExpression) Visit(context.expression(1)),
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
-
-        public override object VisitTuple(NexusParser.TupleContext context) => new TupleLiteral
+        public override object VisitTupleLiteral(NexusParser.TupleLiteralContext context) => new TupleLiteral
         {
             Values = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
             Line = context.Start.Line,
@@ -291,20 +367,25 @@ namespace Nexus
             FilePath = FileParser.CurrentPath
         };
 
-        public override object VisitSub(NexusParser.SubContext context) => new BinaryOperation
-        {
-            Left = (IExpression) Visit(context.expression(0)),
-            Type = BinaryOperatorType.Sub,
-            Right = (IExpression) Visit(context.expression(1)),
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
+        public override object VisitFunctionCallExpression(NexusParser.FunctionCallExpressionContext context) =>
+            Visit(context.function_call_expression());
 
-        public override object VisitMemberAccess(NexusParser.MemberAccessContext context)
+        public override object VisitMemberAccessExpression(NexusParser.MemberAccessExpressionContext context)
         {
             return new MemberAccess((IExpression) Visit(context.element), context.IDENTIFIER().GetText())
             {
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+        }
+
+        public override object VisitVariableDeclaration(NexusParser.VariableDeclarationContext context)
+        {
+            return new Variable
+            {
+                Type = (SimpleType)Visit(context.type()),
+                Name = context.IDENTIFIER().GetText(),
                 Line = context.Start.Line,
                 Column = context.Start.Column,
                 FilePath = FileParser.CurrentPath
@@ -319,7 +400,7 @@ namespace Nexus
             FilePath = FileParser.CurrentPath
         };
 
-        public override object VisitArray(NexusParser.ArrayContext context) => new ArrayLiteral
+        public override object VisitArrayLiteral(NexusParser.ArrayLiteralContext context) => new ArrayLiteral
         {
             Values = context.expression().Select(i => (IExpression) Visit(i)).ToList(),
             Line = context.Start.Line,
@@ -327,17 +408,28 @@ namespace Nexus
             FilePath = FileParser.CurrentPath
         };
 
-        public override object VisitMul(NexusParser.MulContext context) => new BinaryOperation
+        public override object VisitExtensionFunctionCallExpression(NexusParser.ExtensionFunctionCallExpressionContext context)
         {
-            Left = (IExpression) Visit(context.expression(0)),
-            Type = BinaryOperatorType.Mul,
-            Right = (IExpression) Visit(context.expression(1)),
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
+            var functionCall = (FunctionCall)Visit(context.function_call_expression());
+            functionCall.Object = (IExpression) Visit(context.expression());
+            functionCall.Static = context.DOUBLE_COLON() != null;
+            return functionCall;
+        }
 
-        public override object VisitRange(NexusParser.RangeContext context) => new RangeLiteral
+        public override object VisitMathematicOperation(NexusParser.MathematicOperationContext context)
+        {
+            return new BinaryOperation
+            {
+                Left = (IExpression)Visit(context.expression(0)),
+                Type = (BinaryOperatorType)Visit(context.math_operator()),
+                Right = (IExpression)Visit(context.expression(1)),
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+        }
+
+        public override object VisitRangeLiteral(NexusParser.RangeLiteralContext context) => new RangeLiteral
         {
             Start = (IExpression) Visit(context.expression(0)),
             End = (IExpression) Visit(context.expression(1)),
@@ -346,12 +438,7 @@ namespace Nexus
             FilePath = FileParser.CurrentPath
         };
 
-        public override object VisitCppBlock(NexusParser.CppBlockContext context)
-        {
-            return ExtractCppBlock(context.GetText(), context.Start);
-        }
-
-        public override object VisitMap(NexusParser.MapContext context) => new MapLiteral
+        public override object VisitMapLiteral(NexusParser.MapLiteralContext context) => new MapLiteral
         {
             Values = context.key_value_pair().ToDictionary(
                 i => (IExpression) Visit(i.expression(0)),
@@ -361,6 +448,47 @@ namespace Nexus
             Column = context.Start.Column,
             FilePath = FileParser.CurrentPath
         };
+
+        public override object VisitComparisonOperation(NexusParser.ComparisonOperationContext context)
+        {
+            return new BinaryOperation
+            {
+                Left = (IExpression)Visit(context.expression(0)),
+                Type = (BinaryOperatorType)Visit(context.comparison_operator()),
+                Right = (IExpression)Visit(context.expression(1)),
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+        }
+
+        //public override object VisitExtension_function_call_expression(NexusParser.Extension_function_call_expressionContext context)
+        //{
+        //    return base.VisitExtension_function_call_expression(context);
+        //}
+
+        public override object VisitCppBlockExpression(NexusParser.CppBlockExpressionContext context)
+        {
+            return ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start);
+        }
+
+        public override object VisitLogicalOperation(NexusParser.LogicalOperationContext context)
+        {
+            return new BinaryOperation
+            {
+                Left = (IExpression)Visit(context.expression(0)),
+                Type = (BinaryOperatorType)Visit(context.logical_operator()),
+                Right = (IExpression)Visit(context.expression(1)),
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+        }
+
+        //public override object VisitMember_access_expression(NexusParser.Member_access_expressionContext context)
+        //{
+        //    return base.VisitMember_access_expression(context);
+        //}
 
         public override object VisitTruth_value(NexusParser.Truth_valueContext context) => new BooleanLiteral
         {
@@ -454,114 +582,202 @@ namespace Nexus
             return base.VisitFactor(context);
         }
 
-        public override object VisitComparison(NexusParser.ComparisonContext context)
+        //public override object VisitComparison(NexusParser.ComparisonContext context)
+        //{
+        //    ComparisonType type;
+
+        //    if (context.EQUAL() != null)
+        //    {
+        //        type = ComparisonType.Equals;
+        //    }
+        //    else if (context.GREATER() != null)
+        //    {
+        //        type = ComparisonType.Greater;
+        //    }
+        //    else if (context.LESS() != null)
+        //    {
+        //        type = ComparisonType.Less;
+        //    }
+        //    else if (context.GREATER() != null && context.EQUAL() != null)
+        //    {
+        //        type = ComparisonType.GreaterEquals;
+        //    }
+        //    else if (context.LESS() != null && context.EQUAL() != null)
+        //    {
+        //        type = ComparisonType.LessEquals;
+        //    }
+        //    else
+        //    {
+        //        throw new ArgumentOutOfRangeException("unknown comparison", null as Exception);
+        //    }
+
+        //    return new Comparison
+        //    {
+        //        Left = (IExpression) Visit(context.expression(0)),
+        //        Type = type,
+        //        Right = (IExpression) Visit(context.expression(1)),
+        //        Line = context.Start.Line,
+        //        Column = context.Start.Column,
+        //        FilePath = FileParser.CurrentPath
+        //    };
+        //}
+
+        public override object VisitMath_operator(NexusParser.Math_operatorContext context)
         {
-            ComparisonType type;
+            var equal = context.EQUAL() != null;
 
-            if (context.EQUAL() != null)
+            if (context.PLUS() != null)
             {
-                type = ComparisonType.Equals;
-            }
-            else if (context.GREATER() != null)
-            {
-                type = ComparisonType.Greater;
-            }
-            else if (context.LESS() != null)
-            {
-                type = ComparisonType.Less;
-            }
-            else if (context.GREATER_EQUAL() != null)
-            {
-                type = ComparisonType.GreaterEquals;
-            }
-            else if (context.LESS_EQUAL() != null)
-            {
-                type = ComparisonType.LessEquals;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("unknown comparison", null as Exception);
+                return equal ? BinaryOperatorType.AddAndAssign : BinaryOperatorType.Add;
             }
 
-            return new Comparison
+            if (context.MINUS() != null)
             {
-                Left = (IExpression) Visit(context.expression(0)),
-                Type = type,
-                Right = (IExpression) Visit(context.expression(1)),
-                Line = context.Start.Line,
-                Column = context.Start.Column,
-                FilePath = FileParser.CurrentPath
-            };
+                return equal ? BinaryOperatorType.SubAndAssign : BinaryOperatorType.Sub;
+            }
+
+            if (context.STAR() != null)
+            {
+                return equal ? BinaryOperatorType.MulAndAssign : BinaryOperatorType.Mul;
+            }
+
+            if (context.SLASH() != null)
+            {
+                return equal ? BinaryOperatorType.DivAndAssign :BinaryOperatorType.Div;
+            }
+
+            throw new ArgumentOutOfRangeException($"Unknown mathematical operator: {context}");
         }
 
-        public override object VisitExtension_function(NexusParser.Extension_functionContext context)
+        public override object VisitComparison_operator(NexusParser.Comparison_operatorContext context)
         {
-            var function = context.@operator() != null
-                ? new OperatorFunction(context.@operator().GetText())
-                : new ExtensionFunction();
+            var equal = context.EQUAL().Length > 0;
 
-            function.ReturnType = (IType) Visit(context.returnType);
-            function.ExtensionBase = (IType) Visit(context.extensionType);
-            function.ExtensionBaseTemplateList = context.extensionTypeTemplates != null
-                ? (ITemplateList) Visit(context.extensionTypeTemplates)
-                : null;
-            function.TemplateList = context.functionTemplates != null
-                ? (ITemplateList) Visit(context.functionTemplates)
-                : null;
-            function.Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList();
-            function.Body = context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList();
-            function.Line = context.Start.Line;
-            function.Column = context.Start.Column;
-            function.Name =
-                function.GetType() == typeof(OperatorFunction)
-                ? "operator" + context.@operator().GetText()
-                : context.IDENTIFIER().GetText();
-            function.FilePath = FileParser.CurrentPath;
+            if (context.LESS() != null)
+            {
+                return equal ? BinaryOperatorType.LessEqual : BinaryOperatorType.Less;
+            }
+
+            if (context.GREATER() != null)
+            {
+                return equal ? BinaryOperatorType.GreaterEqual : BinaryOperatorType.Greater;
+            }
+
+            if (context.EQUAL().Length == 2)
+            {
+                return BinaryOperatorType.Equal;
+            }
+
+            throw new ArgumentOutOfRangeException($"Unknown comparison operator: {context}");
+        }
+
+        public override object VisitLogical_operator(NexusParser.Logical_operatorContext context)
+        {
+            if (context.AMPERSAND().Length > 0)
+            {
+                if (context.AMPERSAND().Length == 2)
+                {
+                    return BinaryOperatorType.LogicalAnd;
+                }
+
+                return BinaryOperatorType.BitwiseAnd;
+            }
+
+            if (context.PIPE().Length > 0)
+            {
+                if (context.PIPE().Length == 2)
+                {
+                    return BinaryOperatorType.LogicalOr;
+                }
+
+                return BinaryOperatorType.BitwiseOr;
+            }
+
+            throw new ArgumentOutOfRangeException($"Unknown logical operator: {context}");
+        }
+
+        public override object VisitFunction_declaration(NexusParser.Function_declarationContext context)
+        {
+            var function = new Function
+            {
+                //Name = context.@operator() != null
+                //    ? Function.OperatorToName(context.@operator().GetText())
+                //    : context.IDENTIFIER().GetText(),
+                Name = context.@operator() != null
+                       ? Function.OperatorToName(context.@operator().GetText())
+                       : context.IDENTIFIER().GetText(),
+                ReturnType = (SimpleType) Visit(context.returnType),
+                Parameter = context.function_parameter().Select(i => (Variable) Visit(i)).ToList(),
+                Body =
+                    context.function_body().function_body_statement().Select(i => (IStatement) Visit(i)).ToList(),
+                Operator = context.@operator() != null,
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath,
+            };
+
+            foreach (var i in function.Parameter)
+            {
+                // if it is an operator function, all parameters need to be a const reference (because of c++)
+                i.Type.Constant = false;
+                i.Type.Reference = true;
+                //i.Type.Parameter = true;
+            }
+
+            if (context.extensionType != null)
+            {
+                function.ExtensionBase = (SimpleType) Visit(context.extensionType);
+            }
+
+            if (context.template_list() != null)
+            {
+                function.TemplateList = (TemplateList) Visit(context.template_list());
+            }
+
+            if (context.DOUBLE_COLON() != null)
+            {
+                function.Static = true;
+            }
 
             return function;
         }
 
         public override object VisitTemplate_list_declaration(NexusParser.Template_list_declarationContext context)
         {
-            if (context.template_list() != null)
-            {
-                return Visit(context.template_list());
-            }
-
-            if (context.variadic_template() != null)
-            {
-                return Visit(context.variadic_template());
-            }
-
-            return base.VisitTemplate_list_declaration(context);
-        }
-
-        public override object VisitTemplate_list_usage(NexusParser.Template_list_usageContext context)
-        {
             return Visit(context.template_list());
         }
 
         public override object VisitTemplate_list(NexusParser.Template_listContext context)
         {
-            return new TemplateList(
-                context.IDENTIFIER()
-                    .Select(i => i.GetText())
-                    .ToList())
+            if (context?.IDENTIFIER() != null)
             {
-                Line = context.Start.Line,
-                Column = context.Start.Column,
-                FilePath = FileParser.CurrentPath
-            };
-        }
+                var types = new List<SimpleType>();
 
-        public override object VisitVariadic_template(NexusParser.Variadic_templateContext context)
-        {
-            return new VariadicTemplateList
-            {
-                Line = context.Start.Line,
-                Column = context.Start.Column,
-                FilePath = FileParser.CurrentPath
-            };
+                foreach (var i in context.IDENTIFIER())
+                {
+                    if (context.DOT_DOT_DOT() != null &&
+                        i == context.IDENTIFIER().Last())
+                    {
+                        types.Add(new SimpleVariadicType(i.GetText()));
+                    }
+                    else
+                    {
+                        types.Add(new SimpleType(i.GetText())
+                        {
+                            IsTemplate = true
+                        });
+                    }
+                }
+
+                return new TemplateList(types)
+                {
+                    Line = context.Start.Line,
+                    Column = context.Start.Column,
+                    FilePath = FileParser.CurrentPath
+                };
+            }
+
+            return null;
         }
 
         private static CppBlock ExtractCppBlock(string wholeCppBlock, IToken token)
@@ -575,12 +791,13 @@ namespace Nexus
             return new CppBlock(innerBlock, token.Line, token.Column) {FilePath = FileParser.CurrentPath};
         }
 
-        public override object VisitArrayAccess([NotNull] NexusParser.ArrayAccessContext context)
+        public override object VisitArrayAccessExpression([NotNull] NexusParser.ArrayAccessExpressionContext context)
         {
-            return new ArrayAccess
+            return new FunctionCall
             {
-                Value = (IExpression) Visit(context.expression(0)),
-                Index = (IExpression) Visit(context.expression(1)),
+                Object = (IExpression) Visit(context.expression(0)),
+                Parameter = new List<IExpression>{(IExpression) Visit(context.expression(1))},
+                Name = Function.OperatorToName("[]"),
                 Line = context.Start.Line,
                 Column = context.Start.Column,
                 FilePath = FileParser.CurrentPath

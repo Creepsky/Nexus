@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Nexus.gen;
 using Nexus.ir;
 
 namespace Nexus.common
@@ -74,6 +76,68 @@ namespace Nexus.common
     {
         public UnexpectedCallException(IPositioned element, string className, string functionName)
             : base(element, $"Unexpected call of function '{functionName}' of class {className}")
+        { }
+    }
+
+    public class ClassVariantNotFoundException : PositionedException
+    {
+        public ClassVariantNotFoundException(IPositioned element, string className)
+            : base(element, CreateErrorMessage(className, new string[]{}))
+        { }
+
+        public ClassVariantNotFoundException(IPositioned element, string className, string[] types)
+            : base(element, CreateErrorMessage(className, types))
+        { }
+
+        private static string CreateErrorMessage(string className, string[] types)
+        {
+            var errorMessage = $"Could not find a matching variant of the class {className}";
+
+            if (types != null)
+            {
+                errorMessage += $" with the template types {string.Join(", ", types)}";
+            }
+
+            return errorMessage;
+        }
+    }
+
+    public class OverloadingFunctionNotFound : PositionedException
+    {
+        public OverloadingFunctionNotFound(IPositioned element, string className, string functionName)
+            : base(element, CreateErrorMessage(className, functionName, new string[]{}))
+        { }
+
+        public OverloadingFunctionNotFound(IPositioned element, string functionName, string[] parameterTypes)
+            : base(element, CreateErrorMessage(string.Empty, functionName, parameterTypes))
+        { }
+
+        public OverloadingFunctionNotFound(IPositioned element, string className, string functionName, string[] parameterTypes)
+            : base(element, CreateErrorMessage(className, functionName, parameterTypes))
+        { }
+
+        private static string CreateErrorMessage(string className, string functionName, string[] parameterTypes)
+        {
+            var errorMessage = $"Could not find a matching variant of the function {functionName}";
+
+            if (!string.IsNullOrWhiteSpace(className))
+            {
+                errorMessage += $" for the class {className}";
+            }
+
+            if (parameterTypes.Any())
+            {
+                errorMessage += $" and the parameter types {string.Join(", ", parameterTypes)}";
+            }
+
+            return errorMessage;
+        }
+    }
+
+    public class TemplateGenerationException : PositionedException
+    {
+        public TemplateGenerationException(IGenerationElement element, string message)
+            : base(element, $"Could not instantiate template for {element.Name}: {message}")
         { }
     }
 }

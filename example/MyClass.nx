@@ -1,16 +1,35 @@
 class MyClass
 {
     string myString;
+    [int -> string] myMap;
 }
 
-int MyClass.testFunction(int a) {
-    return (0 + 5) * a;
+i32 MyClass.testFunction(int a) {
+    i32 b = 1 + 2 * 3 / 4;
+    return (0_i32 + 5_i32) * a;
 }
 
 string MyClass.to_string() {
     return this.myString;
 }
 
-string MyClass.testTemplateFunction<T>(T arg) {
+string map<int, string>.operator[](int key) {
+   return "abc";
+}
+
+string MyClass.getValue(int key) {
+    string i = "test";
+    return this.myMap[key];
+}
+
+int Main.run() {
+    MyClass myObject;
+    usize j = i32::maximum();
+    string i = this.testTemplateFunction(myObject);
+    //tuple<int, string, float> myTuple;
+    return 0_i32;
+}
+
+string Main.testTemplateFunction<T>(T arg) {
     return arg.to_string();
 }

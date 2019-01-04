@@ -1,4 +1,7 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿using System;
+using System.Linq;
+using McMaster.Extensions.CommandLineUtils;
+using Nexus.gen;
 using NLog;
 
 #pragma warning disable CS3021
@@ -31,6 +34,7 @@ namespace Nexus
             var optionInput = app.Option("-i|--input <path>", "The source file root directory", CommandOptionType.SingleValue);
             var optionOutput = app.Option("-o|--output <path>", "The compiled source file root directory",
                 CommandOptionType.SingleValue);
+            var optionAbstractSyntaxTree = app.Option("-a|--ast", "Print the parsed abstract syntax tree", CommandOptionType.NoValue);
 
             app.OnExecute(() =>
             {
@@ -54,6 +58,19 @@ namespace Nexus
                 configuration.Read();
 
                 var files = FileParser.ParseProject(configuration);
+
+                if (optionAbstractSyntaxTree.HasValue())
+                {
+                    foreach (var i in files)
+                    {
+                        foreach (var j in GenerationElementExtensions.GetAllElements(i.Classes, i.Functions, i.CppBlocks))
+                        {
+                            Console.WriteLine(j);
+                        }
+                    }
+                    return 0;
+                }
+
                 var units = Compiler.Compile(files);
                 FileParser.WriteFiles(configuration, units);
                 return 0;

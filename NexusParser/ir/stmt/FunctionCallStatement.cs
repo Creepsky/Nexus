@@ -13,15 +13,14 @@ namespace Nexus.ir.stmt
             FunctionCall.Check(context);
         }
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
+        public override SimpleType GetResultType(Context context) =>
+            new SimpleType(TypesExtension.Void)
+            {
+                Line = Line,
+                Column = Column
+            };
 
-        public override IType GetResultType(Context context) =>
-            new SimpleType(TypesExtension.Void, 0, Line, Column);
-
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             printer.Write($"{FunctionCall.Name}(");
             foreach (var i in FunctionCall.Parameter)
@@ -34,6 +33,15 @@ namespace Nexus.ir.stmt
                 }
             }
             printer.WriteLine(");");
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new FunctionCallStatement
+            {
+                FunctionCall = (FunctionCall) FunctionCall.CloneDeep()
+            };
         }
     }
 }

@@ -49,6 +49,7 @@ namespace Nexus
             var textReader = new StreamReader(file);
             var input = new AntlrInputStream(textReader);
             var ir = ParseFile(input);
+            CurrentPath = string.Empty;
             return ir;
         }
 
@@ -83,11 +84,6 @@ namespace Nexus
                 if (!fileSystem.DirectoryExists(dir))
                 {
                     fileSystem.CreateDirectory(dir);
-                }
-
-                if (!string.IsNullOrWhiteSpace(unit.Header))
-                {
-                    fileSystem.WriteAllText(dir / unit.Name + ".hpp", unit.Header);
                 }
 
                 if (!string.IsNullOrWhiteSpace(unit.Source))

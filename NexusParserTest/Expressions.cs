@@ -9,30 +9,47 @@ using Xunit;
 
 namespace NexusParserTest
 {
-    public static class Expressions
+    public class Expressions : IClassFixture<StandardLibFixture>
     {
+        private StandardLibFixture _fixture;
+
+        public Expressions(StandardLibFixture fixture)
+        {
+            _fixture = fixture;
+        }
+
         [Fact]
-        public static void ArrayAccessTestArray()
+        public void ArrayAccessTestArray()
         {
             var context = CreateContextWithPrimitives(1);
             
             foreach (var generationElement in context.GetElements())
             {
                 var i = (Variable) generationElement;
-                new ArrayAccess {Name = i.Name, Index = new I32(0)}.Check(context);
-                new ArrayAccess{Name = i.Name, Index = new VariableLiteral{Name = "a"}}.Check(context);
+
+                new ArrayAccess
+                {
+                    Value = new VariableLiteral{Name = i.Name},
+                    Index = new I32(0)
+                }.Check(context);
             }
         }
 
-        private static Context CreateContextWithPrimitives(int array)
+        private Context CreateContextWithPrimitives(int array)
         {
-            var context = new Context();
+            var context = _fixture.Context.StackNewContext(null);
 
             foreach (var i in TypesExtension.Primitives)
             {
                 try
                 {
-                    AddNewPrimitiveVariable(context, $"my{i}", i, array);
+                    var name = $"my{i}";
+
+                    context.Add(name, new Variable
+                    {
+                        Type = new SimpleType(i, array),
+                        Name = name
+                    });
                 }
                 catch (Exception)
                 {
@@ -40,38 +57,32 @@ namespace NexusParserTest
                 }
             }
 
+            _fixture.Generate();
+
             return context;
         }
 
-        private static void AddNewPrimitiveVariable(Context context, string variableName, string name, int array)
-        {
-            context.Add(variableName, new Variable{
-                Type = new SimpleType(name, array),
-                Name = variableName
-            });
-        }
-
         [Fact]
-        public static void BinaryOperationTest()
+        public void BinaryOperationTest()
         {
-            var context = new Context();
+            var context = _fixture.Context.StackNewContext(null);
 
             context.Add("a", new Variable {Name = "a", Type = new SimpleType("i32")});
             context.Add("b", new Variable {Name = "b", Type = new SimpleType("i32", 1)});
 
             context.Add("c", new Variable
             {
-                Name = "c", Type = new MapType
+                Name = "c", Type = new SimpleType("map", new TemplateList(new List<SimpleType>
                 {
-                    KeyType = new SimpleType("string"),
-                    ValueType = new SimpleType("float")
-                }
+                    new SimpleType("string"),
+                    new SimpleType("float")
+                }), 0)
             });
 
             context.Add("MyClass",
                 new Class("MyClass", null, new List<Variable>(), new List<CppBlockStatement>(), new List<Include>()));
 
-            context.Add("MyClass.func", new ExtensionFunction
+            context.Add("MyClass.func", new Function
             {
                 Name = "func",
                 ExtensionBase = new SimpleType("MyClass"),
@@ -88,14 +99,11 @@ namespace NexusParserTest
                         Name = "param2"
                     },
                 },
-                ReturnType = new TupleType
+                ReturnType = new SimpleType("tuple", new TemplateList(new List<SimpleType>
                 {
-                    Types = new List<IType>
-                    {
-                        new SimpleType("string"),
-                        new SimpleType("i32")
-                    }
-                },
+                    new SimpleType("string"),
+                    new SimpleType("i32")
+                }), 0),
                 Body = new List<IStatement>
                 {
                     new ReturnStatement
@@ -118,10 +126,12 @@ namespace NexusParserTest
                 Name = "myClassInstance"
             });
 
+            _fixture.Generate();
+
             CheckBinaryOperation(new I8(100), new I8(-100), BinaryOperatorType.Add, context, "i8(100) + i8(-100)");
 
             CheckBinaryOperation(new VariableLiteral {Name = "a"}, new ArrayAccess {Value = new VariableLiteral{Name = "b"}, Index = new USize(0)},
-                BinaryOperatorType.Sub, context, "a - b[usize(0)]");
+                BinaryOperatorType.Sub, context, "a - at(b, usize(0))");
 
             CheckBinaryOperation(new ArrayAccess
             {
@@ -145,17 +155,14 @@ namespace NexusParserTest
 
             CheckBinaryOperation(new Text{Value = "abc"}, new ArrayAccess
             {
-                Value = new ExtensionFunctionCall
+                Value = new FunctionCall
                 {
-                    Variable = new VariableLiteral{Name = "myClassInstance" },
-                    FunctionCall = new FunctionCall
+                    Object = new VariableLiteral{Name = "myClassInstance" },
+                    Name = "func",
+                    Parameter = new List<IExpression>
                     {
-                        Name = "func",
-                        Parameter = new List<IExpression>
-                        {
-                            new Text{Value = "text"},
-                            new I32(16)
-                        }
+                        new Text{Value = "text"},
+                        new I32(16)
                     }
                 },
                 Index = new USize(1)
@@ -184,10 +191,10 @@ namespace NexusParserTest
         public static void ParenTest(string expression, string expected)
         {
             var i = FileParser.ParseFile($"class test {{}} int test.func() {{ return {expression}; }}");
-            Assert.Equal(1, i.ExtensionFunctions.Count);
-            Assert.Equal(1, i.ExtensionFunctions[0].Body.Count);
-            Assert.IsType<ReturnStatement>(i.ExtensionFunctions[0].Body[0]);
-            var rs = (ReturnStatement)i.ExtensionFunctions[0].Body[0];
+            Assert.Equal(1, i.Functions.Count);
+            Assert.Equal(1, i.Functions[0].Body.Count);
+            Assert.IsType<ReturnStatement>(i.Functions[0].Body[0]);
+            var rs = (ReturnStatement)i.Functions[0].Body[0];
             GenerateAndCheck(i, new Context());
             Assert.Equal(expected ?? expression, Print(rs.Value));
         }
@@ -200,9 +207,9 @@ namespace NexusParserTest
                                          "int max(int a, int b) { if (a > b) { return a; } else { return b; } } " +
                                          "int my_a = 1; int my_b = 2; " +
                                          "auto my_max = max_of(my_a, my_b); " +
-                                         " }");
+                                         "}");
             GenerateAndCheck(i, new Context());
-            var element = i.ExtensionFunctions[0].Body[0];
+            var element = i.Functions[0].Body[0];
             Assert.IsType<Function>(element);
             var function = (Function)element;
 
@@ -227,11 +234,10 @@ namespace NexusParserTest
 
         private static void GenerateAndCheck(IGenerationElement element, Context context)
         {
-            element.Generate(context, GenerationPhase.ForwardDeclaration);
-            element.Generate(context, GenerationPhase.Declaration);
-            element.Generate(context, GenerationPhase.Definition);
+            element.ForwardDeclare(context);
+            element.Declare();
+            element.Define();
             element.Check(context);
-            
         }
 
         private static string Print(IPrintable element, PrintType type = PrintType.Header)
@@ -240,6 +246,17 @@ namespace NexusParserTest
             var printer = new Printer(stringWriter);
             element.Print(type, printer);
             return stringWriter.ToString();
+        }
+
+        [Fact]
+        public void CheckMapLiterals()
+        {
+            var i = FileParser.ParseFile("class Test{ [string -> int] values; } " +
+                                         "[string -> int] Test.get(string key) { " +
+                                         "  return this.values[key]; " +
+                                         "} ");
+
+            GenerateAndCheck(i, _fixture.Context.StackNewContext(null));
         }
     }
 }
