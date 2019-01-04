@@ -1,0 +1,9 @@
+build:
+  stage: build
+  script:
+    - dotnet build NexusParser.sln -c Release
+    - cd NexusParser/bin/Release/netcoreapp2.1
+    - dotnet NexusParser.dll --input ../../../../example/ --output ../../../../example/bin/
+    - cd ../../../../example/bin/
+    - make all
+
