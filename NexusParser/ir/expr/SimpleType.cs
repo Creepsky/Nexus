@@ -293,6 +293,14 @@ namespace Nexus.ir.expr
         {
             return new CppType((CppBlock) _cppBlock.CloneDeep());
         }
+
+        public override void Template(TemplateContext context, IGenerationElement concreteElement)
+        {
+            if (concreteElement == null)
+            {
+                _cppBlock.Template(context, null);
+            }
+        }
     }
 
     public class SimpleVariadicType : SimpleType
