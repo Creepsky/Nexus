@@ -9,7 +9,8 @@
         ForSource,
         ForwardDeclaration,
         Declaration,
-        Definition
+        Definition,
+        WithoutModifiers
     }
 
     public interface IPrintable

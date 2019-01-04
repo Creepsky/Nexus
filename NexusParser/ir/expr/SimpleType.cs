@@ -133,15 +133,15 @@ namespace Nexus.ir.expr
 
         public override bool Print(PrintType type, Printer printer)
         {
-            printer.Write(GetQualifiedName());
+            printer.Write(GetQualifiedName(type != PrintType.WithoutModifiers));
             return true;
         }
 
-        private string GetQualifiedName()
+        private string GetQualifiedName(bool withModifiers)
         {
             var name = Name;
 
-            if (Constant)
+            if (Constant && withModifiers)
             {
                 name = "const " + name;
             }
@@ -152,7 +152,7 @@ namespace Nexus.ir.expr
 
                 foreach (var i in TemplateList.Types)
                 {
-                    name += i.GetQualifiedName();
+                    name += i.GetQualifiedName(false);
                     
                     if (i != TemplateList.Types.Last())
                     {
@@ -161,7 +161,7 @@ namespace Nexus.ir.expr
                 }
             }
 
-            if (Reference)
+            if (Reference && withModifiers)
             {
                 name += "&";
             }

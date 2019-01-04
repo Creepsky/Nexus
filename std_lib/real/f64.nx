@@ -1,6 +1,7 @@
 class f64
 {
     c++ {|double|} value;
+    c++ {|explicit f64(double value) : value(value) { }|}
 }
 
 /* Addition */

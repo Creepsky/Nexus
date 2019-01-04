@@ -89,14 +89,7 @@ namespace Nexus
 
         public override object VisitNamedType(NexusParser.NamedTypeContext context)
         {
-            //var array = context.ARRAY_DECLARATION().Length;
-
-            if (context.ARRAY_DECLARATION().Length >= 1)
-            {
-                var b = false;
-            }
-
-            var i = new SimpleType(
+            return new SimpleType(
                 context.IDENTIFIER().GetText(),
                 VisitTemplate_list(context.template_list()) as TemplateList,
                 context.ARRAY_DECLARATION().Length)
@@ -105,23 +98,7 @@ namespace Nexus
                 Line = context.Start.Line,
                 Column = context.Start.Column
             };
-
-            return i;
-
-            //return array <= 0 ? type : CreateVector(array - 1, context.Start.Line, context.Start.Column, type);
         }
-
-        //private static SimpleType CreateVector(int depth, int line, int column, SimpleType type)
-        //{
-        //    return new SimpleType("vector")
-        //    {
-        //        TemplateList = new TemplateList(new List<SimpleType>
-        //            {depth > 0 ? CreateVector(depth - 1, line, column, type) : type}),
-        //        FilePath = FileParser.CurrentPath,
-        //        Line = line,
-        //        Column = column
-        //    };
-        //}
 
         public override object VisitTupleType(NexusParser.TupleTypeContext context) => new SimpleType(
             "tuple", new TemplateList(context.type().Select(i => (SimpleType) Visit(i)).ToList()), context.ARRAY_DECLARATION().Length)
@@ -154,15 +131,23 @@ namespace Nexus
             FilePath = FileParser.CurrentPath
         };
 
-        public override object VisitFunction_parameter(NexusParser.Function_parameterContext context) => new Variable
+        public override object VisitFunction_parameter(NexusParser.Function_parameterContext context)
         {
-            Type = (SimpleType) Visit(context.type()),
-            Name = context.IDENTIFIER().GetText(),
-            //Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
+            var i = new Variable
+            {
+                Type = (SimpleType) Visit(context.type()),
+                Name = context.IDENTIFIER().GetText(),
+                //Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+
+            i.Type.Constant = context.AMPERSAND() == null;
+            i.Type.Reference = true;
+
+            return i;
+        }
 
         public override object VisitAssignment_statement(NexusParser.Assignment_statementContext context) => new AssignmentStatement
         {
@@ -716,17 +701,11 @@ namespace Nexus
                 FilePath = FileParser.CurrentPath,
             };
 
-            foreach (var i in function.Parameter)
-            {
-                // if it is an operator function, all parameters need to be a const reference (because of c++)
-                i.Type.Constant = false;
-                i.Type.Reference = true;
-                //i.Type.Parameter = true;
-            }
-
             if (context.extensionType != null)
             {
                 function.ExtensionBase = (SimpleType) Visit(context.extensionType);
+                function.ExtensionBase.Reference = true;
+                function.ExtensionBase.Constant = context.extensionTypeMutability == null;
             }
 
             if (context.template_list() != null)

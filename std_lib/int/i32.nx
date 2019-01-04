@@ -408,62 +408,62 @@ bool i32.operator>=(f64 rhs) {
 
 /* add */
 
-i32 i32.operator+=(i8 rhs) {
+i32 i32&.operator+=(i8 rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(u8 rhs) {
+i32 i32&.operator+=(u8 rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(i16 rhs) {
+i32 i32&.operator+=(i16 rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(u16 rhs) {
+i32 i32&.operator+=(u16 rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(i32 rhs) {
+i32 i32&.operator+=(i32 rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(u32 rhs) {
+i32 i32&.operator+=(u32 rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(i64 rhs) {
+i32 i32&.operator+=(i64 rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(u64 rhs) {
+i32 i32&.operator+=(u64 rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(isize rhs) {
+i32 i32&.operator+=(isize rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(usize rhs) {
+i32 i32&.operator+=(usize rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(f32 rhs) {
+i32 i32&.operator+=(f32 rhs) {
     this.value += rhs.value;
     return this;
 }
 
-i32 i32.operator+=(f64 rhs) {
+i32 i32&.operator+=(f64 rhs) {
     this.value += rhs.value;
     return this;
 }

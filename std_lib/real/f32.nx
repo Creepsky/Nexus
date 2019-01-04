@@ -1,6 +1,7 @@
 class f32
 {
     c++ {|float|} value;
+    c++ {|explicit f32(float value) : value(value) { }|}
 }
 
 /* Addition */
