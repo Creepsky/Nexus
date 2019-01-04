@@ -2,7 +2,9 @@ class string
 {
     include <string>;
 
-    c++ {|
-        std::string value;
-    |}
+    c++ {|std::string value;|}
+    c++ {|string() { }|}
+    c++ {|explicit string(std::string value) : value(std::move(value)) { }|}
+    c++ {|explicit string(const char* value) : value(value) { }|}
+    c++ {|string& operator=(const char* value) { return string(value); }|}
 }

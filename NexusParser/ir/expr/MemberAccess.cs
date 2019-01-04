@@ -16,12 +16,7 @@ namespace Nexus.ir.expr
             Member = member;
         }
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
-
-        public override IType GetResultType(Context context)
+        public override SimpleType GetResultType(Context context)
         {
             return GetVariable(context).GetResultType(context);
         }
@@ -47,10 +42,21 @@ namespace Nexus.ir.expr
             return variable;
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             Element.Print(type, printer);
             printer.Write($".{Member}");
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new MemberAccess((IExpression) Element.CloneDeep(), new string(Member));
+        }
+
+        public override string ToString()
+        {
+            return $"MemberAccess({Element}.{Member})";
         }
     }
 }

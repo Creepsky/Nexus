@@ -14,8 +14,39 @@ namespace Nexus.ir.stmt
         public string FilePath { get; set; }
         public string Name { get; set; }
         public abstract void Check(Context context);
-        public abstract IGenerationElement Generate(Context context, GenerationPhase phase);
-        public abstract IType GetResultType(Context context);
-        public abstract void Print(PrintType type, Printer printer);
+        public abstract SimpleType GetResultType(Context context);
+        public abstract bool Print(PrintType type, Printer printer);
+
+        public IGenerationElement CloneDeep()
+        {
+            var cloned = (Statement) Clone();
+            cloned.Column = Column;
+            cloned.Line = Line;
+            cloned.FilePath = new string(FilePath);
+            cloned.Name = new string(Name);
+            return cloned;
+        }
+
+        public virtual void ForwardDeclare(Context upperContext)
+        {
+        }
+
+        public virtual void Declare()
+        {
+        }
+
+        public virtual void Define()
+        {
+        }
+
+        public virtual void Remove()
+        {
+        }
+
+        public virtual void Template(TemplateContext context, IGenerationElement concreteElement)
+        {
+        }
+
+        public abstract object Clone();
     }
 }

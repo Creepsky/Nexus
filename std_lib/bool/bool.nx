@@ -1,0 +1,11 @@
+class boolean
+{
+    c++ {|bool|} value;
+    c++ {|boolean() : value(false) { }|}
+    c++ {|explicit boolean(bool value) : value(value) { }|}
+    c++ {|operator bool() const { return value; }|}
+}
+
+bool bool.operator&&(bool rhs) {
+    return new bool(this.value && rhs.value);
+}

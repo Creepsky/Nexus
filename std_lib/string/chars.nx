@@ -1,9 +1,9 @@
 /**
-  * @brief Clears the string, leaving it empty.
+  * @brief Returns the amount of .
   */
-void string.bytes()
+usize string.bytes()
 {
-    return c++ {|
+    return new usize(c++ {|
         __this.value.size()
-    |};
+    |});
 }

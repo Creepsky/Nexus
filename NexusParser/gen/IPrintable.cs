@@ -4,15 +4,16 @@
     {
         Header,
         Source,
+        ClassDefinition,
         FunctionSource,
-        Parameter,
-        ParameterRef,
-        ParameterConstRef,
-        ForSource
+        ForSource,
+        ForwardDeclaration,
+        Declaration,
+        Definition
     }
 
     public interface IPrintable
     {
-        void Print(PrintType type, Printer printer);
+        bool Print(PrintType type, Printer printer);
     }
 }

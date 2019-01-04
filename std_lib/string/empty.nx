@@ -2,9 +2,9 @@
   * @brief Returns, if the string has the size of 0.
   * @returns true, if the string is empty, false if not.
   */
-void string.empty()
+bool string.empty()
 {
-    return c++ {|
+    return new bool(c++ {|
         __this.value.empty()
-    |};
+    |});
 }

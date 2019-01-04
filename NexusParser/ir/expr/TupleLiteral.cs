@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
 
@@ -11,17 +10,11 @@ namespace Nexus.ir.expr
 
         public override string ToString() => $"std::make_tuple({string.Join(", ", Values)})";
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
-
-        public override IType GetResultType(Context context) =>
-            new TupleType
+        public override SimpleType GetResultType(Context context) =>
+            new SimpleType("tuple", new TemplateList(Values.Select(i => GetResultType(context)).ToList()), 0)
             {
                 Line = Line,
-                Column = Column,
-                Types = Values.Select(i => GetResultType(context)).ToList()
+                Column = Column 
             };
 
         public override void Check(Context context)
@@ -32,18 +25,27 @@ namespace Nexus.ir.expr
             }
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             printer.Write("std::make_tuple(");
             foreach (var i in Values)
             {
                 i.Print(type, printer);
-                if (i != Values.Last())
+                if (!Equals(i, Values.Last()))
                 {
                     printer.Write(", ");
                 }
             }
             printer.Write(")");
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new TupleLiteral
+            {
+                Values = Values.Select(i => (IExpression) i.CloneDeep()).ToList()
+            };
         }
     }
 }

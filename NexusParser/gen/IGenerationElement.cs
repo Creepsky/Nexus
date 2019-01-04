@@ -1,27 +1,35 @@
-﻿using Nexus.ir;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nexus.ir;
 using Nexus.ir.expr;
 
 namespace Nexus.gen
 {
-    public enum GenerationPhase
-    {
-        ForwardDeclaration,
-        Declaration,
-        Definition
-    }
-
-    public interface IGenerationElement : ICheckable, IPrintable, IPositioned
+    public interface IGenerationElement : ICheckable, IPrintable, IPositioned, ICloneable
     {
         string Name { get; set; }
-        IGenerationElement Generate(Context context, GenerationPhase phase);
-        IType GetResultType(Context context);
+        //IGenerationElement Generate(Context context, GenerationPhase phase);
+        SimpleType GetResultType(Context context);
+        IGenerationElement CloneDeep();
+        void ForwardDeclare(Context upperContext);
+        void Declare();
+        void Define();
+        void Remove();
+        void Template(TemplateContext context, IGenerationElement concreteElement);
+    }
+
+    public interface IGenerationElementGenerator
+    {
+        TemplateList TemplateList { get; }
+        IGenerationElement Generate();
     }
 
     public static class GenerationElementExtensions
     {
-        public static T Generate<T>(this IGenerationElement element, Context context, GenerationPhase phase) where T : class
+        public static IEnumerable<IGenerationElement> GetAllElements(params IEnumerable<IGenerationElement>[] children)
         {
-            return (T)element.Generate(context, phase);
+            return children.SelectMany(i => i);
         }
     }
 }

@@ -1,13 +1,19 @@
+using System.Collections.Generic;
 using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
 
 namespace Nexus.ir.stmt
 {
-    public class Variable : Statement
+    public class Variable : Expression
     {
-        public IType Type { get; set; }
-        public IExpression Initialization { get; set; }
+        public SimpleType Type { get; set; }
+        //public SimpleType Type { get; set; }
+        //public IExpression Initialization { get; set; }
+        //public bool Constant { get; set; }
+        //public bool Reference { get; set; }
+        //public bool Parameter { get; set; }
+        private Context _context;
 
         public override string ToString()
         {
@@ -16,83 +22,85 @@ namespace Nexus.ir.stmt
 
         public override void Check(Context upperContext)
         {
-            // TODO
+            Type.Check(upperContext);
+           //Initialization?.Check(upperContext);
         }
 
-        public override IGenerationElement Generate(Context upperContext, GenerationPhase phase)
+        public override SimpleType GetResultType(Context context) => Type;
+
+        public override void ForwardDeclare(Context upperContext)
         {
-            if (upperContext.Element == null)
+            _context = upperContext;
+            Type.ForwardDeclare(_context);
+
+            if (_context.Element is Class ||
+                _context.Element is Function ||
+                _context.Element is ForStatement)
             {
-                throw new NoScopeException(this);
+                _context.Add(Name, this);
             }
-
-            if (phase == GenerationPhase.Declaration)
+            else
             {
-                if (upperContext.Element.GetType() == typeof(Class) ||
-                    upperContext.Element.GetType() == typeof(Function) ||
-                    upperContext.Element.GetType() == typeof(ExtensionFunction) ||
-                    upperContext.Element.GetType() == typeof(OperatorFunction))
-                {
-                    return GenerateParameter(upperContext);
-                }
-
-                throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
-                    new[] {nameof(Class), nameof(Function), nameof(ExtensionFunction) });
+                throw new UnexpectedScopeException(this, _context.Element.GetType().Name,
+                    new List<string>{nameof(Class), nameof(Function)});
             }
-
-            return this;
         }
 
-        public override IType GetResultType(Context context) => Type;
-
-        private IGenerationElement GenerateParameter(Context context)
+        public override void Declare()
         {
-            context.Add(Name, this);
-            return this;
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
-            if (type == PrintType.Header)
-            {
-                Type.Print(type, printer);
-                printer.WriteLine($" {Name};");
-            }
-            else if (type == PrintType.Source)
-            {
-                printer.Write($"{Name}");
-                printer.Write("{");
-                Initialization?.Print(type, printer);
-                printer.Write("}");
-            }
-            else if (type == PrintType.Parameter ||
-                     type == PrintType.ParameterRef ||
-                     type == PrintType.ParameterConstRef)
-            {
-                Type.Print(type, printer);
-                printer.Write(' ' + Name);
-            }
-            else if (type == PrintType.FunctionSource ||
-                     type == PrintType.ForSource)
-            {
-                Type.Print(type, printer);
-                printer.Write(" ");
-                printer.Write(Name);
-                if (Initialization != null)
-                {
-                    printer.Write(" = ");
-                    Initialization.Print(type, printer);
-                }
+            //var isCppType = Type is CppType;
 
-                if (type == PrintType.ForSource)
-                {
-                    printer.Write(";");
-                }
-                else
-                {
-                    printer.WriteLine(";");
-                }
+            //if (Constant && !isCppType)
+            //{
+            //    printer.Write("const ");
+            //}
+
+            Type.Print(type, printer);
+
+            //if (Reference && !isCppType)
+            //{
+            //    printer.Write("&");
+            //}
+
+            if (type != PrintType.ForwardDeclaration)
+            {
+                printer.Write($" {Name}");
             }
+
+            //if (Initialization != null)
+            //{
+            //    printer.Write(" = ");
+            //    Initialization?.Print(type, printer);
+            //}
+
+            //if (!Parameter)
+            //{
+            //    printer.WriteLine(";");
+            //}
+
+            return true;
+        }
+
+        public override void Template(TemplateContext context, IGenerationElement concreteElement)
+        {
+            Type.Template(context, concreteElement);
+            ForwardDeclare(context);
+        }
+
+        public override object Clone()
+        {
+            return new Variable
+            {
+                Type = (SimpleType) Type.CloneDeep(),
+                //Initialization = (IExpression) Initialization?.CloneDeep(),
+                //Constant = Constant,
+                //Reference = Reference,
+                //Parameter = Parameter
+            };
         }
     }
 }

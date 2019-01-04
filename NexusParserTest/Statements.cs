@@ -17,7 +17,7 @@ namespace NexusParserTest
             {
                 Type = new SimpleType(TypesExtension.Int, 0),
                 Name = "a",
-                Initialization = new I32(0)
+                //Initialization = new I32(0)
             });
             
             // a = 1;
@@ -31,9 +31,9 @@ namespace NexusParserTest
             };
             
             i.Check(context);
-            i.Generate(context, GenerationPhase.ForwardDeclaration);
-            i.Generate(context, GenerationPhase.Declaration);
-            i.Generate(context, GenerationPhase.Definition);
+            i.ForwardDeclare(context);
+            i.Declare();
+            i.Define();
         }
     }
 }

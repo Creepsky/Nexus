@@ -5,12 +5,7 @@ namespace Nexus.ir.expr
 {
     public class This : Expression
     {
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
-
-        public override IType GetResultType(Context context)
+        public override SimpleType GetResultType(Context context)
         {
             return context.UpperContext.GetElementAs<Class>(this).Type;
         }
@@ -18,15 +13,18 @@ namespace Nexus.ir.expr
         public override void Check(Context context)
         {
             // this can only exist inside a function..
-            // TODO: what about extension functions?
             context.GetElementAs<Function>(this);
-            // ..that is defined inside a class
-            context.UpperContext.GetElementAs<Class>(this);
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             printer.Write("this");
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new This();
         }
     }
 }

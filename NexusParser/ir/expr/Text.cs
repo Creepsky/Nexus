@@ -9,23 +9,31 @@ namespace Nexus.ir.expr
 
         public override string ToString() => '"' + Value + '"';
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
-
-        public override IType GetResultType(Context context) =>
-            new SimpleType("string", 0, Line, Column);
+        public override SimpleType GetResultType(Context context) =>
+            new SimpleType(TypesExtension.String)
+            {
+                FilePath = FilePath,
+                Line = Line,
+                Column = Column
+            };
 
         public override void Check(Context context)
         {
             // nothing to check yet
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
-            printer.Write('"' + Value + '"');
+            printer.Write("string(\"" + Value + "\")");
+            return true;
+        }
 
+        public override object Clone()
+        {
+            return new Text
+            {
+                Value = new string(Value)
+            };
         }
     }
 }

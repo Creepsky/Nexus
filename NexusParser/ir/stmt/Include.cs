@@ -1,5 +1,4 @@
-﻿using System;
-using Nexus.common;
+﻿using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.expr;
 
@@ -20,27 +19,32 @@ namespace Nexus.ir.stmt
 
             if (scopeType != typeof(Class) &&
                 scopeType != typeof(File) &&
-                scopeType != typeof(ExtensionFunction))
+                scopeType != typeof(Function))
             {
                 throw new UnexpectedScopeException(this, scopeType.Name, new []
                 {
-                    nameof(File), nameof(Class), nameof(ExtensionFunction)
+                    nameof(File), nameof(Class), nameof(Function)
                 });
             }
         }
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        public override SimpleType GetResultType(Context context)
+        {
+            throw new UnexpectedCallException(this, GetType().Name, "GetResultType");
+        }
+
+        public override void ForwardDeclare(Context upperContext)
         {
             File file;
 
-            if (context.Element.GetType() == typeof(Class) ||
-                context.Element.GetType() == typeof(ExtensionFunction))
+            if (upperContext.Element.GetType() == typeof(Class) ||
+                upperContext.Element.GetType() == typeof(Function))
             {
-                file = context.UpperContext.GetElementAs<File>(this);
+                file = upperContext.UpperContext.GetElementAs<File>(this);
             }
-            else if (context.Element.GetType() == typeof(File))
+            else if (upperContext.Element.GetType() == typeof(File))
             {
-                file = context.GetElementAs<File>(this);
+                file = upperContext.GetElementAs<File>(this);
             }
             else
             {
@@ -48,21 +52,21 @@ namespace Nexus.ir.stmt
             }
 
             file.Add(this);
-
-            return this;
         }
 
-        public override IType GetResultType(Context context)
-        {
-            throw new UnexpectedCallException(this, GetType().Name, "GetResultType");
-        }
-
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             if (type == PrintType.Header)
             {
                 printer.WriteLine($"#include <{Path}>");
+                return true;
             }
+            return false;
+        }
+
+        public override object Clone()
+        {
+            return new Include(new string(Path));
         }
     }
 }

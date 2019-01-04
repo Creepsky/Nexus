@@ -244,11 +244,11 @@ namespace Nexus.ir.expr
             }
         }
 
-        public abstract override IType GetResultType(Context context);
+        public abstract override SimpleType GetResultType(Context context);
 
         public abstract override void Check(Context context);
 
-        public abstract override void Print(PrintType type, Printer printer);
+        public abstract override bool Print(PrintType type, Printer printer);
     }
 
     public class NumberLiteral<T> : NumberLiteral
@@ -264,26 +264,32 @@ namespace Nexus.ir.expr
         
         public override string ToString()
         {
-            return Value.ToString();
+            return $"{Type.ToString().ToLower()}({Value})";
         }
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
+        public override SimpleType GetResultType(Context context)
         {
-            return this;
-        }
-
-        public override IType GetResultType(Context context)
-        {
-            return new SimpleType(Type.ToString(), 0, Line, Column);
+            return new SimpleType(TypesExtension.ToString(Type))
+            {
+                FilePath = FilePath,
+                Line = Line,
+                Column = Column
+            };
         }
 
         public override void Check(Context context)
         {
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             printer.Write($"{TypesExtension.ToString(Type)}({Value.ToString()})");
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new NumberLiteral<T>(Value, Type);
         }
     }
 

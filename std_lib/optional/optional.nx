@@ -1,0 +1,23 @@
+class optional<T>
+{
+    c++ {| std::unique_ptr<T> value; |}
+    c++ {| optional() : value(nullptr) { } |}
+    c++ {| optional(T&& value) : value(std::move()) { } |}
+}
+
+bool optional<T>.is_set<T>()
+{
+    return c++ {| __this.value == nullptr |};
+}
+
+T optional<T>.get_or_default<T>(T default)
+{
+    if (this.is_set() == true)
+    {
+        return c++ {| __this.value |};
+    }
+    else
+    {
+        return default;
+    }
+}

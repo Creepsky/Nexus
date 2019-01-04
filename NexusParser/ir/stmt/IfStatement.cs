@@ -7,7 +7,7 @@ namespace Nexus.ir.stmt
 {
     public class IfStatement : Statement
     {
-        public ICondition Condition { get; set; }
+        public IExpression Condition { get; set; }
         public IList<IStatement> Then { get; set; }
         public IList<IStatement> Else { get; set; }
 
@@ -16,28 +16,32 @@ namespace Nexus.ir.stmt
             Condition.Check(context);
 
             var thenContext = context.StackNewContext(this);
-            var elseContext = context.StackNewContext(this);
 
             foreach (var i in Then)
             {
                 i.Check(thenContext);
             }
 
-            foreach (var i in Else)
+            if (Else != null)
             {
-                i.Check(elseContext);
+                var elseContext = context.StackNewContext(this);
+
+                foreach (var i in Else)
+                {
+                    i.Check(elseContext);
+                }
             }
         }
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
+        public override SimpleType GetResultType(Context context) =>
+            new SimpleType(TypesExtension.Void)
+            {
+                FilePath = FilePath,
+                Line = Line,
+                Column = Column
+            };
 
-        public override IType GetResultType(Context context) =>
-            new SimpleType(PrimitiveType.Void.ToString(), 0, Line, Column);
-
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
             printer.Write("if (");
             Condition.Print(type, printer);
@@ -50,7 +54,7 @@ namespace Nexus.ir.stmt
             }
             printer.Pop();
             printer.WriteLine("}");
-            if (Else.Any())
+            if (Else != null && Else.Any())
             {
                 printer.WriteLine("else");
                 printer.WriteLine("{");
@@ -61,6 +65,35 @@ namespace Nexus.ir.stmt
                 }
                 printer.Pop();
                 printer.WriteLine("}");
+            }
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new IfStatement
+            {
+                Condition = (IExpression) Condition.CloneDeep(),
+                Then = Then.Select(i => (IStatement) i.CloneDeep()).ToList(),
+                Else = Else?.Select(i => (IStatement) i.CloneDeep()).ToList()
+            };
+        }
+
+        public override void Template(TemplateContext context, IGenerationElement concreteElement)
+        {
+            Condition.Template(context, concreteElement);
+            
+            foreach (var i in Then)
+            {
+                i.Template(context, concreteElement);
+            }
+
+            if (Else != null)
+            {
+                foreach (var i in Else)
+                {
+                    i.Template(context, concreteElement);
+                }
             }
         }
     }

@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Nexus.common;
 using Nexus.ir;
 using Nexus.ir.stmt;
 
 namespace Nexus.gen
 {
-    public class Context
+    public class Context : ICloneable
     {
         public Context UpperContext { get; }
         public IGenerationElement Element { get; }
@@ -57,17 +60,13 @@ namespace Nexus.gen
 
             if (current != null)
             {
-                if (element.GetType() == typeof(ExtensionFunction) ||
-                    element.GetType() == typeof(OperatorFunction))
+                if (current is Function extensionFunction)
                 {
-                    if (current.GetType() != typeof(ExtensionFunction) &&
-                        current.GetType() != typeof(OperatorFunction))
-                    {
-                        throw new RedeclarationException(element, current, name);
-                    }
-
-                    var function = (ExtensionFunction) current;
-                    function.AddOverload((ExtensionFunction) element);
+                    extensionFunction.AddOverload((Function)element);
+                }
+                else if (current is Class c)
+                {
+                    c.AddVariant((Class)element);
                 }
                 else
                 {
@@ -80,16 +79,21 @@ namespace Nexus.gen
             }
         }
 
-        public T Get<T>(string name, IPositioned caller) where T : IGenerationElement
+        public void Remove(string name, IPositioned caller)
+        {
+            _symbols.Remove(name);
+        }
+
+        public T Get<T>(string name, IPositioned caller) where T : class, IGenerationElement
         {
             var element = Get(name, caller);
 
-            if (element.GetType() != typeof(T))
+            if (!(element is T elementCast))
             {
-                throw new TypeMismatchException(caller, nameof(T), element.GetType().Name);
+                throw new TypeMismatchException(caller, typeof(T).Name, element.GetType().Name);
             }
 
-            return (T) element;
+            return elementCast;
         }
 
         public IGenerationElement Get(string name, IPositioned caller)
@@ -106,6 +110,7 @@ namespace Nexus.gen
 
         public IGenerationElement Get(string name)
         {
+            Debug.Assert(!string.IsNullOrEmpty(name), "Empty name given");
             return Contains(name) ? _symbols[name] : UpperContext?.Get(name);
         }
 
@@ -124,6 +129,15 @@ namespace Nexus.gen
             }
             
             return (T)Element;
+        }
+
+        public object Clone()
+        {
+            return new Context(
+                (Context) UpperContext?.Clone(),
+                Element,
+                new Dictionary<string, IGenerationElement>(_symbols)
+            );
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using Nexus.common;
 using Nexus.gen;
 using Nexus.ir.stmt;
@@ -7,29 +7,35 @@ namespace Nexus.ir.expr
 {
     public class VariableLiteral : Expression
     {
-        public override string ToString() => Name;
+        public override string ToString() => $"VariableLiteral({Name})";
 
-        public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        {
-            return this;
-        }
-
-        public override IType GetResultType(Context context)
+        public override SimpleType GetResultType(Context context)
         {
             return context.Get(Name, this).GetResultType(context);
+        }
+
+        public override void Template(TemplateContext context, IGenerationElement concreteElement)
+        {
+            if (concreteElement != null)
+            {
+                throw new TemplateGenerationException(this, $"Can not template {this} from {concreteElement}");
+            }
+
+            if (context.TemplateVariables.ContainsKey(Name))
+            {
+                Name = context.TemplateVariables[Name].GetResultType(context).ToString();
+            }
         }
 
         public override void Check(Context context)
         {
             if (Name == "this")
             {
-                if (context.Element.GetType() != typeof(ExtensionFunction) &&
-                    context.Element.GetType() != typeof(OperatorFunction))
+                if (!(context.Element is Function))
                 {
                     throw new UnexpectedScopeException(this, context.Element.GetType().Name, new []
                     {
-                        typeof(ExtensionFunction).Name,
-                        typeof(OperatorFunction).Name
+                        typeof(Function).Name
                     });
                 }
             }
@@ -40,16 +46,15 @@ namespace Nexus.ir.expr
             }
         }
 
-        public override void Print(PrintType type, Printer printer)
+        public override bool Print(PrintType type, Printer printer)
         {
-            if (Name == "this")
-            {
-                printer.Write("__this");
-            }
-            else
-            {
-                printer.Write(Name);
-            }
+            printer.Write(Name == "this" ? "__this" : Name);
+            return true;
+        }
+
+        public override object Clone()
+        {
+            return new VariableLiteral();
         }
     }
 }
