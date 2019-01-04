@@ -308,25 +308,19 @@ namespace Nexus.ir.stmt
             printer.Write(" ");
             if (Static)
             {
-                ExtensionBase.Print(type, printer);
+                ExtensionBase.Print(PrintType.WithoutModifiers, printer);
                 printer.Write("_");
             }
             printer.Write($"{Name}(");
 
             if (!Static && ExtensionBase != null)
             {
-                var extensionBase = (SimpleType) ExtensionBase.CloneDeep();
-
-                extensionBase.Constant = false;
-                extensionBase.Reference = true;
-                //extensionBase.Parameter = true;
-
                 var thisVariable = new Variable
                 {
                     Line = Line,
                     Column = Column,
                     Name = "__this",
-                    Type = extensionBase
+                    Type = ExtensionBase
                 };
 
                 thisVariable.Print(type, printer);

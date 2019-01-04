@@ -1,7 +1,7 @@
 /**
   * @brief Clears the string, leaving it empty.
   */
-void string.clear()
+void string&.clear()
 {
     c++ {|
         __this.value.clear();

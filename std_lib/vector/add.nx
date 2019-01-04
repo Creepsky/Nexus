@@ -1,4 +1,4 @@
-void vector<T>.add<T>(T element)
+void vector<T>&.add<T>(T element)
 {
     c++ {| __this.values.emplace_back(std::move(element)); |}
 }

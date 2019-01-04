@@ -30,11 +30,12 @@ type : IDENTIFIER template_list? ARRAY_DECLARATION* #namedType
 
 variable_declaration : type IDENTIFIER template_list? COLON ;
 
-function_parameter : type IDENTIFIER;
+function_parameter : type AMPERSAND? IDENTIFIER;
 
 function_body : function_body_statement* ;
 
-function_declaration : returnType=type (extensionType=type (DOT | DOUBLE_COLON))?
+function_declaration : returnType=type returnTypeMutability=AMPERSAND?
+                       (extensionType=type extensionTypeMutability=AMPERSAND? (DOT | DOUBLE_COLON))?
                        (OPERATOR operator | name=IDENTIFIER)
                        template_list?
                        LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
@@ -71,7 +72,6 @@ expression_statement : expression COLON ;
 function_body_statement : assignment_statement
                         | return_statement
                         | function_declaration
-                        // | variable_statement
                         | if_statement
                         | while_statement
                         | for_statement
