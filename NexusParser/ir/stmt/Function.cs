@@ -32,8 +32,11 @@ namespace Nexus.ir.stmt
 
         public Function GetOverload(FunctionCall functionCall, Context context)
         {
+            var extensionBase = functionCall.Object?.GetResultType(context);
+
             var overload = Overloads.Prepend(this)
                 .Where(i => i.TemplateList == null)
+                .Where(i => i.ExtensionBase?.Equals(extensionBase) ?? true)
                 .Select(i => i.Matches(functionCall, context))
                 .FirstOrDefault(match => match != null);
 

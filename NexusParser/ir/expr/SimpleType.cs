@@ -79,10 +79,27 @@ namespace Nexus.ir.expr
                 return true;
             }
 
-            return IsTemplate ||
-                   Name == other.Name ||
-                   Name == TypesExtension.CppType ||
-                   other.Name == TypesExtension.CppType;
+            // exceptions
+            if (IsTemplate ||
+                Name == TypesExtension.CppType ||
+                other.Name == TypesExtension.CppType)
+            {
+                return true;
+            }
+
+            if (TemplateList == null)
+            {
+                if (other.TemplateList != null)
+                {
+                    return false;
+                }
+            }
+            else if (!TemplateList.Equals(other.TemplateList))
+            {
+                return false;
+            }
+
+            return Name == other.Name;
         }
 
         public override bool Equals(object other)
@@ -218,11 +235,6 @@ namespace Nexus.ir.expr
             // if not, it could also be a class
             if (context.Get(Name) is Class c)
             {
-                if (Name == "vector")
-                {
-                    var b = false;
-                }
-
                 c = c.GetVariant(this, context);
 
                 if (c != null)

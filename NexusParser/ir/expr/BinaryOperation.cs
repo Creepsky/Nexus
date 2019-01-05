@@ -32,6 +32,8 @@ namespace Nexus.ir.expr
         public IExpression Left { get; set; }
         public BinaryOperatorType Type { get; set; }
         public IExpression Right { get; set; }
+        private SimpleType _resultType;
+        private FunctionCall _functionCall;
 
         public override string ToString()
         {
@@ -83,10 +85,8 @@ namespace Nexus.ir.expr
             }
         }
 
-        public override SimpleType GetResultType(Context context)
-        {
-            return GetFunctionCall().GetResultType(context);
-        }
+        public override SimpleType GetResultType(Context context) =>
+            _resultType ?? (_resultType = GetFunctionCall().GetResultType(context));
 
         public override void ForwardDeclare(Context upperContext)
         {
@@ -151,7 +151,7 @@ namespace Nexus.ir.expr
             }
         }
 
-        private FunctionCall GetFunctionCall() => new FunctionCall
+        private FunctionCall GetFunctionCall() => _functionCall ?? (_functionCall = new FunctionCall
         {
             Name = "operator" + GetOperator(),
             Column = Column,
@@ -160,7 +160,7 @@ namespace Nexus.ir.expr
             Object = Left,
             Parameter = new List<IExpression> {Right},
             Static = false
-        };
+        });
 
         //public override bool Print(PrintType type, Printer printer)
         //{
