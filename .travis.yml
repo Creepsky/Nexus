@@ -6,7 +6,7 @@ before_install:
   - wget https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.3/codacy-coverage-reporter-4.0.3-assembly.jar
   - dotnet tool install --tool-path="./coverlet/" coverlet.console
   - cd NexusParser
-  - wget http://www.antlr.org/download/antlr-4.7.1-complete.jar
+  - wget http://www.antlr.org/download/antlr-4.7.2-complete.jar
   - sh antlr.sh
   - cd ..
 script:
