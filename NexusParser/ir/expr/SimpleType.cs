@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nexus.common;
@@ -126,6 +126,11 @@ namespace Nexus.ir.expr
             if (TemplateList != null)
             {
                 name += TemplateList.ToString();
+            }
+
+            if (!Constant && Reference)
+            {
+                name += "&";
             }
 
             return name;

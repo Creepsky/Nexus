@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -67,7 +67,16 @@ namespace Nexus.ir.stmt
 
             for (var i = 0; i < functionCall.Parameter.Count; ++i)
             {
-                if (!functionCall.Parameter[i].GetResultType(context).Equals(Parameter[i].GetResultType(context)))
+                var functionCallParameter = functionCall.Parameter[i].GetResultType(context);
+                var functionParameter = Parameter[i].GetResultType(context);
+
+                if (!functionCallParameter.Equals(functionParameter))
+                {
+                    return null;
+                }
+
+                // ensure const correctness
+                if (!functionParameter.Constant && functionCallParameter.Constant)
                 {
                     return null;
                 }
