@@ -7,6 +7,7 @@ namespace Nexus.ir.stmt
     {
         public IExpression Left { private get; set; }
         public IExpression Right { private get; set; }
+        private SimpleType _returnType;
 
         public override void Check(Context context)
         {
@@ -15,12 +16,12 @@ namespace Nexus.ir.stmt
         }
 
         public override SimpleType GetResultType(Context context) =>
-            new SimpleType(TypesExtension.Void)
+            _returnType ?? (_returnType = new SimpleType(TypesExtension.Void)
             {
                 FilePath = FilePath,
                 Line = Line,
                 Column = Column
-            };
+            });
 
         public override void ForwardDeclare(Context upperContext)
         {

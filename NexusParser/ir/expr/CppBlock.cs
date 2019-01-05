@@ -7,6 +7,7 @@ namespace Nexus.ir.expr
     public class CppBlock : Expression
     {
         public string Block { get; private set; }
+        private SimpleType _returnType;
         
         public CppBlock(string block, int line, int column)
         {
@@ -15,15 +16,14 @@ namespace Nexus.ir.expr
             Column = column;
         }
 
-        public override SimpleType GetResultType(Context context)
-        {
-            return new SimpleType(TypesExtension.CppType)
-            {
-                FilePath = FilePath,
-                Line = Line,
-                Column = Column
-            };
-        }
+        public override SimpleType GetResultType(Context context) =>
+            _returnType ?? (_returnType =
+                new SimpleType(TypesExtension.CppType)
+                {
+                    FilePath = FilePath,
+                    Line = Line,
+                    Column = Column
+                });
 
         public override void Template(TemplateContext context, IGenerationElement concreteElement)
         {

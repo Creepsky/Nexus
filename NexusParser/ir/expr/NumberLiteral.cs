@@ -255,6 +255,7 @@ namespace Nexus.ir.expr
     {
         public T Value { get; private set; }
         public PrimitiveType Type { get; private set; }
+        private SimpleType _resultType;
 
         public NumberLiteral(T value, PrimitiveType type)
         {
@@ -267,15 +268,13 @@ namespace Nexus.ir.expr
             return $"{Type.ToString().ToLower()}({Value})";
         }
 
-        public override SimpleType GetResultType(Context context)
-        {
-            return new SimpleType(TypesExtension.ToString(Type))
+        public override SimpleType GetResultType(Context context) =>
+            _resultType ?? (_resultType = new SimpleType(TypesExtension.ToString(Type))
             {
                 FilePath = FilePath,
                 Line = Line,
                 Column = Column
-            };
-        }
+            });
 
         public override void Check(Context context)
         {

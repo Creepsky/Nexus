@@ -11,6 +11,34 @@ namespace Nexus.ir.expr
         public IExpression Object { get; set; }
         public IList<IExpression> Parameter { get; set; }
         public bool Static { get; set; }
+        private Function _function;
+
+        private Function GetOverload(Context context)
+        {
+            if (_function == null)
+            {
+                if (context == null)
+                {
+                    throw new OverloadingFunctionNotFound(this, Name, Parameter.Select(i => i.ToString()).ToArray());
+                }
+
+                var function = context.Get<Function>(Name, this);
+                _function = function.GetOverload(this, context);
+
+                if (_function == null)
+                {
+                    if (Object != null)
+                    {
+                        throw new OverloadingFunctionNotFound(this, Object.GetResultType(context).ToString(), Name,
+                            Parameter.Select(i => i.GetResultType(context).ToString()).ToArray());
+                    }
+
+                    throw new OverloadingFunctionNotFound(this, Name, Parameter.Select(i => i.GetResultType(context).ToString()).ToArray());
+                }
+            }
+
+            return _function;
+        }
 
         public override string ToString()
         {
@@ -25,21 +53,7 @@ namespace Nexus.ir.expr
 
         public override SimpleType GetResultType(Context context)
         {
-            var function = context.Get<Function>(Name, this);
-            var overload = function.GetOverload(this, context);
-            
-            if (overload == null)
-            {
-                if (Object != null)
-                {
-                    throw new OverloadingFunctionNotFound(this, Object.GetResultType(context).ToString(), Name,
-                        Parameter.Select(i => i.GetResultType(context).ToString()).ToArray());
-                }
-
-                throw new OverloadingFunctionNotFound(this, Name, Parameter.Select(i => i.GetResultType(context).ToString()).ToArray());
-            }
-
-            return overload.ReturnType;
+            return GetOverload(context).ReturnType;
         }
 
         public override void ForwardDeclare(Context upperContext)
@@ -98,26 +112,16 @@ namespace Nexus.ir.expr
                 Object?.Check(context);
             }
 
-            if (context.Get(Name) is Function function)
+            // if the extension type is a c++ type, we can't ensure nothing.. so just return as it is ok
+            if (Object?.GetResultType(context) is CppType)
             {
-                if (function.Static && !Static)
-                {
-                    throw new PositionedException(this, $"Function call was marked as static ({this}) but function ({function}) is not static");
-                }
-
-                // if the extension type is a c++ type, we can't ensure nothing.. so just return as it is ok
-                if (Object?.GetResultType(context) is CppType)
-                {
-                    return;
-                }
-
-                var overload = function.GetOverload(this, context);
-
-                if (overload != null)
-                {
-                    // everything's ok
-                    return;
-                }
+                return;
+            }
+            
+            if (GetOverload(context) != null)
+            {
+                // everything's ok
+                return;
             }
 
             if (Object != null)

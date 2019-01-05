@@ -8,6 +8,8 @@ namespace Nexus.ir.expr
     {
         public IExpression Left { private get; set; }
         public IExpression Right { private get; set; }
+        private SimpleType _resultType;
+        private FunctionCall _functionCall;
 
         public Assignment(IExpression left, IExpression right)
         {
@@ -17,9 +19,9 @@ namespace Nexus.ir.expr
 
         public override SimpleType GetResultType(Context context)
         {
-            return context.Get<Function>(Function.OperatorToName("="), this)
-                .GetOverload(GetFunctionCall(), context)
-                .GetResultType(context);
+            return _resultType ?? (_resultType = context.Get<Function>(Function.OperatorToName("="), this)
+                       .GetOverload(GetFunctionCall(), context)
+                       .GetResultType(context));
         }
 
         public override void Check(Context context)
@@ -55,16 +57,16 @@ namespace Nexus.ir.expr
             return $"{Left} = {Right}";
         }
 
-        private FunctionCall GetFunctionCall() => new FunctionCall
-        {
-            Column = Column,
-            Line = Line,
-            FilePath = FilePath,
-            Name = Function.OperatorToName("="),
-            Object = Left,
-            Parameter = new List<IExpression> {Right},
-            Static = false
-        };
-
+        private FunctionCall GetFunctionCall() =>
+            _functionCall ?? (_functionCall = new FunctionCall
+            {
+                Column = Column,
+                Line = Line,
+                FilePath = FilePath,
+                Name = Function.OperatorToName("="),
+                Object = Left,
+                Parameter = new List<IExpression> {Right},
+                Static = false
+            });
     }
 }

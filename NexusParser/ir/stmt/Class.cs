@@ -37,13 +37,7 @@ namespace Nexus.ir.stmt
             return $"class {Type}";
         }
 
-        public override SimpleType GetResultType(Context context) =>
-            new SimpleType(Name)
-            {
-                FilePath = FilePath,
-                Line = Line,
-                Column = Column
-            };
+        public override SimpleType GetResultType(Context context) => Type;
 
         public override void ForwardDeclare(Context upperContext)
         {

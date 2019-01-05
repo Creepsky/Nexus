@@ -9,6 +9,8 @@ namespace Nexus.ir.expr
     {
         private IExpression Element { get; }
         private string Member { get; }
+        private SimpleType _resultType;
+        private Variable _variable;
 
         public MemberAccess(IExpression element, string member)
         {
@@ -16,10 +18,8 @@ namespace Nexus.ir.expr
             Member = member;
         }
 
-        public override SimpleType GetResultType(Context context)
-        {
-            return GetVariable(context).GetResultType(context);
-        }
+        public override SimpleType GetResultType(Context context) =>
+            _resultType ?? (_resultType = GetVariable(context).GetResultType(context));
 
         public override void Check(Context context)
         {
@@ -28,18 +28,21 @@ namespace Nexus.ir.expr
 
         private Variable GetVariable(Context context)
         {
-            var resultType = Element.GetResultType(context);
-
-            var elementClass = context.Get<Class>(resultType.Name, this);
-
-            var variable = elementClass.Variables.FirstOrDefault(i => i.Name == Member);
-
-            if (variable == null)
+            if (_variable == null)
             {
-                throw new NotFoundException(this, "member variable", Member);
+                var resultType = Element.GetResultType(context);
+
+                var elementClass = context.Get<Class>(resultType.Name, this);
+
+                _variable = elementClass.Variables.FirstOrDefault(i => i.Name == Member);
+
+                if (_variable == null)
+                {
+                    throw new NotFoundException(this, "member variable", Member);
+                }
             }
 
-            return variable;
+            return _variable;
         }
 
         public override bool Print(PrintType type, Printer printer)

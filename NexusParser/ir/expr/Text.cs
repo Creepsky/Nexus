@@ -6,16 +6,17 @@ namespace Nexus.ir.expr
     public class Text : Expression
     {
         public string Value { get; set; }
+        private SimpleType _returnType;
 
         public override string ToString() => '"' + Value + '"';
 
         public override SimpleType GetResultType(Context context) =>
-            new SimpleType(TypesExtension.String)
+            _returnType ?? (_returnType = new SimpleType(TypesExtension.String)
             {
                 FilePath = FilePath,
                 Line = Line,
                 Column = Column
-            };
+            });
 
         public override void Check(Context context)
         {

@@ -7,12 +7,12 @@ namespace Nexus.ir.expr
 {
     public class VariableLiteral : Expression
     {
+        private SimpleType _returnType;
+
         public override string ToString() => $"VariableLiteral({Name})";
 
-        public override SimpleType GetResultType(Context context)
-        {
-            return context.Get(Name, this).GetResultType(context);
-        }
+        public override SimpleType GetResultType(Context context) =>
+            _returnType ?? (_returnType = context.Get(Name, this).GetResultType(context));
 
         public override void Template(TemplateContext context, IGenerationElement concreteElement)
         {
