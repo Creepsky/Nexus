@@ -109,7 +109,7 @@ namespace Nexus.ir.expr
 
         public override int GetHashCode()
         {
-            var i = Constant.GetHashCode() + Reference.GetHashCode();
+            var i = Name.GetHashCode() + Constant.GetHashCode() + Reference.GetHashCode();
 
             if (TemplateList != null)
             {

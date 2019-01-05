@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Nexus.common;
 using Nexus.gen;
@@ -159,7 +160,19 @@ namespace Nexus.ir.expr
 
         public override int GetHashCode()
         {
-            return (Types != null ? Types.GetHashCode() : 0);
+            if (Types == null)
+            {
+                return 0;
+            }
+
+            var i = 0;
+
+            foreach (var t in Types)
+            {
+                i += t.GetHashCode();
+            }
+
+            return i;
         }
 
         public override string ToString()
