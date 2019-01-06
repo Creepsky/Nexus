@@ -131,6 +131,26 @@ namespace Nexus.ir.stmt
                 AddThisPointer();
             }
 
+            if (ReturnType.Name == TypesExtension.Unit ||
+                ReturnType.Name == TypesExtension.Void)
+            {
+                var unitReturnValue = new ReturnStatement
+                {
+                    Column = Column,
+                    Line = Line,
+                    FilePath = FilePath,
+                    Value = new New
+                    {
+                        Column = Column,
+                        Line = Line,
+                        FilePath = FilePath,
+                        Type = new SimpleType(TypesExtension.Unit)
+                    }
+                };
+
+                Body.Add(unitReturnValue);
+            }
+
             foreach (var i in GetElements())
             {
                 i.ForwardDeclare(Context);
