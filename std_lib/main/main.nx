@@ -6,7 +6,7 @@ class Main
 c++ {|int|} main(c++ {|int|} argn, c++ {|char**|} argv) {
     Main m;
     i32 nexus_argn;
-    c++ {|nexus_argn = i32(argn)|};
+    c++ {|nexus_argn = i32{argn}|};
     for (int i = 0; i < nexus_argn; i += 1) {
 		m.args.add(new string(c++ {|argv[i.value]|}));
 	}

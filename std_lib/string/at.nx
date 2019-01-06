@@ -3,7 +3,5 @@
   */
 char string.at(usize index)
 {
-    return c++ {|
-        character(__this.value[index.value])
-    |};
+    return new char(c++ {|__this.value[index.value]|});
 }

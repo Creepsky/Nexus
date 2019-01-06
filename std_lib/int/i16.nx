@@ -2,207 +2,225 @@ class i16
 {
     include <cstdint>;
     c++ {|int16_t|} value;
-    c++ {|explicit i16(int16_t value) : value(value) { }|}
+}
+
+i16 safeAdditioni16<T>(i16 lhs, T rhs) {
+    safeAddition(lhs, rhs);
+    return new i16(c++ {|static_cast<int16_t>(lhs.value + rhs.value)|});
+}
+
+i16 safeSubtractioni16<T>(i16 lhs, T rhs) {
+    safeSubtraction(lhs, rhs);
+    return new i16(c++ {|static_cast<int16_t>(lhs.value - rhs.value)|});
+}
+
+i16 safeMultiplicationi16<T>(i16 lhs, T rhs) {
+    safeMultiplication(lhs, rhs);
+    return new i16(c++ {|static_cast<int16_t>(lhs.value * rhs.value)|});
+}
+
+f64 safeDivisioni16<T>(i16 lhs, T rhs) {
+    return safeDivision(lhs, rhs);
 }
 
 /* Addition */
 
 i16 i16.operator+(i8 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(u8 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(i16 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(u16 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(i32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(u32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(i64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(u64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(isize rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(usize rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(f32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 i16 i16.operator+(f64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni16(this, rhs);
 }
 
 /* Subtraction */
 
 i16 i16.operator-(i8 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(u8 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(i16 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(u16 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(i32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(u32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(i64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(u64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(isize rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(usize rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(f32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 i16 i16.operator-(f64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni16(this, rhs);
 }
 
 /* Multiplication */
 
 i16 i16.operator*(i8 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(u8 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(i16 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(u16 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(i32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(u32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(i64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(u64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(isize rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(usize rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(f32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 i16 i16.operator*(f64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi16(this, rhs);
 }
 
 /* Division */
 
-i16 i16.operator/(i8 rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(i8 rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(u8 rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(u8 rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(i16 rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(i16 rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(u16 rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(u16 rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(i32 rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(i32 rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(u32 rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(u32 rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(i64 rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(i64 rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(u64 rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(u64 rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(isize rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(isize rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(usize rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(usize rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(f32 rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(f32 rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
-i16 i16.operator/(f64 rhs) {
-    return new i16(this.value / rhs.value);
+f64 i16.operator/(f64 rhs) {
+    return safeDivisioni16(this, rhs);
 }
 
 /* Less */
@@ -405,16 +423,16 @@ bool i16.operator>=(f64 rhs) {
     return new bool(this.value >= rhs.value);
 }
 
-isize i16::minimum() {
+i16 i16::minimum() {
     include <limits>;
-    return new isize(c++ {|
-        std::numeric_limits<int16_t>::min()
-    |});
+    return new i16(c++ {|std::numeric_limits<int16_t>::min()|});
 }
 
-usize i16::maximum() {
+i16 i16::maximum() {
     include <limits>;
-    return new usize(c++ {|
-        std::numeric_limits<int16_t>::max()
-    |});
+    return new i16(c++ {|std::numeric_limits<int16_t>::max()|});
+}
+
+bool i16::signed() {
+    return true;
 }

@@ -2,208 +2,225 @@ class i32
 {
     include <cstdint>;
     c++ {|int32_t|} value;
-    c++ {|i32() { }|}
-    c++ {|explicit i32(int32_t value) : value(value) { }|}
+}
+
+i32 safeAdditioni32<T>(i32 lhs, T rhs) {
+    safeAddition(lhs, rhs);
+    return new i32(c++ {|static_cast<int32_t>(lhs.value + rhs.value)|});
+}
+
+i32 safeSubtractioni32<T>(i32 lhs, T rhs) {
+    safeSubtraction(lhs, rhs);
+    return new i32(c++ {|static_cast<int32_t>(lhs.value - rhs.value)|});
+}
+
+i32 safeMultiplicationi32<T>(i32 lhs, T rhs) {
+    safeMultiplication(lhs, rhs);
+    return new i32(c++ {|static_cast<int32_t>(lhs.value * rhs.value)|});
+}
+
+f64 safeDivisioni32<T>(i32 lhs, T rhs) {
+    return safeDivision(lhs, rhs);
 }
 
 /* Addition */
 
 i32 i32.operator+(i8 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(u8 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(i16 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(u16 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(i32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(u32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(i64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(u64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(isize rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(usize rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(f32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 i32 i32.operator+(f64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditioni32(this, rhs);
 }
 
 /* Subtraction */
 
 i32 i32.operator-(i8 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(u8 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(i16 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(u16 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(i32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(u32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(i64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(u64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(isize rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(usize rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(f32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 i32 i32.operator-(f64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractioni32(this, rhs);
 }
 
 /* Multiplication */
 
 i32 i32.operator*(i8 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(u8 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(i16 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(u16 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(i32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(u32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(i64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(u64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(isize rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(usize rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(f32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 i32 i32.operator*(f64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationi32(this, rhs);
 }
 
 /* Division */
 
-i32 i32.operator/(i8 rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(i8 rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(u8 rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(u8 rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(i16 rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(i16 rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(u16 rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(u16 rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(i32 rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(i32 rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(u32 rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(u32 rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(i64 rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(i64 rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(u64 rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(u64 rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(isize rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(isize rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(usize rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(usize rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(f32 rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(f32 rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
-i32 i32.operator/(f64 rhs) {
-    return new i32(this.value / rhs.value);
+f64 i32.operator/(f64 rhs) {
+    return safeDivisioni32(this, rhs);
 }
 
 /* Less */
@@ -470,52 +487,64 @@ i32 i32&.operator+=(f64 rhs) {
 
 /* assign */
 
-i32 i32.operator=(i8 rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(i8 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(u8 rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(u8 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(i16 rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(i16 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(u16 rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(u16 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(i32 rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(i32 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(u32 rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(u32 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(i64 rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(i64 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(u64 rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(u64 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(isize rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(isize rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(usize rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(usize rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(f32 rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(f32 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
-i32 i32.operator=(f64 rhs) {
-    return new i32(rhs.value);
+i32 i32&.operator=(f64 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
 }
 
 // bool i32.operator==<T>(T rhs) {
@@ -531,16 +560,16 @@ i32 i32.operator=(f64 rhs) {
 //     return this;
 // }
 
-isize i32::minimum() {
+i32 i32::minimum() {
     include <limits>;
-    return new isize(c++ {|
-        std::numeric_limits<int32_t>::min()
-    |});
+    return new i32(c++ {|std::numeric_limits<int32_t>::min()|});
 }
 
-usize i32::maximum() {
+i32 i32::maximum() {
     include <limits>;
-    return new usize(c++ {|
-        std::numeric_limits<int32_t>::max()
-    |});
+    return new i32(c++ {|std::numeric_limits<int32_t>::max()|});
+}
+
+bool i32::signed() {
+    return true;
 }

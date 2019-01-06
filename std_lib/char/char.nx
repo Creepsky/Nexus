@@ -1,5 +1,5 @@
 class character
 {
-    c++ {|char value;|}
+    c++ {|char|} value;
     c++ {|character(char value) : value(value) { }|}
 }

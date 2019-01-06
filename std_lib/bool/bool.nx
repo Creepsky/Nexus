@@ -1,8 +1,6 @@
 class boolean
 {
     c++ {|bool|} value;
-    c++ {|boolean() : value(false) { }|}
-    c++ {|explicit boolean(bool value) : value(value) { }|}
     c++ {|operator bool() const { return value; }|}
 }
 

@@ -1,29 +1,30 @@
-T safeAddition<T, R>(T lhs, R rhs) {
+void safeAddition<T, R>(T lhs, R rhs) {
     if ((rhs > 0) && (lhs > T::maximum() - rhs)) {
        c++ {|throw std::runtime_error("overflow")|};
     }
     if ((rhs < 0) && (lhs < T::minimum() - rhs)) {
         c++ {|throw std::runtime_error("underflow")|};
     }
-    return new T(lhs.value + rhs.value);
 }
 
-T safeSubtraction<T, R>(T lhs, R rhs) {
+void safeSubtraction<T, R>(T lhs, R rhs) {
     if ((rhs < 0) && (lhs > T::maximum() + rhs)) {
         c++ {|throw std::runtime_error("overflow")|};
     }
     if ((rhs > 0) && (lhs < T::minimum() + rhs)) {
         c++ {|throw std::runtime_error("underflow")|};
     }
-    return new T(lhs.value - rhs.value);
 }
 
-T safeMultiplication<T, R>(T lhs, R rhs) {
+void safeMultiplication<T, R>(T lhs, R rhs) {
     if (lhs > T::minimum() / rhs) {
         c++ {|throw std::runtime_error("overflow")|};
     }
     if (lhs < T::minimum() / rhs) {
         c++ {|throw std::runtime_error("underflow")|};
     }
-    return new T(lhs.value * rhs.value);
+}
+
+f64 safeDivision<T, R>(T lhs, R rhs) {
+    return new f64(c++ {|static_cast<double>(lhs.value) / rhs.value|});
 }
