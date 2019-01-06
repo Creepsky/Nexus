@@ -2,207 +2,225 @@ class u32
 {
     include <cstdint>;
     c++ {|uint32_t|} value;
-    c++ {|explicit u32(uint32_t value) : value(value) { }|}
+}
+
+u32 safeAdditionu32<T>(u32 lhs, T rhs) {
+    safeAddition(lhs, rhs);
+    return new u32(c++ {|static_cast<uint32_t>(lhs.value + rhs.value)|});
+}
+
+u32 safeSubtractionu32<T>(u32 lhs, T rhs) {
+    safeSubtraction(lhs, rhs);
+    return new u32(c++ {|static_cast<uint32_t>(lhs.value - rhs.value)|});
+}
+
+u32 safeMultiplicationu32<T>(u32 lhs, T rhs) {
+    safeMultiplication(lhs, rhs);
+    return new u32(c++ {|static_cast<uint32_t>(lhs.value * rhs.value)|});
+}
+
+f64 safeDivisionu32<T>(u32 lhs, T rhs) {
+    return safeDivision(lhs, rhs);
 }
 
 /* Addition */
 
 u32 u32.operator+(i8 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(u8 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(i16 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(u16 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(i32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(u32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(i64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(u64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(isize rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(usize rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(f32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 u32 u32.operator+(f64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionu32(this, rhs);
 }
 
 /* Subtraction */
 
 u32 u32.operator-(i8 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(u8 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(i16 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(u16 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(i32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(u32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(i64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(u64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(isize rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(usize rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(f32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 u32 u32.operator-(f64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionu32(this, rhs);
 }
 
 /* Multiplication */
 
 u32 u32.operator*(i8 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(u8 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(i16 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(u16 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(i32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(u32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(i64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(u64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(isize rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(usize rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(f32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 u32 u32.operator*(f64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationu32(this, rhs);
 }
 
 /* Division */
 
-u32 u32.operator/(i8 rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(i8 rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(u8 rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(u8 rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(i16 rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(i16 rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(u16 rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(u16 rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(i32 rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(i32 rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(u32 rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(u32 rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(i64 rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(i64 rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(u64 rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(u64 rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(isize rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(isize rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(usize rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(usize rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(f32 rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(f32 rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
-u32 u32.operator/(f64 rhs) {
-    return new u32(this.value / rhs.value);
+f64 u32.operator/(f64 rhs) {
+    return safeDivisionu32(this, rhs);
 }
 
 /* Less */
@@ -405,16 +423,16 @@ bool u32.operator>=(f64 rhs) {
     return new bool(this.value >= rhs.value);
 }
 
-isize u32::minimum() {
+u32 u32::minimum() {
     include <limits>;
-    return new isize(c++ {|
-        std::numeric_limits<uint32_t>::min()
-    |});
+    return new u32(c++ {|std::numeric_limits<uint32_t>::min()|});
 }
 
-usize u32::maximum() {
+u32 u32::maximum() {
     include <limits>;
-    return new usize(c++ {|
-        std::numeric_limits<uint32_t>::max()
-    |});
+    return new u32(c++ {|std::numeric_limits<uint32_t>::max()|});
+}
+
+bool u32::signed() {
+    return false;
 }

@@ -2,207 +2,225 @@ class isize
 {
     include <cstdint>;
     c++ {|intmax_t|} value;
-    c++ {|explicit isize(intmax_t value) : value(value) { }|}
+}
+
+isize safeAdditionisize<T>(isize lhs, T rhs) {
+    safeAddition(lhs, rhs);
+    return new isize(c++ {|static_cast<intmax_t>(lhs.value + rhs.value)|});
+}
+
+isize safeSubtractionisize<T>(isize lhs, T rhs) {
+    safeSubtraction(lhs, rhs);
+    return new isize(c++ {|static_cast<intmax_t>(lhs.value - rhs.value)|});
+}
+
+isize safeMultiplicationisize<T>(isize lhs, T rhs) {
+    safeMultiplication(lhs, rhs);
+    return new isize(c++ {|static_cast<intmax_t>(lhs.value * rhs.value)|});
+}
+
+f64 safeDivisionisize<T>(isize lhs, T rhs) {
+    return safeDivision(lhs, rhs);
 }
 
 /* Addition */
 
 isize isize.operator+(i8 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(u8 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(i16 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(u16 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(i32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(u32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(i64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(u64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(isize rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(usize rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(f32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 isize isize.operator+(f64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionisize(this, rhs);
 }
 
 /* Subtraction */
 
 isize isize.operator-(i8 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(u8 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(i16 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(u16 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(i32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(u32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(i64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(u64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(isize rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(usize rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(f32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 isize isize.operator-(f64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionisize(this, rhs);
 }
 
 /* Multiplication */
 
 isize isize.operator*(i8 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(u8 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(i16 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(u16 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(i32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(u32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(i64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(u64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(isize rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(usize rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(f32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 isize isize.operator*(f64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationisize(this, rhs);
 }
 
 /* Division */
 
-isize isize.operator/(i8 rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(i8 rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(u8 rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(u8 rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(i16 rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(i16 rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(u16 rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(u16 rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(i32 rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(i32 rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(u32 rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(u32 rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(i64 rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(i64 rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(u64 rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(u64 rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(isize rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(isize rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(usize rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(usize rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(f32 rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(f32 rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
-isize isize.operator/(f64 rhs) {
-    return new isize(this.value / rhs.value);
+f64 isize.operator/(f64 rhs) {
+    return safeDivisionisize(this, rhs);
 }
 
 /* Less */
@@ -407,14 +425,14 @@ bool isize.operator>=(f64 rhs) {
 
 isize isize::minimum() {
     include <limits>;
-    return new isize(c++ {|
-        std::numeric_limits<intmax_t>::min()
-    |});
+    return new isize(c++ {|std::numeric_limits<intmax_t>::min()|});
 }
 
-usize isize::maximum() {
+isize isize::maximum() {
     include <limits>;
-    return new usize(c++ {|
-        std::numeric_limits<intmax_t>::max()
-    |});
+    return new isize(c++ {|std::numeric_limits<intmax_t>::max()|});
+}
+
+bool isize::signed() {
+    return true;
 }

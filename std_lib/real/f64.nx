@@ -1,207 +1,225 @@
 class f64
 {
     c++ {|double|} value;
-    c++ {|explicit f64(double value) : value(value) { }|}
+}
+
+f64 safeAdditionf64<T>(f64 lhs, T rhs) {
+    safeAddition(lhs, rhs);
+    return new f64(c++ {|static_cast<double>(lhs.value + rhs.value)|});
+}
+
+f64 safeSubtractionf64<T>(f64 lhs, T rhs) {
+    safeSubtraction(lhs, rhs);
+    return new f64(c++ {|static_cast<double>(lhs.value - rhs.value)|});
+}
+
+f64 safeMultiplicationf64<T>(f64 lhs, T rhs) {
+    safeMultiplication(lhs, rhs);
+    return new f64(c++ {|static_cast<double>(lhs.value * rhs.value)|});
+}
+
+f64 safeDivisionf64<T>(f64 lhs, T rhs) {
+    return new f64(c++ {|static_cast<double>(lhs.value / rhs.value)|});
 }
 
 /* Addition */
 
 f64 f64.operator+(i8 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(u8 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(i16 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(u16 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(i32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(u32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(i64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(u64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(isize rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(usize rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(f32 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 f64 f64.operator+(f64 rhs) {
-    return safeAddition(this, rhs);
+    return safeAdditionf64(this, rhs);
 }
 
 /* Subtraction */
 
 f64 f64.operator-(i8 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(u8 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(i16 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(u16 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(i32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(u32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(i64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(u64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(isize rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(usize rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(f32 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 f64 f64.operator-(f64 rhs) {
-    return safeSubtraction(this, rhs);
+    return safeSubtractionf64(this, rhs);
 }
 
 /* Multiplication */
 
 f64 f64.operator*(i8 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(u8 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(i16 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(u16 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(i32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(u32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(i64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(u64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(isize rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(usize rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(f32 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 f64 f64.operator*(f64 rhs) {
-    return safeMultiplication(this, rhs);
+    return safeMultiplicationf64(this, rhs);
 }
 
 /* Division */
 
 f64 f64.operator/(i8 rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(u8 rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(i16 rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(u16 rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(i32 rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(u32 rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(i64 rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(u64 rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(isize rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(usize rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(f32 rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 f64 f64.operator/(f64 rhs) {
-    return new f64(this.value / rhs.value);
+    return safeDivisionf64(this, rhs);
 }
 
 /* Less */
@@ -404,16 +422,16 @@ bool f64.operator>=(f64 rhs) {
     return new bool(this.value >= rhs.value);
 }
 
-isize f64::minimum() {
+f64 f64::minimum() {
     include <limits>;
-    return new isize(c++ {|
-        std::numeric_limits<double>::min()
-    |});
+    return new f64(c++ {|std::numeric_limits<double>::min()|});
 }
 
-usize f64::maximum() {
+f64 f64::maximum() {
     include <limits>;
-    return new usize(c++ {|
-        std::numeric_limits<double>::max()
-    |});
+    return new f64(c++ {|std::numeric_limits<double>::max()|});
+}
+
+bool f64::signed() {
+    return true;
 }
