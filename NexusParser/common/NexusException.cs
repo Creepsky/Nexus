@@ -140,4 +140,11 @@ namespace Nexus.common
             : base(element, $"Could not instantiate template for {element.Name}: {message}")
         { }
     }
+
+    public class CircularReferenceException : NexusException
+    {
+        public CircularReferenceException(string className, string circularReferencedByClassName)
+            : base($"{className} is circular referenced by {circularReferencedByClassName}")
+        {}
+    }
 }

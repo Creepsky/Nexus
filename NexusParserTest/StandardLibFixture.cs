@@ -9,7 +9,7 @@ namespace NexusParserTest
     {
         public Context Context { get; private set; }
 
-        private Generator _generator;
+        private readonly Generator _generator;
 
         public StandardLibFixture()
         {
@@ -17,7 +17,7 @@ namespace NexusParserTest
             config.Read();
             var files = FileParser.ParseDirectory("/", config);
             _generator = new Generator(files.ToList());
-            Context = _generator.globalContext;
+            Context = _generator.GlobalContext;
         }
 
         public void Dispose()

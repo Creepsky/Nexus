@@ -48,7 +48,7 @@ namespace Nexus.gen
 
     public class Generator
     {
-        public readonly Context globalContext = new Context();
+        public Context GlobalContext { get; } = new Context();
         private readonly IList<ir.File> _files;
         private readonly Logger _logger;
 
@@ -62,7 +62,7 @@ namespace Nexus.gen
         {
             var phases = new Dictionary<string, Action<ir.File>>
             {
-                {"forward declaration", f => f.ForwardDeclare(globalContext)},
+                {"forward declaration", f => f.ForwardDeclare(GlobalContext)},
                 {"declaration", f => f.Declare()},
                 {"definition", f => f.Define()}
             };
@@ -82,7 +82,7 @@ namespace Nexus.gen
         {
             foreach (var i in _files)
             {
-                i.Check(globalContext);
+                i.Check(GlobalContext);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Nexus.gen
             var any = false;
 
             // includes
-            foreach (var i in globalContext.GetElements().OfType<Include>())
+            foreach (var i in GlobalContext.GetElements().OfType<Include>())
             {
                 any = any | i.Print(PrintType.Header, sourcePrinter);
             }
@@ -105,7 +105,7 @@ namespace Nexus.gen
             }
 
             // forward declaration of all classes
-            foreach (var i in globalContext.GetElements().OfType<Class>())
+            foreach (var i in GlobalContext.GetElements().OfType<Class>())
             {
                 foreach (var j in i.Variants.Append(i))
                 {
@@ -120,7 +120,7 @@ namespace Nexus.gen
             }
 
             // forward declaration of all functions
-            foreach (var i in globalContext.GetElements().OfType<Function>())
+            foreach (var i in GlobalContext.GetElements().OfType<Function>())
             {
                 foreach (var j in i.Overloads.Append(i))
                 {
@@ -147,7 +147,7 @@ namespace Nexus.gen
             }
 
             // definition of all functions
-            foreach (var i in globalContext.GetElements().OfType<Function>())
+            foreach (var i in GlobalContext.GetElements().OfType<Function>())
             {
                 foreach (var j in i.Overloads.Append(i))
                 {
@@ -162,21 +162,6 @@ namespace Nexus.gen
                 }
             }
 
-            //foreach (var i in _files)
-            //{
-            //    headerStringWriter.GetStringBuilder().Clear();
-
-            //    if (i.Print(PrintType.Header, headerPrinter))
-            //    {
-            //        compilationUnits.Add(new CompilationUnit(
-            //            i.Name,
-            //            i.FilePath,
-            //            headerStringWriter.ToString(),
-            //            ""
-            //        ));
-            //    }
-            //}
-
             yield return new CompilationUnit("main", "/main.cpp", sourceStringWriter.ToString());
         }
 
@@ -185,7 +170,7 @@ namespace Nexus.gen
             // definition of all classes
             var dependencies = new Dictionary<Class, List<Class>>();
 
-            foreach (var i in globalContext.GetElements().OfType<Class>())
+            foreach (var i in GlobalContext.GetElements().OfType<Class>())
             {
                 foreach (var j in i.Variants.Append(i).Where(v => v.TemplateList == null))
                 {
@@ -193,7 +178,7 @@ namespace Nexus.gen
 
                     foreach (var d in j.Variables
                         .Where(v => v.Type.GetType() == typeof(SimpleType))
-                        .Select(v => (globalContext.Get(v.Type.Name) as Class)?.GetVariant(v.Type, globalContext))
+                        .Select(v => (GlobalContext.Get(v.Type.Name) as Class)?.GetVariant(v.Type, GlobalContext))
                         .Where(v => v != null))
                     {
                         dependencies[j].Add(d);
@@ -208,7 +193,7 @@ namespace Nexus.gen
                 {
                     if (dependencies[j].Contains(key))
                     {
-                        throw new SystemException($"{key} is circular referenced by using a member of {j}");
+                        throw new CircularReferenceException(key.ToString(), j.ToString());
                     }
                 }
             }

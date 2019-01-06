@@ -35,6 +35,7 @@ namespace Nexus.ir.expr
 
         public override void Check(Context context)
         {
+            // it is a c++ block, we can not check it ...
         }
 
         public override bool Print(PrintType type, Printer printer)
@@ -71,10 +72,6 @@ namespace Nexus.ir.expr
         public override SimpleType GetResultType(Context context)
         {
             return _cppBlock.GetResultType(context);
-        }
-
-        public override void ForwardDeclare(Context upperContext)
-        {
         }
 
         public override void Declare()

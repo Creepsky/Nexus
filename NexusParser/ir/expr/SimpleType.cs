@@ -65,8 +65,6 @@ namespace Nexus.ir.expr
             };
         }
 
-        public PrimitiveType ToPrimitiveType() => TypesExtension.ToType(Name);
-
         public bool Equals(SimpleType other)
         {
             if (ReferenceEquals(null, other))
@@ -250,36 +248,6 @@ namespace Nexus.ir.expr
 
             throw new ClassVariantNotFoundException(this, Name, TemplateList?.Types.Select(i => i.ToString()).ToArray());
         }
-
-        //public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        //{
-        //    if (phase == GenerationPhase.TemplatingExtensionBase)
-        //    {
-        //        var templateContext = (TemplateContext) context;
-        //        templateContext.DeriveTemplates(this, templateContext.ExtensionBaseType);
-        //    }
-
-        //    if (phase == GenerationPhase.Templating)
-        //    {
-        //        if (TemplateList != null)
-        //        {
-        //            TemplateList.Generate(context, GenerationPhase.Templating);
-        //        }
-        //        else
-        //        {
-        //            var templateContext = (TemplateContext) context;
-        //            var concreteType = templateContext.TemplateTypeToConcrete(Name);
-
-        //            if (concreteType != null)
-        //            {
-        //                Name = concreteType.Name;
-        //                Array += concreteType.Array;
-        //            }
-        //        }
-        //    }
-
-        //    return this;
-        //}
     }
 
     public class CppType : SimpleType
@@ -294,6 +262,7 @@ namespace Nexus.ir.expr
 
         public override void Check(Context context)
         {
+            // it is a c++ type, so we can not check a lot ...
         }
 
         public override string ToString()

@@ -12,7 +12,7 @@ namespace Nexus.ir.stmt
         public IList<Variable> Variables { get; }
         public IList<CppBlockStatement> CppBlocks { get; }
         public IList<Include> Includes { get; }
-        public readonly IList<Class> Variants = new List<Class>();
+        public IList<Class> Variants { get; } = new List<Class>();
 
         public SimpleType Type { get; }
         private Context _context;

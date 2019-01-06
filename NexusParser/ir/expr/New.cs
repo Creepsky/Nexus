@@ -12,7 +12,7 @@ namespace Nexus.ir.expr
         public SimpleType Type { get; set; }
         public IDictionary<string, IExpression> Parameter { get; private set; } = new Dictionary<string, IExpression>();
         public IExpression SingleParameter { get; set; }
-        private IList<IExpression> _sortedParameter = new List<IExpression>();
+        private readonly IList<IExpression> _sortedParameter = new List<IExpression>();
 
         public override SimpleType GetResultType(Context context)
         {
@@ -42,7 +42,6 @@ namespace Nexus.ir.expr
             if (SingleParameter == null)
             {
                 _sortedParameter.Clear();
-                //_sortedParameter.Add();
 
                 foreach (var i in Parameter)
                 {
@@ -51,7 +50,7 @@ namespace Nexus.ir.expr
                     // also check if the member is available
                     if (type.Variables.All(v => v.Name != i.Key))
                     {
-
+                        // TODO: add a check
                     }
                 }
             }

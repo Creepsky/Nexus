@@ -13,7 +13,6 @@ namespace Nexus.ir.expr
         public int Column { get; set; }
         public string Name { get; set; }
         public string FilePath { get; set; }
-        //public abstract IGenerationElement Generate(Context context, GenerationPhase phase);
         public abstract SimpleType GetResultType(Context context);
         public IGenerationElement CloneDeep()
         {

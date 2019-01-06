@@ -226,64 +226,6 @@ namespace Nexus
                 FilePath = FileParser.CurrentPath
             };
 
-        //public override object VisitFunction_body_statement(NexusParser.Function_body_statementContext context)
-        //{
-        //    //if (context.function_call() != null)
-        //    //{
-        //    //    return new FunctionCallStatement
-        //    //    {
-        //    //        FunctionCall = (FunctionCall)VisitFunction_call(context.function_call()),
-        //    //        Line = context.Start.Line,
-        //    //        Column = context.Start.Column,
-        //    //        FilePath = FileParser.CurrentPath
-        //    //    };
-        //    //}
-
-        //    if (context.cpp_block() != null)
-        //    {
-        //        return Visit(context.cpp_block());
-        //    }
-
-        //    if (context.include_statement() != null)
-        //    {
-        //        var tmp =  VisitInclude_statement(context.include_statement());
-        //        return tmp;
-        //    }
-
-        //    return base.VisitFunction_body_statement(context);
-        //}
-
-        //public override object VisitCalculation_expression(NexusParser.Calculation_expressionContext context)
-        //{
-        //    return new BinaryOperation
-        //    {
-        //        Left = Visit(context.calc),
-        //        Line = context.Start.Line,
-        //        Column = context.Start.Column,
-        //        FilePath = FileParser.CurrentPath
-        //    };
-        //}
-
-        //public override object VisitTuple_expression(NexusParser.Tuple_expressionContext context)
-        //{
-        //    return base.VisitTuple_expression(context);
-        //}
-
-        //public override object VisitArray_index_expression(NexusParser.Array_index_expressionContext context)
-        //{
-        //    return base.VisitArray_index_expression(context);
-        //}
-
-        //public override object VisitMap_expression(NexusParser.Map_expressionContext context)
-        //{
-        //    return base.VisitMap_expression(context);
-        //}
-
-        //public override object VisitRange_expression(NexusParser.Range_expressionContext context)
-        //{
-        //    return base.VisitRange_expression(context);
-        //}
-
         public override object VisitNewExpression(NexusParser.NewExpressionContext context)
         {
             var n = new New
@@ -326,11 +268,6 @@ namespace Nexus
                 FilePath = FileParser.CurrentPath
             };
         }
-
-        //public override object VisitPrefixOperatorExpression(NexusParser.PrefixOperatorExpressionContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public override object VisitTupleLiteral(NexusParser.TupleLiteralContext context) => new TupleLiteral
         {
@@ -435,11 +372,6 @@ namespace Nexus
             };
         }
 
-        //public override object VisitExtension_function_call_expression(NexusParser.Extension_function_call_expressionContext context)
-        //{
-        //    return base.VisitExtension_function_call_expression(context);
-        //}
-
         public override object VisitCppBlockExpression(NexusParser.CppBlockExpressionContext context)
         {
             return ExtractCppBlock(context.CPP_BLOCK().GetText(), context.Start);
@@ -457,11 +389,6 @@ namespace Nexus
                 FilePath = FileParser.CurrentPath
             };
         }
-
-        //public override object VisitMember_access_expression(NexusParser.Member_access_expressionContext context)
-        //{
-        //    return base.VisitMember_access_expression(context);
-        //}
 
         public override object VisitTruth_value(NexusParser.Truth_valueContext context) => new BooleanLiteral
         {
@@ -633,9 +560,6 @@ namespace Nexus
         {
             var function = new Function
             {
-                //Name = context.@operator() != null
-                //    ? Function.OperatorToName(context.@operator().GetText())
-                //    : context.IDENTIFIER().GetText(),
                 Name = context.@operator() != null
                        ? Function.OperatorToName(context.@operator().GetText())
                        : context.IDENTIFIER().GetText(),
