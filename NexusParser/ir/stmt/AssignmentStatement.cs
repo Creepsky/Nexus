@@ -55,10 +55,18 @@ namespace Nexus.ir.stmt
 
         public override bool Print(PrintType type, Printer printer)
         {
-            Left.Print(type, printer);
-            printer.Write(" = ");
+            //Left.Print(type, printer);
+            //printer.Write(" = ");
+            //Right.Print(type, printer);
+            //printer.WriteLine(";");
+            if (Left is Variable v)
+            {
+                Left.Print(type, printer);
+                printer.WriteLine(";");
+            }
+            printer.Write($"assign({Left.Name}, ");
             Right.Print(type, printer);
-            printer.WriteLine(";");
+            printer.WriteLine(");");
             return true;
         }
 

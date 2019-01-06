@@ -8,11 +8,7 @@ namespace Nexus.ir.stmt
     public class Variable : Expression
     {
         public SimpleType Type { get; set; }
-        //public SimpleType Type { get; set; }
-        //public IExpression Initialization { get; set; }
-        //public bool Constant { get; set; }
-        //public bool Reference { get; set; }
-        //public bool Parameter { get; set; }
+        public IExpression Initialization { get; set; }
         private Context _context;
 
         public override string ToString()
@@ -23,7 +19,15 @@ namespace Nexus.ir.stmt
         public override void Check(Context upperContext)
         {
             Type.Check(upperContext);
-           //Initialization?.Check(upperContext);
+            if (Initialization != null)
+            {
+                if (!(Initialization is Assignment))
+                {
+                    throw new PositionedException(this, $"Expected initialization of variable {this} " +
+                                                        $"to be {typeof(Assignment).Name} but got {Initialization.GetType().Name}");
+                }
+                Initialization.Check(upperContext);
+            }
         }
 
         public override SimpleType GetResultType(Context context) => Type;
