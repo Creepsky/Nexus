@@ -8,6 +8,7 @@ namespace Nexus.ir.expr
     public class ArrayLiteral : Expression
     {
         public IList<IExpression> Values { get; set; }
+        private SimpleType _resultType;
 
         public override string ToString() => '{' + string.Join(", ", Values) + '}';
 
@@ -16,8 +17,11 @@ namespace Nexus.ir.expr
         //    return this;
         //}
 
-        public override SimpleType GetResultType(Context context) =>
-            Values.First().GetResultType(context);
+        public override SimpleType GetResultType(Context context)
+        {
+            return _resultType ?? (_resultType = new SimpleType("vector",
+                       new TemplateList(new List<SimpleType> {Values.First().GetResultType(context)}), 0));
+        }
 
         public override void Check(Context context)
         {
