@@ -5,6 +5,8 @@ class MyClass
 }
 
 i32 MyClass.testFunction(int a) {
+    i32 c;
+    c = 5;
     i32 b = 1 + 2 * 3 / 4;
     return (0_i32 + 5_i32) * a;
 }
@@ -24,7 +26,7 @@ string MyClass.getValue(int key) {
 
 int Main.run() {
     MyClass myObject;
-    usize j = i32::maximum();
+    //usize j = i32::maximum();
     string i = this.testTemplateFunction(myObject);
     //tuple<int, string, float> myTuple;
     return 0_i32;
