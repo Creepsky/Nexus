@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Nexus.common;
 using Nexus.ir.expr;
 using NLog;
@@ -68,7 +67,8 @@ namespace Nexus.gen
             }
             catch (Exception e)
             {
-                _logger.Debug($"Template {Element} failed for {concreteElement}: {e.Message}");
+                _logger.Debug($"Template {Element} failed for {concreteElement}");
+                _logger.Debug(e);
                 Element.Remove();
                 return false;
             }
