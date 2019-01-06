@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Nexus.gen;
 
@@ -11,11 +10,6 @@ namespace Nexus.ir.expr
         private SimpleType _resultType;
 
         public override string ToString() => '{' + string.Join(", ", Values) + '}';
-
-        //public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        //{
-        //    return this;
-        //}
 
         public override SimpleType GetResultType(Context context)
         {

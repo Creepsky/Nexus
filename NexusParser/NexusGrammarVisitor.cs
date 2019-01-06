@@ -286,14 +286,33 @@ namespace Nexus
 
         public override object VisitNewExpression(NexusParser.NewExpressionContext context)
         {
-            return new New
+            var n = new New
             {
                 Line = context.Start.Line,
                 Column = context.Start.Column,
                 FilePath = FileParser.CurrentPath,
-                Type = (SimpleType) Visit(context.type()),
-                Parameter = context.expression().Select(i => (IExpression) Visit(i)).ToList()
+                Type = (SimpleType) Visit(context.type())
             };
+
+            // single member classes can be shorthand initialized
+            if (context.IDENTIFIER().Length == 0)
+            {
+                if (context.expression().Length == 1)
+                {
+                    n.SingleParameter = (IExpression)Visit(context.expression(0));
+                }
+            }
+            else
+            {
+                for (var i = 0; i < context.IDENTIFIER().Length; ++i)
+                {
+                    var member = context.IDENTIFIER(i).GetText();
+                    var initialization = (IExpression)Visit(context.expression(i));
+                    n.Parameter.Add(member, initialization);
+                }
+            }
+
+            return n;
         }
 
         public override object VisitAssignmentExpression(NexusParser.AssignmentExpressionContext context)

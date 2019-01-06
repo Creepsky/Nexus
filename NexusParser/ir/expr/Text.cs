@@ -25,7 +25,7 @@ namespace Nexus.ir.expr
 
         public override bool Print(PrintType type, Printer printer)
         {
-            printer.Write("string(\"" + Value + "\")");
+            printer.Write("string{\"" + Value + "\"}");
             return true;
         }
 

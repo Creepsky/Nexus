@@ -33,7 +33,7 @@ namespace Nexus.ir.expr
 
         public override bool Print(PrintType type, Printer printer)
         {
-            if (Left is Variable v)
+            if (Left is Variable)
             {
                 Left.Print(type, printer);
                 printer.WriteLine(";");
