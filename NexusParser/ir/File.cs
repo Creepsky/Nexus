@@ -102,6 +102,7 @@ namespace Nexus.ir
 
         public void Template(TemplateContext context, IGenerationElement concreteElement)
         {
+            throw new NotSupportedException("A file can not be a template");
         }
 
         public bool Print(PrintType type, Printer printer)
@@ -172,7 +173,7 @@ namespace Nexus.ir
 
         public object Clone()
         {
-            throw new System.NotImplementedException();
+            throw new NotSupportedException("A file can not be copied");
         }
     }
 }

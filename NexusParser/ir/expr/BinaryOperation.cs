@@ -162,16 +162,6 @@ namespace Nexus.ir.expr
             Static = false
         });
 
-        //public override bool Print(PrintType type, Printer printer)
-        //{
-        //    printer.Write($"{Function.OperatorToName(GetOperator().ToString())}(");
-        //    Left.Print(type, printer);
-        //    printer.Write(", ");
-        //    Right.Print(type, printer);
-        //    printer.Write(")");
-        //    return true;
-        //}
-
         public override bool Print(PrintType type, Printer printer)
         {
             Left.Print(type, printer);

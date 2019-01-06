@@ -9,7 +9,6 @@ namespace Nexus.gen
     public interface IGenerationElement : ICheckable, IPrintable, IPositioned, ICloneable
     {
         string Name { get; set; }
-        //IGenerationElement Generate(Context context, GenerationPhase phase);
         SimpleType GetResultType(Context context);
         IGenerationElement CloneDeep();
         void ForwardDeclare(Context upperContext);

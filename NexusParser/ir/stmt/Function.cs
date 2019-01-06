@@ -17,8 +17,8 @@ namespace Nexus.ir.stmt
         public TemplateList TemplateList { get; set; }
 
         public bool Static { get; set; }
-        public bool Operator { get; set; } = false;
-        public Function GeneratedBy { get; set; } = null;
+        public bool Operator { get; set; }
+        public Function GeneratedBy { get; set; }
 
         public IList<Function> Overloads { get; } = new List<Function>();
 
@@ -220,19 +220,6 @@ namespace Nexus.ir.stmt
                 }
 
                 ExtensionBase.Template(context, functionCallExtensionBase);
-
-                // TODO: was wollte ich hier tun?
-                //var objectType = functionCall.Object.GetResultType(context.CallerContext);
-
-                //if (objectType.IsTemplate)
-                //{
-                //    ExtensionBase.Template(context, objectType);
-                //}
-                //else if (!objectType.Equals(ExtensionBase))
-                //{
-                //    throw new TemplateGenerationException(this, $"Function call is called for class {objectType}," +
-                //                                                $" function is written for class {ExtensionBase}");
-                //}
             }
             else if (ExtensionBase != null)
             {

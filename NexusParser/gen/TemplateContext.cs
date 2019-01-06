@@ -26,7 +26,7 @@ namespace Nexus.gen
         /// </summary>
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private IGenerationElementGenerator _generator;
+        private readonly IGenerationElementGenerator _generator;
 
         /// <summary>
         /// Creates a template context instance.
@@ -74,7 +74,6 @@ namespace Nexus.gen
             }
         }
 
-        //public SimpleType LookupTemplateType(SimpleType templateType) => Get(templateType.Name).GetResultType(this) as SimpleType;
         public SimpleType LookupTemplateType(SimpleType templateType) =>
             TemplateVariables.ContainsKey(templateType.Name)
                 ? TemplateVariables[templateType.Name]
@@ -86,7 +85,6 @@ namespace Nexus.gen
 
             if (registeredType == null || registeredType.IsTemplate)
             {
-                //Add(templateType.Name, concreteType);
                 TemplateVariables[templateType.Name] = concreteType;
                 return concreteType;
             }
@@ -100,48 +98,6 @@ namespace Nexus.gen
 
             return registeredType;
         }
-
-        //public void DeriveTemplates(SimpleType templateType, SimpleType concreteType)
-        //{
-        //    if (templateType.TemplateList != null)
-        //    {
-        //        if (concreteType.TemplateList == null)
-        //        {
-        //            throw new TemplateGenerationException(concreteType, "Concrete type needs a template list but has none");
-        //        }
-
-        //        foreach (var i in templateType.TemplateList.Derive(concreteType.TemplateList))
-        //        {
-        //            if (_templateVariables.ContainsKey(i.Key))
-        //            {
-        //                if (!_templateVariables[i.Key].Equals(i.Value))
-        //                {
-        //                    throw new TemplateGenerationException(i.Value,
-        //                        $"Concrete type {i.Value} does not match the already derived type {_templateVariables[i.Key]} for key {i.Key}");
-        //                }
-        //            }
-        //            else
-        //            {
-        //                _templateVariables.Add(i);
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (_templateVariables.ContainsKey(templateType.Name))
-        //        {
-        //            if (!_templateVariables[templateType.Name].Equals(concreteType))
-        //            {
-        //                throw new TemplateGenerationException(concreteType,
-        //                    $"Concrete type {concreteType} does not match the already derived type {_templateVariables[templateType.Name]} for key {templateType.Name}");
-        //            }
-        //        }
-        //        else
-        //        {
-        //            _templateVariables.Add(templateType.Name, concreteType);
-        //        }
-        //    }
-        //}
 
         public SimpleType TemplateTypeToConcrete(string templateTypeName)
         {

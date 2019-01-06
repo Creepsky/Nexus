@@ -11,25 +11,10 @@ namespace Nexus.ir.expr
     {
         public IList<SimpleType> Types { get; }
 
-        //public bool IsVariadic { get; private set; }
-
         public TemplateList(IList<SimpleType> types)
         {
             Types = types;
         }
-
-        //public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        //{
-        //    if (phase == GenerationPhase.Templating)
-        //    {
-        //        foreach (var i in Types)
-        //        {
-        //            i.Generate(context, phase);
-        //        }
-        //    }
-
-        //    return this;
-        //}
 
         public override SimpleType GetResultType(Context context)
         {
@@ -52,26 +37,9 @@ namespace Nexus.ir.expr
                     $"Concrete TemplateList has {Types.Count} template parameter, expected {templateList.Types.Count}");
             }
 
-            //if (IsVariadic)
-            //{
-            //    // append as much variadic types to the end of the list as needed
-            //    var toAdd = templateList.Types.Count - Types.Count;
-
-            //    for (var i = 0; i < toAdd; ++i)
-            //    {
-            //        Types.Add(SimpleType.CreateVariadicType());
-            //    }
-            //}
-
             for (var i = 0; i < templateList.Types.Count; ++i)
             {
                 var j = i;
-
-                //if (IsVariadic && i >= Types.Count)
-                //{
-                //    j = Types.Count - 1;
-                //}
-
                 Types[i] = context.RegisterTemplateType(Types[j], templateList.Types[i]);
             }
         }

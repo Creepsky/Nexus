@@ -9,7 +9,6 @@ namespace Nexus.ir.stmt
     {
         public SimpleType Type { get; set; }
         public IExpression Initialization { get; set; }
-        private Context _context;
 
         public override string ToString()
         {
@@ -34,57 +33,29 @@ namespace Nexus.ir.stmt
 
         public override void ForwardDeclare(Context upperContext)
         {
-            _context = upperContext;
-            Type.ForwardDeclare(_context);
+            Type.ForwardDeclare(upperContext);
 
-            if (_context.Element is Class ||
-                _context.Element is Function ||
-                _context.Element is ForStatement)
+            if (upperContext.Element is Class ||
+                upperContext.Element is Function ||
+                upperContext.Element is ForStatement)
             {
-                _context.Add(Name, this);
+                upperContext.Add(Name, this);
             }
             else
             {
-                throw new UnexpectedScopeException(this, _context.Element.GetType().Name,
+                throw new UnexpectedScopeException(this, upperContext.Element.GetType().Name,
                     new List<string>{nameof(Class), nameof(Function)});
             }
         }
-
-        public override void Declare()
-        {
-        }
-
+        
         public override bool Print(PrintType type, Printer printer)
         {
-            //var isCppType = Type is CppType;
-
-            //if (Constant && !isCppType)
-            //{
-            //    printer.Write("const ");
-            //}
-
             Type.Print(type, printer);
-
-            //if (Reference && !isCppType)
-            //{
-            //    printer.Write("&");
-            //}
 
             if (type != PrintType.ForwardDeclaration)
             {
                 printer.Write($" {Name}");
             }
-
-            //if (Initialization != null)
-            //{
-            //    printer.Write(" = ");
-            //    Initialization?.Print(type, printer);
-            //}
-
-            //if (!Parameter)
-            //{
-            //    printer.WriteLine(";");
-            //}
 
             return true;
         }

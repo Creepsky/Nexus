@@ -11,7 +11,7 @@ namespace NexusParserTest
 {
     public class Expressions : IClassFixture<StandardLibFixture>
     {
-        private StandardLibFixture _fixture;
+        private readonly StandardLibFixture _fixture;
 
         public Expressions(StandardLibFixture fixture)
         {

@@ -12,13 +12,6 @@ namespace Nexus.ir.expr
         
         public override string ToString() => $"{Value.Name}[{Index}]";
 
-        //public override IGenerationElement Generate(Context context, GenerationPhase phase)
-        //{
-        //    Value.Generate(context, phase);
-        //    Index.Generate(context, phase);
-        //    return this;
-        //}
-
         public override SimpleType GetResultType(Context context)
         {
             return GetFunctionCall().GetResultType(context);
