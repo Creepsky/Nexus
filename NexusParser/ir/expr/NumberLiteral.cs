@@ -282,7 +282,7 @@ namespace Nexus.ir.expr
 
         public override bool Print(PrintType type, Printer printer)
         {
-            printer.Write($"{TypesExtension.ToString(Type)}({Value.ToString()})");
+            printer.Write($"{TypesExtension.ToString(Type)}{{{Value.ToString()}}}");
             return true;
         }
 

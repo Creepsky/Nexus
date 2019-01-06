@@ -24,7 +24,7 @@ namespace Nexus.ir.expr
 
         public override bool Print(PrintType type, Printer printer)
         {
-            printer.Write(Value ? "true" : "false");
+            printer.Write(Value ? "boolean{true}" : "boolean{false}");
             return true;
         }
 

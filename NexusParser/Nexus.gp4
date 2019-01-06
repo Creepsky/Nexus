@@ -83,7 +83,7 @@ expression : //expression shorthand_operator #postfixOperatorExpression
            | LEFT_BRACE expression RIGHT_BRACE #paren
            | LEFT_BRACKET expression(COMMA expression)* RIGHT_BRACKET #arrayLiteral
            | LEFT_BRACKET key_value_pair (COMMA key_value_pair)* RIGHT_BRACKET #mapLiteral
-           | NEW type LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE #newExpression
+           | NEW type LEFT_BRACE ((IDENTIFIER EQUAL expression (COMMA IDENTIFIER EQUAL expression)*)? | expression) RIGHT_BRACE #newExpression
            | expression RANGE expression #rangeLiteral
            | expression LEFT_BRACKET expression RIGHT_BRACKET #arrayAccessExpression
            | function_call_expression #functionCallExpression
