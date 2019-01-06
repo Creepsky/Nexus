@@ -26,6 +26,16 @@ namespace Nexus.ir.stmt
             {
                 throw new PositionedException(this, $"Expected return type {expectedReturnType} but got {actualReturnType}");
             }
+
+            if (_context.Element is Function function && function.TemplateList == null)
+            {
+                if (Value is FunctionCall f)
+                {
+                    var resultType = f.GetResultType(_context);
+                    function.ReturnType.Constant = resultType.Constant;
+                    function.ReturnType.Reference = resultType.Reference;
+                }
+            }
         }
 
         public override SimpleType GetResultType(Context context) =>
@@ -55,14 +65,11 @@ namespace Nexus.ir.stmt
                         function.ReturnType.Reference = true;
                     }
                 }
-
-                // TODO: somehow use the return type modifier
-                //if (Value is FunctionCall f)
-                //{
-                //    var resultType = f.GetResultType(_context);
-                //    function.ReturnType.Constant = resultType.Constant;
-                //    function.ReturnType.Reference = resultType.Reference;
-                //}
+                else if (Value is New)
+                {
+                    function.ReturnType.Constant = false;
+                    function.ReturnType.Reference = false;
+                }
             }
 
             Value.Declare();
