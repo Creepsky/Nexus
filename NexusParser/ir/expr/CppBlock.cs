@@ -50,7 +50,7 @@ namespace Nexus.ir.expr
 
         public override string ToString()
         {
-            return Block.Length > 10 ? new string(Block.Take(10).ToArray()) : Block;
+            return $"c++ {{|{Block}|}}";
         }
     }
 

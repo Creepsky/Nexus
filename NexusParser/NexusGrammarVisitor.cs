@@ -62,7 +62,7 @@ namespace Nexus
                 return Visit(context.include());
             }
 
-            return Visit(context.variable_declaration());
+            return Visit(context.variable_statement());
         }
 
         public override object VisitFarInclude(NexusParser.FarIncludeContext context)
@@ -121,16 +121,6 @@ namespace Nexus
             return new CppType(ExtractCppBlock(context.GetText(), context.Start));
         }
 
-        public override object VisitVariable_declaration(NexusParser.Variable_declarationContext context) => new Variable
-        {
-            Type = (SimpleType) Visit(context.type()),
-            Name = context.IDENTIFIER().GetText(),
-            //Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
-
         public override object VisitFunction_parameter(NexusParser.Function_parameterContext context)
         {
             var i = new Variable
@@ -149,15 +139,6 @@ namespace Nexus
             return i;
         }
 
-        public override object VisitAssignment_statement(NexusParser.Assignment_statementContext context) => new AssignmentStatement
-        {
-            Left = (IExpression) Visit(context.left),
-            Right = (IExpression) Visit(context.right),
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
-
         public override object VisitReturn_statement(NexusParser.Return_statementContext context) => new ReturnStatement
         {
             Value = (IExpression) Visit(context.expression()),
@@ -166,20 +147,20 @@ namespace Nexus
             FilePath = FileParser.CurrentPath
         };
 
-        //public override object VisitVariable_statement(NexusParser.Variable_statementContext context) => new Variable
-        //{
-        //    Type = (SimpleType) Visit(context.type()),
-        //    Name = context.IDENTIFIER().GetText(),
-        //    Initialization = context.expression() == null ? null : (IExpression) Visit(context.expression()),
-        //    Line = context.Start.Line,
-        //    Column = context.Start.Column,
-        //    FilePath = FileParser.CurrentPath
-        //};
+        public override object VisitVariable_statement(NexusParser.Variable_statementContext context) => new Variable
+        {
+            Type = (SimpleType)Visit(context.type()),
+            Name = context.IDENTIFIER().GetText(),
+            Initialization = context.expression() == null ? null : (IExpression)Visit(context.expression()),
+            Line = context.Start.Line,
+            Column = context.Start.Column,
+            FilePath = FileParser.CurrentPath
+        };
 
         public override object VisitTuple_explosion_statement(NexusParser.Tuple_explosion_statementContext context) => new TupleExplosionStatement
         {
             Names = context.IDENTIFIER().Skip(1).Select(i => i.GetText()).ToList(),
-            Right = (IExpression) Visit(context.expression()),
+            Right = (IExpression)Visit(context.expression()),
             Line = context.Start.Line,
             Column = context.Start.Column,
             FilePath = FileParser.CurrentPath
@@ -210,12 +191,7 @@ namespace Nexus
 
         public override object VisitFor_statement(NexusParser.For_statementContext context)
         {
-            var tmp1 = (IExpression) Visit(context.expression(0));
-            var tmp1Type = tmp1.GetType().Name;
-            var tmp2 = (IExpression) Visit(context.expression(1));
-            var tmp3 = (IExpression) Visit(context.expression(2));
-
-            var forStatement = new ForStatement
+            return new ForStatement
             {
                 Start = (IExpression) Visit(context.expression(0)),
                 Stop = (IExpression) Visit(context.expression(1)),
@@ -225,8 +201,6 @@ namespace Nexus
                 Column = context.Start.Column,
                 FilePath = FileParser.CurrentPath
             };
-
-            return forStatement;
         }
 
         public override object VisitFunction_call_expression(NexusParser.Function_call_expressionContext context) => new FunctionCall
@@ -251,11 +225,6 @@ namespace Nexus
                 Column = context.Start.Column,
                 FilePath = FileParser.CurrentPath
             };
-
-        //public override object VisitExtension_function_call_statement(NexusParser.Extension_function_call_statementContext context)
-        //{
-        //    return base.VisitExtension_function_call_statement(context);
-        //}
 
         //public override object VisitFunction_body_statement(NexusParser.Function_body_statementContext context)
         //{
@@ -566,46 +535,6 @@ namespace Nexus
 
             return base.VisitFactor(context);
         }
-
-        //public override object VisitComparison(NexusParser.ComparisonContext context)
-        //{
-        //    ComparisonType type;
-
-        //    if (context.EQUAL() != null)
-        //    {
-        //        type = ComparisonType.Equals;
-        //    }
-        //    else if (context.GREATER() != null)
-        //    {
-        //        type = ComparisonType.Greater;
-        //    }
-        //    else if (context.LESS() != null)
-        //    {
-        //        type = ComparisonType.Less;
-        //    }
-        //    else if (context.GREATER() != null && context.EQUAL() != null)
-        //    {
-        //        type = ComparisonType.GreaterEquals;
-        //    }
-        //    else if (context.LESS() != null && context.EQUAL() != null)
-        //    {
-        //        type = ComparisonType.LessEquals;
-        //    }
-        //    else
-        //    {
-        //        throw new ArgumentOutOfRangeException("unknown comparison", null as Exception);
-        //    }
-
-        //    return new Comparison
-        //    {
-        //        Left = (IExpression) Visit(context.expression(0)),
-        //        Type = type,
-        //        Right = (IExpression) Visit(context.expression(1)),
-        //        Line = context.Start.Line,
-        //        Column = context.Start.Column,
-        //        FilePath = FileParser.CurrentPath
-        //    };
-        //}
 
         public override object VisitMath_operator(NexusParser.Math_operatorContext context)
         {

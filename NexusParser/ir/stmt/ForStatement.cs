@@ -80,6 +80,7 @@ namespace Nexus.ir.stmt
             printer.WriteLine("{");
             printer.Push();
             Start.Print(PrintType.ForSource, printer);
+            printer.WriteLine(";");
             printer.Write("for (");
             printer.Write("; ");
             Stop.Print(type, printer);
