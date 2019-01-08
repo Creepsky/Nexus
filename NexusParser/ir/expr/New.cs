@@ -12,6 +12,10 @@ namespace Nexus.ir.expr
         public SimpleType Type { get; set; }
         public IDictionary<string, IExpression> Parameter { get; private set; } = new Dictionary<string, IExpression>();
         public IExpression SingleParameter { get; set; }
+
+        private Context _context;
+        private Class _class;
+        private FunctionCall _functionCall;
         private readonly IList<IExpression> _sortedParameter = new List<IExpression>();
 
         public override SimpleType GetResultType(Context context)
@@ -19,8 +23,15 @@ namespace Nexus.ir.expr
             return Type.GetResultType(context);
         }
 
+        public override void ForwardDeclare(Context upperContext)
+        {
+            _context = upperContext;
+        }
+
         public override void Template(TemplateContext context, IGenerationElement concreteElement)
         {
+            _context = context;
+
             Type.Template(context, concreteElement);
 
             SingleParameter?.Template(context, concreteElement);
@@ -28,6 +39,75 @@ namespace Nexus.ir.expr
             foreach (var i in Parameter)
             {
                 i.Value.Template(context, concreteElement);
+            }
+        }
+
+        public override void Declare()
+        {
+            // get the under laying class for the new keyword
+            _class = _context.Get<Class>(Type.GetResultType(_context).Name, this);
+
+            if (SingleParameter != null)
+            {
+                return;
+            }
+
+            _sortedParameter.Clear();
+
+            // first, reserve a place for every parameter in the array
+            for (var i = 0; i < Parameter.Count; ++i)
+            {
+                _sortedParameter.Add(null);
+            }
+            
+            foreach (var (parameterName, parameterValue) in Parameter)
+            {
+                // find the position of the parameter in the class
+                var parameterIndex = _class.Variables
+                    .Select((value, index) => new {value, index})
+                    .Where(p => p.value.Name == parameterName)
+                    .Select((value, index) => index);
+
+                for (var j = 0; j < _class.Variables.Count; ++j)
+                {
+                    if (_class.Variables[j].Name == parameterName)
+                    {
+                        // save the parameter in the sorted array
+                        _sortedParameter[j] = parameterValue;
+                    }
+                }
+            }
+        }
+
+        public override void Define()
+        {
+            _functionCall = new FunctionCall
+            {
+                Column = Column,
+                Line = Line,
+                FilePath = FilePath,
+                Name = Type.Name,
+                Object = Type,
+                Parameter = new List<IExpression>(),
+                Static = true
+            };
+
+            var createFunction = _context.Get(Type.Name) as Function;
+
+            if (createFunction == null)
+            {
+                createFunction = new Function
+                {
+                    Column = Column,
+                    Line = Line,
+                    FilePath = FilePath,
+                    ExtensionBase = Type,
+                    ReturnType = Type,
+                    Name = "create",
+                    Parameter = _class.Variables,
+                    Body = new List<IStatement>(),
+                    Static = true
+                };
             }
         }
 
@@ -41,8 +121,6 @@ namespace Nexus.ir.expr
 
             if (SingleParameter == null)
             {
-                _sortedParameter.Clear();
-
                 foreach (var i in Parameter)
                 {
                     i.Value.Check(context);
@@ -50,7 +128,7 @@ namespace Nexus.ir.expr
                     // also check if the member is available
                     if (type.Variables.All(v => v.Name != i.Key))
                     {
-                        // TODO: add a check
+                        throw new PositionedException(this, $"Class {Type} has no member {i.Key}");
                     }
                 }
             }
