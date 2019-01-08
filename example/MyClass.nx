@@ -1,7 +1,7 @@
 class MyClass
 {
-    string myString;
     [int -> string] myMap;
+    string myString;
 }
 
 i32 MyClass.testFunction(int a) {
@@ -29,6 +29,10 @@ int Main.run() {
     //usize j = i32::maximum();
     string i = this.testTemplateFunction(myObject);
     //tuple<int, string, float> myTuple;
+    new bool(true);
+    // MyClass myClassInstance = new MyClass(
+    //     myString = "test"
+    // );
     return 0_i32;
 }
 
