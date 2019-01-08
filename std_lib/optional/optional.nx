@@ -1,23 +1,29 @@
 class optional<T>
 {
-    c++ {| std::unique_ptr<T> value; |}
-    c++ {| optional() : value(nullptr) { } |}
-    c++ {| optional(T&& value) : value(std::move()) { } |}
+    include <optional>;
+    c++ {|std::optional<T>|} value;
 }
 
-bool optional<T>.is_set<T>()
-{
-    return c++ {| __this.value == nullptr |};
+bool optional<T>.is_set<T>() {
+    return c++ {|__this.value.has_value()|};
 }
 
-T optional<T>.get_or_default<T>(T default)
-{
-    if (this.is_set() == true)
+T optional<T>.get_or<T>(T value) {
+    if (this.is_set())
     {
-        return c++ {| __this.value |};
+        return c++ {|__this.value.value()|};
     }
     else
     {
-        return default;
+        return value;
+    }
+}
+
+T optional<T>.get<T>() {
+    if (this.is_set()) {
+        return c++ {|__this.value.value()|};
+    }
+    else {
+        c++ {|throw std::exception()|};
     }
 }
