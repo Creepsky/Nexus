@@ -173,6 +173,11 @@ namespace Nexus.ir.stmt
 
         public override void Declare()
         {
+            if (TemplateList != null)
+            {
+                return;
+            }
+
             foreach (var i in GetElements())
             {
                 i.Declare();
@@ -181,6 +186,11 @@ namespace Nexus.ir.stmt
 
         public override void Define()
         {
+            if (TemplateList != null)
+            {
+                return;
+            }
+
             foreach (var i in GetElements())
             {
                 i.Define();
