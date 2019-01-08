@@ -2,3 +2,5 @@
 .vscode/
 .idea/
 coverage.opencover.xml
+
+example/bin\.DotSettings\.user
