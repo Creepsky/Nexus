@@ -115,7 +115,7 @@ namespace Nexus.ir.expr
             // if the extension type is a c++ type, we can't ensure nothing.. so just return as it is ok
             if (Object?.GetResultType(context) is CppType)
             {
-                return;
+                throw new PositionedException(this, $"Can not extend the c++ type {Object}");
             }
             
             if (GetOverload(context) != null)

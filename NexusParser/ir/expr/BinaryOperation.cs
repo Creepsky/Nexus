@@ -124,9 +124,9 @@ namespace Nexus.ir.expr
             Right.Check(context);
 
             // if the extension type is a c++ type, we can't ensure nothing.. so just return as it is ok
-            if (Left.GetResultType(context) is CppType)
+            if (Left.GetResultType(context) is CppType cppType)
             {
-                return;
+                throw new PositionedException(this, $"Can not use the c++ type {cppType} as an operand");
             }
 
             var functionCall = GetFunctionCall();
