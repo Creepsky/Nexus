@@ -78,11 +78,14 @@ namespace Nexus.ir.expr
             }
 
             // exceptions
-            if (IsTemplate ||
-                Name == TypesExtension.CppType ||
-                other.Name == TypesExtension.CppType)
+            if (IsTemplate || this is CppType || other is CppType)
             {
                 return true;
+            }
+
+            if (Name != other.Name)
+            {
+                return false;
             }
 
             if (TemplateList == null)
@@ -97,7 +100,7 @@ namespace Nexus.ir.expr
                 return false;
             }
 
-            return Name == other.Name;
+            return true;
         }
 
         public override bool Equals(object other)
