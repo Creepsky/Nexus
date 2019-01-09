@@ -4,19 +4,34 @@ class i32
     c++ {|int32_t|} value;
 }
 
+i32 i32::create() {
+    i32 instance;
+    c++ {|instance.value = 0|};
+    return instance;
+}
+
+i32 i32&.operator=(i32 rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
+}
+
+i32 i32&.operator<-(i32 rhs) {
+    return this = rhs;
+}
+
 i32 safeAdditioni32<T>(i32 lhs, T rhs) {
     safeAddition(lhs, rhs);
-    return new i32(c++ {|static_cast<int32_t>(lhs.value + rhs.value)|});
+    return c++ {|i32{static_cast<int32_t>(lhs.value + rhs.value)}|};
 }
 
 i32 safeSubtractioni32<T>(i32 lhs, T rhs) {
     safeSubtraction(lhs, rhs);
-    return new i32(c++ {|static_cast<int32_t>(lhs.value - rhs.value)|});
+    return c++ {|i32{static_cast<int32_t>(lhs.value - rhs.value)}|};
 }
 
 i32 safeMultiplicationi32<T>(i32 lhs, T rhs) {
     safeMultiplication(lhs, rhs);
-    return new i32(c++ {|static_cast<int32_t>(lhs.value * rhs.value)|});
+    return c++ {|i32{static_cast<int32_t>(lhs.value * rhs.value)}|};
 }
 
 f64 safeDivisioni32<T>(i32 lhs, T rhs) {
@@ -226,262 +241,262 @@ f64 i32.operator/(f64 rhs) {
 /* Less */
 
 bool i32.operator<(i8 rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(u8 rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(i16 rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(u16 rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(i32 rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(u32 rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(i64 rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(u64 rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(isize rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(usize rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(f32 rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 bool i32.operator<(f64 rhs) {
-    return new bool(this.value < rhs.value);
+    return safeLess(this, rhs);
 }
 
 /* Greater */
 
 bool i32.operator>(i8 rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(u8 rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(i16 rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(u16 rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(i32 rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(u32 rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(i64 rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(u64 rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(isize rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(usize rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(f32 rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 bool i32.operator>(f64 rhs) {
-    return new bool(this.value > rhs.value);
+    return safeGreater(this, rhs);
 }
 
 /* Less Equal */
 
 bool i32.operator<=(i8 rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(u8 rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(i16 rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(u16 rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(i32 rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(u32 rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(i64 rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(u64 rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(isize rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(usize rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(f32 rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 bool i32.operator<=(f64 rhs) {
-    return new bool(this.value <= rhs.value);
+    return safeLessEqual(this, rhs);
 }
 
 /* Greater Equal */
 
 bool i32.operator>=(i8 rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(u8 rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(i16 rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(u16 rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(i32 rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(u32 rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(i64 rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(u64 rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(isize rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(usize rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(f32 rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 bool i32.operator>=(f64 rhs) {
-    return new bool(this.value >= rhs.value);
+    return safeGreaterEqual(this, rhs);
 }
 
 /* add */
 
 i32 i32&.operator+=(i8 rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(u8 rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(i16 rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(u16 rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(i32 rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(u32 rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(i64 rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(u64 rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(isize rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(usize rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(f32 rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
 i32 i32&.operator+=(f64 rhs) {
-    this.value += rhs.value;
+    c++ {|__this.value += rhs.value|};
     return this;
 }
 
@@ -503,11 +518,6 @@ i32 i32&.operator=(i16 rhs) {
 }
 
 i32 i32&.operator=(u16 rhs) {
-    c++ {|__this.value = rhs.value|};
-    return this;
-}
-
-i32 i32&.operator=(i32 rhs) {
     c++ {|__this.value = rhs.value|};
     return this;
 }
@@ -556,18 +566,18 @@ i32 i32&.operator=(f64 rhs) {
 // }
 
 // i32 i32.operator+=<T>(T rhs) {
-//     this.value += rhs.value;
+//     c++ {|__this.value += rhs.value|};
 //     return this;
 // }
 
 i32 i32::minimum() {
     include <limits>;
-    return new i32(c++ {|std::numeric_limits<int32_t>::min()|});
+    return c++ {|i32{std::numeric_limits<int32_t>::min()}|};
 }
 
 i32 i32::maximum() {
     include <limits>;
-    return new i32(c++ {|std::numeric_limits<int32_t>::max()|});
+    return c++ {|i32{std::numeric_limits<int32_t>::max()}|};
 }
 
 bool i32::signed() {

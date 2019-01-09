@@ -260,7 +260,7 @@ namespace Nexus
         public override object VisitAssignmentExpression(NexusParser.AssignmentExpressionContext context)
         {
             return new Assignment((IExpression) Visit(context.expression(0)),
-                (IExpression) Visit(context.expression(1)))
+                (IExpression) Visit(context.expression(1)), AssignmentType.Copy)
             {
                 Name = Function.OperatorToName("="),
                 Line = context.Start.Line,
@@ -309,6 +309,18 @@ namespace Nexus
             Column = context.Start.Column,
             FilePath = FileParser.CurrentPath
         };
+
+        public override object VisitMoveExpression(NexusParser.MoveExpressionContext context)
+        {
+            return new Assignment((IExpression) Visit(context.expression(0)),
+                (IExpression) Visit(context.expression(1)), AssignmentType.Move)
+            {
+                Name = Function.OperatorToName("<-"),
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+        }
 
         public override object VisitArrayLiteral(NexusParser.ArrayLiteralContext context) => new ArrayLiteral
         {

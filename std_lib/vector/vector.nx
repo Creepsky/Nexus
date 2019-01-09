@@ -3,3 +3,24 @@ class vector<T>
     include <vector>;
     c++ {|std::vector<T>|} values;
 }
+
+vector<T> vector<T>::create<T>() {
+    vector<T> instance;
+    return instance;
+}
+
+vector<T> vector<T>::create<T>(usize size) {
+    vector<T> instance;
+    c++ {|instance.reserve(size)|};
+    return instance;
+}
+
+vector<T> vector<T>&.operator=<T>(vector<T> rhs) {
+    c++ {|__this.values = rhs|};
+    return this;
+}
+
+vector<T> vector<T>&.operator<-<T>(vector<T>& rhs) {
+    c++ {|__this.values = std::move(rhs.values)|};
+    return this;
+}

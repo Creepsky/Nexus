@@ -34,7 +34,7 @@ namespace Nexus.ir.stmt
 
         public override string ToString()
         {
-            return $"class {Type}";
+            return Type.ToString();
         }
 
         public override SimpleType GetResultType(Context context) => Type;

@@ -3,5 +3,5 @@
   */
 char string.at(usize index)
 {
-    return new char(c++ {|__this.value[index.value]|});
+    return c++ {|character{__this.value[index.value]}|};
 }

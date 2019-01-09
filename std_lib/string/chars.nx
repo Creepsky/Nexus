@@ -3,7 +3,5 @@
   */
 usize string.bytes()
 {
-    return new usize(c++ {|
-        __this.value.size()
-    |});
+    return c++ {|usize{__this.value.size()}|};
 }

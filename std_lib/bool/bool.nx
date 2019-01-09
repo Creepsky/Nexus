@@ -4,6 +4,20 @@ class boolean
     c++ {|operator bool() const { return value; }|}
 }
 
+bool bool::create() {
+    bool instance;
+    c++ {|instance.value = false|};
+    return instance;
+}
+
 bool bool.operator&&(bool rhs) {
-    return new bool(this.value && rhs.value);
+    return c++ {|boolean{__this.value && rhs.value}|};
+}
+
+bool bool.operator=(bool rhs) {
+    return c++ {|boolean{rhs.value}|};
+}
+
+bool bool.operator<-(bool rhs) {
+    return this = rhs;
 }

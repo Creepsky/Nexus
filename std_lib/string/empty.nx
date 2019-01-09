@@ -4,7 +4,5 @@
   */
 bool string.empty()
 {
-    return new bool(c++ {|
-        __this.value.empty()
-    |});
+    return c++ {|boolean{__this.value.empty()}|};
 }
