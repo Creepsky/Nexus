@@ -139,13 +139,7 @@ namespace Nexus.ir.stmt
                     Column = Column,
                     Line = Line,
                     FilePath = FilePath,
-                    Value = new New
-                    {
-                        Column = Column,
-                        Line = Line,
-                        FilePath = FilePath,
-                        Type = new SimpleType(TypesExtension.Unit)
-                    }
+                    Value = new CppBlock("unit{}", Line, Column)
                 };
 
                 Body.Add(unitReturnValue);
@@ -247,7 +241,7 @@ namespace Nexus.ir.stmt
                 Parameter[i].Template(context, functionCall.Parameter[i].GetResultType(context.CallerContext));
             }
 
-            ReturnType = context.LookupTemplateType(ReturnType);
+            ReturnType.Template(context, null);
 
             foreach (var i in Body)
             {
@@ -445,6 +439,10 @@ namespace Nexus.ir.stmt
                     return "operator!=";
                 case "=":
                     return "assign";
+                case "<-":
+                    return "moveFrom";
+                case "->":
+                    return "moveInto";
                 case "&&":
                     return "operator&&";
                 default:

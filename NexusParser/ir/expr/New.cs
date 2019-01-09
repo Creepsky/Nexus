@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Nexus.common;
 using Nexus.gen;
@@ -15,7 +14,8 @@ namespace Nexus.ir.expr
 
         private Context _context;
         private Class _class;
-        private FunctionCall _functionCall;
+        private Function _createFunction;
+        private FunctionCall _createFunctionCall;
         private readonly IList<IExpression> _sortedParameter = new List<IExpression>();
 
         public override SimpleType GetResultType(Context context)
@@ -26,6 +26,11 @@ namespace Nexus.ir.expr
         public override void ForwardDeclare(Context upperContext)
         {
             _context = upperContext;
+
+            foreach (var i in Parameter)
+            {
+                i.Value.ForwardDeclare(_context);
+            }
         }
 
         public override void Template(TemplateContext context, IGenerationElement concreteElement)
@@ -44,30 +49,49 @@ namespace Nexus.ir.expr
 
         public override void Declare()
         {
+            foreach (var i in Parameter)
+            {
+                i.Value.Declare();
+            }
+
             // get the under laying class for the new keyword
             _class = _context.Get<Class>(Type.GetResultType(_context).Name, this);
 
-            if (SingleParameter != null)
+            _sortedParameter.Clear();
+
+            _createFunctionCall = new FunctionCall
             {
+                Column = Column,
+                Line = Line,
+                FilePath = FilePath,
+                Name = "create",
+                Object = Type,
+                Parameter = Parameter.Values.ToList(),
+                Static = true
+            };
+
+            _createFunction = (_context.Get("create") as Function)?.GetOverload(_createFunctionCall, _context);
+
+            if (_createFunction != null)
+            {
+                // we found a create function, so we use it instead of building an automatic constructor
                 return;
             }
 
-            _sortedParameter.Clear();
-
             // first, reserve a place for every parameter in the array
-            for (var i = 0; i < Parameter.Count; ++i)
+            foreach (var v in _class.Variables)
             {
+                if (v.GetResultType(_context) is CppType)
+                {
+                    throw new PositionedException(this, $"Can not automatically create a constructor for '{_class}', " +
+                                                        $"because it uses the c++ variable '{v.Name}'");
+                }
+
                 _sortedParameter.Add(null);
             }
             
             foreach (var (parameterName, parameterValue) in Parameter)
             {
-                // find the position of the parameter in the class
-                var parameterIndex = _class.Variables
-                    .Select((value, index) => new {value, index})
-                    .Where(p => p.value.Name == parameterName)
-                    .Select((value, index) => index);
-
                 for (var j = 0; j < _class.Variables.Count; ++j)
                 {
                     if (_class.Variables[j].Name == parameterName)
@@ -77,26 +101,58 @@ namespace Nexus.ir.expr
                     }
                 }
             }
-        }
 
-        public override void Define()
-        {
-            _functionCall = new FunctionCall
+            for (var i = 0; i < _sortedParameter.Count; ++i)
+            {
+                if (_sortedParameter[i] == null)
+                {
+                    _sortedParameter[i] = new New
+                    {
+                        Column = Column,
+                        Line = Line,
+                        FilePath = FilePath,
+                        Type = _class.Variables[i].Type,
+                        Parameter = new Dictionary<string, IExpression>()
+                    };
+
+                    _sortedParameter[i].ForwardDeclare(_context);
+                    _sortedParameter[i].Declare();
+                }
+            }
+
+            _createFunctionCall = new FunctionCall
             {
                 Column = Column,
                 Line = Line,
                 FilePath = FilePath,
-                Name = Type.Name,
+                Name = "create",
                 Object = Type,
-                Parameter = new List<IExpression>(),
+                Parameter = _sortedParameter,
                 Static = true
             };
 
-            var createFunction = _context.Get(Type.Name) as Function;
+            _createFunctionCall.Declare();
+        }
 
-            if (createFunction == null)
+        public override void Define()
+        {
+            if (SingleParameter != null)
             {
-                createFunction = new Function
+                return;
+            }
+
+            var createFunction = _context.Get("create") as Function;
+
+            // no T::create function found, create one if possible
+            if (createFunction != null)
+            {
+                _createFunction = createFunction.GetOverload(_createFunctionCall, _context);
+            }
+
+            // no valid overload for T::create found, let's create it
+            if (_createFunction == null)
+            {
+                _createFunction = new Function
                 {
                     Column = Column,
                     Line = Line,
@@ -104,16 +160,84 @@ namespace Nexus.ir.expr
                     ExtensionBase = Type,
                     ReturnType = Type,
                     Name = "create",
-                    Parameter = _class.Variables,
+                    Parameter = _class.Variables.Select(i => (Variable)i.CloneDeep()).ToList(),
                     Body = new List<IStatement>(),
                     Static = true
                 };
+
+                foreach (var i in _createFunction.Parameter)
+                {
+                    i.Type.Reference = true;
+                }
+
+                // create the new instance
+                _createFunction.Body.Add(new ExpressionStatement
+                {
+                    Column = Column,
+                    Line = Line,
+                    FilePath = FilePath,
+                    Expression = new Variable
+                    {
+                        Column = Column,
+                        Line = Line,
+                        FilePath = FilePath,
+                        Name = "instance",
+                        Type = Type
+                    }
+                });
+
+                // assign the parameter
+                foreach (var i in _class.Variables)
+                {
+                    _createFunction.Body.Add(new ExpressionStatement
+                    {
+                        Column = Column,
+                        Line = Line,
+                        FilePath = FilePath,
+                        Expression =
+                            new Assignment(
+                                new MemberAccess(
+                                        new VariableLiteral {Column = Column, Line = Line, FilePath = FilePath, Name = "instance"}, i.Name)
+                                    {Column = Column, Line = Line, FilePath = FilePath},
+                                new VariableLiteral {Column = Column, Line = Line, FilePath = FilePath, Name = i.Name},
+                                AssignmentType.Move)
+                            {
+                                Column = Column,
+                                Line = Line,
+                                FilePath = FilePath,
+                            }
+                    });
+                }
+
+                // return it
+                _createFunction.Body.Add(new ReturnStatement
+                {
+                    Column = Column,
+                    Line = Line,
+                    FilePath = FilePath,
+                    Value = new VariableLiteral
+                    {
+                        Column = Column,
+                        Line = Line,
+                        FilePath = FilePath,
+                        Name = "instance"
+                    }
+                });
+
+                _createFunction.ForwardDeclare(_context.UpperContext);
+                _createFunction.Declare();
+                _createFunction.Define();
             }
+
+            _createFunctionCall.Define();
         }
 
         public override void Check(Context context)
         {
             Type.Check(context);
+
+            _createFunction.Check(context);
+            _createFunctionCall.Check(context);
 
             SingleParameter?.Check(context);
 
@@ -142,28 +266,7 @@ namespace Nexus.ir.expr
 
         public override bool Print(PrintType type, Printer printer)
         {
-            Type.Print(type, printer);
-
-            printer.Write("{");
-
-            if (SingleParameter != null)
-            {
-                SingleParameter.Print(type, printer);
-            }
-            else
-            {
-                foreach (var i in Parameter)
-                {
-                    if (i.Value.Print(type, printer) && !Equals(i, Parameter.Last()))
-                    {
-                        printer.Write(", ");
-                    }
-                }
-            }
-
-            printer.Write("}");
-
-            return true;
+            return _createFunctionCall.Print(type, printer);
         }
 
         public override object Clone()
@@ -178,7 +281,7 @@ namespace Nexus.ir.expr
 
         public override string ToString()
         {
-            return $"new {Type}({SingleParameter.ToString() ?? string.Join(", ", Parameter.Select(i => $"{i.Key} = {i.Value}"))})";
+            return $"new {Type}({SingleParameter?.ToString() ?? string.Join(", ", Parameter.Select(i => $"{i.Key} = {i.Value}"))})";
         }
     }
 }

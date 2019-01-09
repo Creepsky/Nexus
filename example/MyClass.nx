@@ -4,7 +4,18 @@ class MyClass
     string myString;
 }
 
+class Test {
+    int i;
+    string s;
+    bool b;
+}
+
 i32 MyClass.testFunction(int a) {
+    bool testBool = true;
+    Test t = new Test(
+        b: new bool(),
+        s: "test"
+    );
     i32 c;
     c = 5;
     i32 b = 1 + 2 * 3 / 4;
@@ -29,7 +40,6 @@ int Main.run() {
     //usize j = i32::maximum();
     string i = this.testTemplateFunction(myObject);
     //tuple<int, string, float> myTuple;
-    new bool(true);
     // MyClass myClassInstance = new MyClass(
     //     myString = "test"
     // );

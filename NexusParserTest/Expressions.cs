@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Nexus;
 using Nexus.gen;
 using Nexus.ir.expr;
@@ -191,11 +192,16 @@ namespace NexusParserTest
         [InlineData("([1, 2, 3][1] / 1) * 5", "(at({i64{1}, i64{2}, i64{3}}, i64{1}) / i64{1}) * i64{5}", "f64")]
         public void ParenTest(string expression, string expected, string expectedReturnValue)
         {
-            var i = FileParser.ParseFile($"class test {{}} {expectedReturnValue} test.func() {{ return {expression}; }}");
-            Assert.Equal(1, i.Functions.Count);
+            var i = FileParser.ParseFile($"{expectedReturnValue} Main.func() {{ return {expression}; }} int Main.run() {{ return 0_i32; }}");
+            // Main.run and Main.func
+            Assert.Equal(2, i.Functions.Count);
             Assert.Equal(1, i.Functions[0].Body.Count);
             Assert.IsType<ReturnStatement>(i.Functions[0].Body[0]);
             var rs = (ReturnStatement)i.Functions[0].Body[0];
+            foreach (var j in i.Functions)
+            {
+                _fixture.Context.AddGlobal(j.Name, j);
+            }
             _fixture.Generate();
             GenerateAndCheck(i, _fixture.Context);
             Assert.Equal(expected ?? expression, Print(rs.Value));
@@ -203,11 +209,10 @@ namespace NexusParserTest
 
         private static void GenerateAndCheck(IGenerationElement element, Context context)
         {
-            var c = context.StackNewContext(element);
-            element.ForwardDeclare(c);
+            element.ForwardDeclare(context);
             element.Declare();
             element.Define();
-            element.Check(c);
+            element.Check(context);
         }
 
         private static string Print(IPrintable element, PrintType type = PrintType.Header)
@@ -224,7 +229,13 @@ namespace NexusParserTest
             var i = FileParser.ParseFile("class Test{ [string -> int] values; } " +
                                          "int Test.get(string key) { " +
                                          "  return this.values[key]; " +
-                                         "} ");
+                                         "} " +
+                                         "int Main.run() { return 0_i32; }");
+            foreach (var j in i.Classes.Select(c => c as IGenerationElement)
+                                       .Concat(i.Functions.Select(c => c as IGenerationElement)))
+            {
+                _fixture.Context.AddGlobal(j.Name, j);
+            }
             _fixture.Generate();
             GenerateAndCheck(i, _fixture.Context.StackNewContext(null));
         }

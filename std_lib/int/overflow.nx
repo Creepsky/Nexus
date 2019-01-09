@@ -26,5 +26,21 @@ void safeMultiplication<T, R>(T lhs, R rhs) {
 }
 
 f64 safeDivision<T, R>(T lhs, R rhs) {
-    return new f64(c++ {|static_cast<double>(lhs.value) / rhs.value|});
+    return c++ {|f64{static_cast<double>(lhs.value) / rhs.value}|};
+}
+
+bool safeLess<T, R>(T lhs, R rhs) {
+    return c++ {|boolean{lhs.value < rhs.value}|};
+}
+
+bool safeGreater<T, R>(T lhs, R rhs) {
+    return c++ {|boolean{lhs.value > rhs.value}|};
+}
+
+bool safeLessEqual<T, R>(T lhs, R rhs) {
+    return c++ {|boolean{lhs.value <= rhs.value}|};
+}
+
+bool safeGreaterEqual<T, R>(T lhs, R rhs) {
+    return c++ {|boolean{lhs.value >= rhs.value}|};
 }

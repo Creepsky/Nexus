@@ -1,7 +1,10 @@
 class map<TKey, TValue>
 {
     include <map>;
-    c++ {|
-        std::map<TKey, TValue> values;
-    |}
+    c++ {|std::map<TKey, TValue>|} values;
+}
+
+map<TKey, TValue> map<TKey, TValue>::create<TKey, TValue>() {
+    map<TKey, TValue> instance;
+    return instance;
 }

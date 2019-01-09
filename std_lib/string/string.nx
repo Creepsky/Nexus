@@ -4,6 +4,17 @@ class string
     c++ {|std::string|} value;
 }
 
-string string.operator=(string rhs) {
-    return new string(c++ {|std::move(rhs.value)|});
+string string::create() {
+    string instance;
+    return instance;
+}
+
+string string&.operator=(string rhs) {
+    c++ {|__this.value = rhs.value|};
+    return this;
+}
+
+string string&.operator<-(string& rhs) {
+    c++ {|__this.value = std::move(rhs.value)|};
+    return this;
 }

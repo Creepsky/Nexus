@@ -1,4 +1,4 @@
 TValue map<TKey, TValue>.operator[]<TKey, TValue>(TKey key)
 {
-    return new TValue(c++ {|__this.values.at(key)|});
+    return c++ {|TValue{__this.values.at(key)}|};
 }

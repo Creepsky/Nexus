@@ -15,7 +15,7 @@ class_declaration : CLASS name=IDENTIFIER template_list? LEFT_CURLY_BRACE class_
 
 class_member : cpp_block
              | variable_statement
-             | include COLON
+             | include SEMICOLON
              ;
 
 include : INCLUDE LESS path=.*? GREATER #farInclude
@@ -39,11 +39,11 @@ function_declaration : returnType=type returnTypeMutability=AMPERSAND?
                        LEFT_BRACE (function_parameter (COMMA function_parameter)*)? RIGHT_BRACE
                        LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
-return_statement : RETURN expression COLON ;
+return_statement : RETURN expression SEMICOLON ;
 
-variable_statement : type IDENTIFIER (EQUAL expression)? COLON ;
+variable_statement : type IDENTIFIER (EQUAL expression)? SEMICOLON ;
 
-tuple_explosion_statement : IDENTIFIER IDENTIFIER (COMMA IDENTIFIER)+ EQUAL expression COLON ;
+tuple_explosion_statement : IDENTIFIER IDENTIFIER (COMMA IDENTIFIER)+ EQUAL expression SEMICOLON ;
 
 if_statement : IF LEFT_BRACE expression RIGHT_BRACE
                LEFT_CURLY_BRACE then=function_body RIGHT_CURLY_BRACE
@@ -52,14 +52,14 @@ if_statement : IF LEFT_BRACE expression RIGHT_BRACE
 while_statement : WHILE LEFT_BRACE expression RIGHT_BRACE
                   LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
-for_statement : FOR LEFT_BRACE expression COLON expression COLON expression RIGHT_BRACE
+for_statement : FOR LEFT_BRACE expression SEMICOLON expression SEMICOLON expression RIGHT_BRACE
                 LEFT_CURLY_BRACE function_body RIGHT_CURLY_BRACE ;
 
 function_call_expression : IDENTIFIER LEFT_BRACE (expression (COMMA expression)*)? RIGHT_BRACE ;
 
-include_statement : include COLON ;
+include_statement : include SEMICOLON ;
 
-expression_statement : expression COLON ;
+expression_statement : expression SEMICOLON ;
 
 function_body_statement : return_statement
                         | function_declaration
@@ -83,7 +83,7 @@ expression : //expression shorthand_operator #postfixOperatorExpression
            | LEFT_BRACE expression RIGHT_BRACE #paren
            | LEFT_BRACKET expression(COMMA expression)* RIGHT_BRACKET #arrayLiteral
            | LEFT_BRACKET key_value_pair (COMMA key_value_pair)* RIGHT_BRACKET #mapLiteral
-           | NEW type LEFT_BRACE ((IDENTIFIER EQUAL expression (COMMA IDENTIFIER EQUAL expression)*)? | expression) RIGHT_BRACE #newExpression
+           | NEW type LEFT_BRACE ((IDENTIFIER COLON expression (COMMA IDENTIFIER COLON expression)*) | expression)? RIGHT_BRACE #newExpression
            | expression RANGE expression #rangeLiteral
            | expression LEFT_BRACKET expression RIGHT_BRACKET #arrayAccessExpression
            | function_call_expression #functionCallExpression
@@ -91,6 +91,7 @@ expression : //expression shorthand_operator #postfixOperatorExpression
            | CPP_BLOCK #cppBlockExpression
            | expression comparison_operator expression #comparisonOperation
            | expression logical_operator expression #logicalOperation
+           | expression ARROW_LEFT expression #moveExpression
            | expression EQUAL expression #assignmentExpression
            | factor #fact
            ;
@@ -117,6 +118,7 @@ operator : math_operator
          | comparison_operator
          | logical_operator
          | equal_operator=EQUAL
+         | takeFrom=ARROW_LEFT
          ;
 
 math_operator : PLUS EQUAL?
@@ -162,8 +164,9 @@ RIGHT_BRACE : ')' ;
 ARRAY_DECLARATION : '[]' ;
 LEFT_BRACKET : '[' ;
 RIGHT_BRACKET : ']' ;
-COLON : ';' ;
+SEMICOLON : ';' ;
 ARROW_RIGHT : '->' ;
+ARROW_LEFT : '<-' ;
 BINARY : ('b'|'B') 'x' ('0'|'1')+ ;
 HEX : '0x' [0-9A-F]+ ;
 INTEGER : ('-'|'+')?[0-9]+(','[0-9]+)* ;
@@ -195,6 +198,7 @@ OPERATOR : 'operator' ;
 RANGE : '..' ;
 DOT : '.' ;
 DOUBLE_COLON : '::' ;
+COLON : ':' ;
 CPP : 'c++' ;
 INTEGER_SUFFIX : '_' ('i'|'u') ('8'|'16'|'32'|'64') ;
 REAL_SUFFIX : '_f' ('32'|'64') | 'f' | 'd' ;

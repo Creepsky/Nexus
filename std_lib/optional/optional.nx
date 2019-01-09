@@ -4,6 +4,17 @@ class optional<T>
     c++ {|std::optional<T>|} value;
 }
 
+optional<T> optional<T>::create<T>() {
+    optional<T> instance;
+    return instance;
+}
+
+optional<T> optional<T>::create<T>(T value) {
+    optional<T> instance;
+    instance.set(value);
+    return instance;
+}
+
 bool optional<T>.is_set<T>() {
     return c++ {|__this.value.has_value()|};
 }
@@ -17,6 +28,10 @@ T optional<T>.get_or<T>(T value) {
     {
         return value;
     }
+}
+
+unit optional<T>.set<T>(T value) {
+    c++ {|__this.value = value|};
 }
 
 T optional<T>.get<T>() {
