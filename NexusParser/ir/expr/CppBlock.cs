@@ -18,11 +18,9 @@ namespace Nexus.ir.expr
 
         public override SimpleType GetResultType(Context context) =>
             _returnType ?? (_returnType =
-                new SimpleType(TypesExtension.CppType)
+                new CppType(new CppBlock(Block, Line, Column))
                 {
-                    FilePath = FilePath,
-                    Line = Line,
-                    Column = Column
+                    FilePath = FilePath
                 });
 
         public override void Template(TemplateContext context, IGenerationElement concreteElement)
