@@ -8,36 +8,61 @@ namespace Nexus.ir.expr
     {
         public IList<IExpression> Values { get; set; }
 
-        public override string ToString() => $"std::make_tuple({string.Join(", ", Values)})";
+        private Context _context;
+        private SimpleType _resultType;
+        private New _newFunction;
+
+        public override string ToString() => $"tupleLiteral({string.Join(", ", Values)})>";
 
         public override SimpleType GetResultType(Context context) =>
-            new SimpleType("tuple", new TemplateList(Values.Select(i => GetResultType(context)).ToList()), 0)
+            _resultType ?? (_resultType = new SimpleType($"tuple{Values.Count}", new TemplateList(Values.Select(i => i.GetResultType(context)).ToList()), 0)
             {
                 Line = Line,
-                Column = Column 
+                Column = Column,
+                FilePath = FilePath
+            });
+
+        public override void ForwardDeclare(Context upperContext)
+        {
+            _context = upperContext;
+
+            _newFunction = new New
+            {
+                Column = Column,
+                Line = Line,
+                FilePath = FilePath
             };
+
+            _newFunction.ForwardDeclare(_context);
+        }
+
+        public override void Declare()
+        {
+            var templateTypes = new TemplateList(Values.Select(i => i.GetResultType(_context)).ToList());
+
+            _newFunction.Type = new SimpleType($"tuple{Values.Count}", templateTypes, 0);
+
+            for (var i = 0; i < Values.Count; ++i)
+            {
+                _newFunction.Parameter.Add($"_{i}", Values[i]);
+            }
+
+            _newFunction.Declare();
+        }
+
+        public override void Define()
+        {
+            _newFunction.Define();
+        }
 
         public override void Check(Context context)
         {
-            foreach (var i in Values)
-            {
-                i.Check(context);
-            }
+            _newFunction.Check(context);
         }
 
         public override bool Print(PrintType type, Printer printer)
         {
-            printer.Write("std::make_tuple(");
-            foreach (var i in Values)
-            {
-                i.Print(type, printer);
-                if (!Equals(i, Values.Last()))
-                {
-                    printer.Write(", ");
-                }
-            }
-            printer.Write(")");
-            return true;
+            return _newFunction.Print(type, printer);
         }
 
         public override object Clone()

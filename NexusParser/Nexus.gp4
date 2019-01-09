@@ -23,7 +23,7 @@ include : INCLUDE LESS path=.*? GREATER #farInclude
         ;
 
 type : IDENTIFIER template_list? ARRAY_DECLARATION* #namedType
-     | LEFT_BRACE type (COMMA type)*  RIGHT_BRACE ARRAY_DECLARATION* #tupleType
+     | LEFT_BRACE type (COMMA type)+  RIGHT_BRACE ARRAY_DECLARATION* #tupleType
      | LEFT_BRACKET key=type ARROW_RIGHT value=type RIGHT_BRACKET ARRAY_DECLARATION* #mapType
      | CPP_BLOCK #cppType
      ;

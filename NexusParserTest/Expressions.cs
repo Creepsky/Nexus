@@ -239,5 +239,28 @@ namespace NexusParserTest
             _fixture.Generate();
             GenerateAndCheck(i, _fixture.Context.StackNewContext(null));
         }
+
+        [Fact]
+        public void TestAssignment()
+        {
+            var context = _fixture.Context;
+            
+            // int a = 0;
+            context.Add("a", new Variable
+            {
+                Type = new SimpleType(TypesExtension.Int, 0),
+                Name = "a",
+                //Initialization = new I32(0)
+            });
+            
+            // a = 1;
+            var i = new Assignment(new VariableLiteral {Name = "a"}, new I32(1), AssignmentType.Copy);
+            
+            _fixture.Generate();
+            i.Check(context);
+            i.ForwardDeclare(context);
+            i.Declare();
+            i.Define();
+        }
     }
 }

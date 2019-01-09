@@ -57,6 +57,8 @@ namespace Nexus.ir.expr
             // get the under laying class for the new keyword
             _class = _context.Get<Class>(Type.GetResultType(_context).Name, this);
 
+            _class = _class.GetVariant(Type.GetResultType(_context), _context);
+
             _sortedParameter.Clear();
 
             _createFunctionCall = new FunctionCall
