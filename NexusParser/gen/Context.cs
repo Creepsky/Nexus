@@ -58,15 +58,18 @@ namespace Nexus.gen
         {
             var current = Get(name);
 
-            if (current != null)
+            if (current != null &&
+                current.GetType() == element.GetType())
             {
-                if (current is Function extensionFunction)
+                if (current is Function extensionFunction &&
+                    element is Function overload)
                 {
-                    extensionFunction.AddOverload((Function)element);
+                    extensionFunction.AddOverload(overload);
                 }
-                else if (current is Class c)
+                else if (current is Class c &&
+                         element is Class variant)
                 {
-                    c.AddVariant((Class)element);
+                    c.AddVariant(variant);
                 }
                 else
                 {
