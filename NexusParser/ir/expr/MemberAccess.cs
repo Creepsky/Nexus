@@ -34,7 +34,9 @@ namespace Nexus.ir.expr
 
                 var elementClass = context.Get<Class>(resultType.Name, this);
 
-                _variable = elementClass.Variables.FirstOrDefault(i => i.Name == Member);
+                var concreteClass = elementClass.GetVariant(resultType, context);
+
+                _variable = concreteClass.Variables.FirstOrDefault(i => i.Name == Member);
 
                 if (_variable == null)
                 {

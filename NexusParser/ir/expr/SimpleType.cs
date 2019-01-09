@@ -26,6 +26,7 @@ namespace Nexus.ir.expr
         public bool IsVariadic { get; set; }
         public bool IsTemplate { get; set; }
         public TemplateList TemplateList { get; set; }
+        public int Array { get; }
 
         public SimpleType(string name)
             : this(name, 0)
@@ -39,6 +40,8 @@ namespace Nexus.ir.expr
 
         public SimpleType(string name, TemplateList templateList, int array)
         {
+            Array = array;
+
             if (array > 0)
             {
                 Name = "vector";
@@ -143,7 +146,7 @@ namespace Nexus.ir.expr
             return true;
         }
 
-        private string GetQualifiedName(bool withModifiers)
+        protected string GetQualifiedName(bool withModifiers)
         {
             var name = Name;
 

@@ -10,6 +10,10 @@ class Test {
     bool b;
 }
 
+(int, string, bool) MyClass.createTuple() {
+    return (42_i32, "test", false);
+}
+
 i32 MyClass.testFunction(int a) {
     bool testBool = true;
     Test t = new Test(
@@ -39,10 +43,9 @@ int Main.run() {
     MyClass myObject;
     //usize j = i32::maximum();
     string i = this.testTemplateFunction(myObject);
-    //tuple<int, string, float> myTuple;
-    // MyClass myClassInstance = new MyClass(
-    //     myString = "test"
-    // );
+    (int, string, float) myTuple;
+    myTuple._0 = 5_i32;
+    myTuple._1 = "test";
     return 0_i32;
 }
 

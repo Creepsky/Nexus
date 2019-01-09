@@ -123,7 +123,9 @@ namespace Nexus.ir.expr
                 return false;
             }
 
-            return true;
+            return !Types
+                .Where((t, i) => !t.Equals(other.Types[i]))
+                .Any();
         }
 
         public override int GetHashCode()

@@ -69,6 +69,7 @@ namespace Nexus.ir.expr
             {
                 Left.Print(type, printer);
                 printer.WriteLine(";");
+                printer.Write($"assign({Left.Name}, ");
             }
 
             printer.Write($"{GetOperatorName()}(");
@@ -85,6 +86,12 @@ namespace Nexus.ir.expr
             printer.Write(", ");
             Right.Print(type, printer);
             printer.Write(")");
+
+            if (isVariable)
+            {
+                printer.Write(")");
+            }
+
             return true;
         }
 

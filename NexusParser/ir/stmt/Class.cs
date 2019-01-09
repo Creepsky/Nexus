@@ -198,7 +198,7 @@ namespace Nexus.ir.stmt
 
             var c = (Class) CloneDeep();
 
-            c.Type.TemplateList = TemplateList;
+            c.Type.TemplateList = (TemplateList)TemplateList.CloneDeep();
             c.TemplateList = null;
 
             return c;

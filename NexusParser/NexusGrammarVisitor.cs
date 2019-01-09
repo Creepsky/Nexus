@@ -100,13 +100,16 @@ namespace Nexus
             };
         }
 
-        public override object VisitTupleType(NexusParser.TupleTypeContext context) => new SimpleType(
-            "tuple", new TemplateList(context.type().Select(i => (SimpleType) Visit(i)).ToList()), context.ARRAY_DECLARATION().Length)
-        {
-            Line = context.Start.Line,
-            Column = context.Start.Column,
-            FilePath = FileParser.CurrentPath
-        };
+        public override object VisitTupleType(NexusParser.TupleTypeContext context)
+        { 
+            return new TupleType(context.type().Select(i => (SimpleType) Visit(i)).ToList(),
+                context.ARRAY_DECLARATION().Length)
+            {
+                Line = context.Start.Line,
+                Column = context.Start.Column,
+                FilePath = FileParser.CurrentPath
+            };
+        }
 
         public override object VisitMapType(NexusParser.MapTypeContext context) => new SimpleType(
             "map", new TemplateList(new List<SimpleType>{(SimpleType) Visit(context.key), (SimpleType) Visit(context.value)}), context.ARRAY_DECLARATION().Length)
